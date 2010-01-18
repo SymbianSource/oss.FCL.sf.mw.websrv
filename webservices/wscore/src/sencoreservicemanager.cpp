@@ -634,8 +634,7 @@ TInt CSenCoreServiceManager::AddServiceDescriptionL( CSenWSDescription* apServic
 
     if ( contract.Length() == 0 && endpoint.Length() == 0 )
         {
-        delete apServiceDescription;
-        apServiceDescription = NULL;
+
         TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenCoreServiceManager::AddServiceDescriptionL()");
         TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel," - No endpoint & no contract: invalid SD NOT added!");
         return KErrSenNoContractNoEndPoint;
@@ -665,8 +664,7 @@ TInt CSenCoreServiceManager::AddServiceDescriptionL( CSenWSDescription* apServic
                 TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8(" - error code: %d"),retVal));
 
                 // delete the new instance and return error (to framework)
-                delete apServiceDescription;
-                apServiceDescription = NULL;
+             
                 return retVal; 
                 }
 #ifdef _SENDEBUG
@@ -685,8 +683,7 @@ TInt CSenCoreServiceManager::AddServiceDescriptionL( CSenWSDescription* apServic
             TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel," - Remove duplicate SD failed. Returning error.");
 
             // delete the new instance and return error (to framework)
-            delete apServiceDescription;
-            apServiceDescription = NULL;
+            
             return KErrGeneral; 
             }
 

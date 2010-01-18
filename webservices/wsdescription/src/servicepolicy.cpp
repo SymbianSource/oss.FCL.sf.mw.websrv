@@ -131,7 +131,7 @@ TInt CServicePolicy::ServicePolicies(RPolicyArray& aPolicies)
 //Adding client policy to SD
 TInt CServicePolicy::AddClientPolicyL(CSenElement* aTemplate)
     {
-    CSenElement* pServicePolicyElement = AsElement().Element(KServicePolicyLocalName);
+    /*CSenElement* pServicePolicyElement = AsElement().Element(KServicePolicyLocalName);*/
     CSenElement* pClientPolicyElement = AsElement().Element(KClientServicePolicyLocalName);
     
     if(!pClientPolicyElement)

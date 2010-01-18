@@ -378,12 +378,12 @@ void CSenVtcpTransportProperties::SetMessageIdL( const TDesC8& aMessageId )
     CSenTransportProperties::SetMessageIdL( aMessageId );
     }
     
-TInt CSenVtcpTransportProperties::OnewayMessageOnOffL( TBool& aOnewayMessageOnOff )
+EXPORT_C TInt CSenVtcpTransportProperties::OnewayMessageOnOffL( TBool& aOnewayMessageOnOff )
     {
     return CSenTransportProperties::OnewayMessageOnOffL( aOnewayMessageOnOff );
     }
 
-void CSenVtcpTransportProperties::SetOnewayMessageOnOffL( TBool aOnewayMessageOnOff )
+EXPORT_C void CSenVtcpTransportProperties::SetOnewayMessageOnOffL( TBool aOnewayMessageOnOff )
     {
     CSenTransportProperties::SetOnewayMessageOnOffL( aOnewayMessageOnOff );
     }
@@ -398,52 +398,52 @@ TInt CSenVtcpTransportProperties::SetHeartbeatL(TInt aHeartbeat)
     return CSenTransportProperties::SetHeartbeatL( aHeartbeat ); 
     }
     
-TInt CSenVtcpTransportProperties::SetMaxTimeToLiveL(TInt aMaxTTL) 
+EXPORT_C TInt CSenVtcpTransportProperties::SetMaxTimeToLiveL(TInt aMaxTTL) 
     { 
     return CSenTransportProperties::SetMaxTimeToLiveL( aMaxTTL ); 
     }
 
-TInt CSenVtcpTransportProperties::MaxTimeToLiveL(TInt& aMaxTTL) 
+EXPORT_C TInt CSenVtcpTransportProperties::MaxTimeToLiveL(TInt& aMaxTTL) 
     { 
     return CSenTransportProperties::MaxTimeToLiveL( aMaxTTL ); 
     }
 
-TInt CSenVtcpTransportProperties::SetMinTimeToLiveL(TInt aMinTTL) 
+EXPORT_C TInt CSenVtcpTransportProperties::SetMinTimeToLiveL(TInt aMinTTL) 
     { 
     return CSenTransportProperties::SetMinTimeToLiveL( aMinTTL ); 
     }
 
-TInt CSenVtcpTransportProperties::MinTimeToLiveL(TInt& aMinTTL) 
+EXPORT_C TInt CSenVtcpTransportProperties::MinTimeToLiveL(TInt& aMinTTL) 
     { 
     return CSenTransportProperties::MinTimeToLiveL( aMinTTL ); 
     }
     
-TInt CSenVtcpTransportProperties::SetMaxRetryTTLL(TInt aMaxRetryTTL)
+EXPORT_C TInt CSenVtcpTransportProperties::SetMaxRetryTTLL(TInt aMaxRetryTTL)
 	{ 
 	return SetIntPropertyL( KSenConnectionRetryMaxTTL, aMaxRetryTTL );
 	}
 	
-TInt CSenVtcpTransportProperties::MaxRetryTTLL(TInt& aMaxRetryTTL)
+EXPORT_C TInt CSenVtcpTransportProperties::MaxRetryTTLL(TInt& aMaxRetryTTL)
 	{ 
 	return IntPropertyL( KSenConnectionRetryMaxTTL, aMaxRetryTTL ); 
 	}
 
-TInt CSenVtcpTransportProperties::SetMinRetryTTLL(TInt aMinRetryTTL)
+EXPORT_C TInt CSenVtcpTransportProperties::SetMinRetryTTLL(TInt aMinRetryTTL)
 	{ 
 	return SetIntPropertyL( KSenConnectionRetryMinTTL, aMinRetryTTL );
 	}
 	
-TInt CSenVtcpTransportProperties:: MinRetryTTLL(TInt& aMinRetryTTL)
+EXPORT_C TInt CSenVtcpTransportProperties:: MinRetryTTLL(TInt& aMinRetryTTL)
 	{ 
 	return IntPropertyL( KSenConnectionRetryMinTTL, aMinRetryTTL ); 
 	}
 	
-TInt CSenVtcpTransportProperties::SetRetryDeltaTimeoutL(TInt aTimeout)
+EXPORT_C TInt CSenVtcpTransportProperties::SetRetryDeltaTimeoutL(TInt aTimeout)
 	{ 
 	return SetIntPropertyL( KSenConnectionRetryDelta, aTimeout );
 	}
 	
-TInt CSenVtcpTransportProperties::RetryDeltaTimeoutL(TInt& aTimeout)
+EXPORT_C TInt CSenVtcpTransportProperties::RetryDeltaTimeoutL(TInt& aTimeout)
 	{ 
 	return IntPropertyL( KSenConnectionRetryDelta, aTimeout ); 
 	}

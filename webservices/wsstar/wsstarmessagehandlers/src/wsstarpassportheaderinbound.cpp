@@ -83,7 +83,7 @@ void CWSStarPassportHeaderInbound::StartElementL(const TDesC8& aNsUri,
     
 void CWSStarPassportHeaderInbound::EndElementL(const TDesC8& aNsUri,
                              const TDesC8& aLocalName,
-                             const TDesC8& aQName)
+                             const TDesC8& /*aQName*/)
     {
     TPtrC8 content = Content();
     switch (iState)

@@ -324,4 +324,17 @@ EXPORTS
 	_ZN23CSenTransportProperties7SnapIdLERm @ 323 NONAME
 	_ZN9CSenChunk17RequestFileHandleER5RFile @ 324 NONAME
 	_ZN9CSenChunk17RequestFileHandleEv @ 325 NONAME
+	_ZN23CSenTransportProperties14BaseConstructLERK6TDesC8S2_S2_S2_P13CSenXmlReader @ 326 NONAME
+	_ZN27CSenVtcpTransportProperties12MaxRetryTTLLERi @ 327 NONAME
+	_ZN27CSenVtcpTransportProperties12MinRetryTTLLERi @ 328 NONAME
+	_ZN27CSenVtcpTransportProperties14MaxTimeToLiveLERi @ 329 NONAME
+	_ZN27CSenVtcpTransportProperties14MinTimeToLiveLERi @ 330 NONAME
+	_ZN27CSenVtcpTransportProperties15SetMaxRetryTTLLEi @ 331 NONAME
+	_ZN27CSenVtcpTransportProperties15SetMinRetryTTLLEi @ 332 NONAME
+	_ZN27CSenVtcpTransportProperties17SetMaxTimeToLiveLEi @ 333 NONAME
+	_ZN27CSenVtcpTransportProperties17SetMinTimeToLiveLEi @ 334 NONAME
+	_ZN27CSenVtcpTransportProperties18RetryDeltaTimeoutLERi @ 335 NONAME
+	_ZN27CSenVtcpTransportProperties19OnewayMessageOnOffLERi @ 336 NONAME
+	_ZN27CSenVtcpTransportProperties21SetRetryDeltaTimeoutLEi @ 337 NONAME
+	_ZN27CSenVtcpTransportProperties22SetOnewayMessageOnOffLEi @ 338 NONAME
 

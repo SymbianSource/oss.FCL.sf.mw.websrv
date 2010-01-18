@@ -277,7 +277,8 @@ EXPORT_C TBool CSenXmlServiceDescription::Matches( MSenServiceDescription& aOthe
 		
     TBool match(ETrue);
     
-		TRAPD(retVal,
+      TInt retVal(KErrNone);
+		TRAP(retVal,
 		    RFacetArray otherFacets;
 		    CleanupClosePushL(otherFacets);
 		    aOtherServiceDescription.FacetsL(otherFacets);

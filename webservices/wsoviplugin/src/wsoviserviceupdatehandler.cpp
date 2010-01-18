@@ -82,11 +82,13 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
     	{
 	    if (*errorCode == EHttp_401_Unauthorized-KHttpPluginStatusBase)
 	        {
+		 	TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("*errorCode == EHttp_401_Unauthorized-KHttpPluginStatusBase")));
 	        CWSOviErrorResponse* errFragment = CWSOviErrorResponse::NewLC();
 	        errFragment->SetReader(*iHandlerContext.GetSenCoreServiceManager()->XMLReader());
 	        errFragment->BuildFrom(*message);
 	        if (! errFragment->Code().Compare(WSOviResponse::KErrorCodeInvalidAccessToken()))
 	            {
+				 TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L(" ---- WSOviResponse::KErrorCodeInvalidAccessToken()")));
 	            if (!pCtx.GetSenRemoteServiceSessionL(WSOviContextKeys::KServiceSession))
 	                {
 	                pCtx.Add(WSOviContextKeys::KServiceSession, *(MSenRemoteServiceSession*)remoteServiceSession);
@@ -97,9 +99,11 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
 	            }
 	        else if(! errFragment->Code().Compare(WSOviResponse::KErrorCodeUnauthorized()))
 	            {
+			 	TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("----- WSOviResponse::KErrorCodeUnauthorized()")));
 	            MSenProperties* tp = (MSenProperties*)pCtx.GetAnyL(WSOviContextKeys::KTP());
 	            if (tp) 
 	                {
+					TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("----- WSOviContextKeys::KTP() Found")));
 	                switch (tp->PropertiesClassType())
 	                    {
 	                    case MSenProperties::ESenHttpTransportProperties:
@@ -122,6 +126,36 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
 	            }
 	        CleanupStack::PopAndDestroy(errFragment);
 	        }
+		else if(*errorCode == 403) //Handling 403 resource not found error
+			{
+			TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("*errorCode == 403 ")));
+			CWSOviErrorResponse* errFragment = CWSOviErrorResponse::NewLC();
+			errFragment->SetReader(*iHandlerContext.GetSenCoreServiceManager()->XMLReader());
+			errFragment->BuildFrom(*message);
+			if(! errFragment->Code().Compare(WSOviResponse::KErrorCodeUnauthorized()))
+				{			
+                    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("----- if WSOviResponse::KErrorCodeUnauthorized()")));
+					if (!pCtx.GetSenRemoteServiceSessionL(WSOviContextKeys::KServiceSession))
+						{
+						pCtx.Add(WSOviContextKeys::KServiceSession, *(MSenRemoteServiceSession*)remoteServiceSession);
+						}
+					pCtx.Update(WSOviContextKeys::KReAuthNeeded, ETrue);
+					oviServiceSession->ClearCredentialL();
+					oviServiceSession->SetStatusL();//in order to compute state
+				}
+			else
+			    {
+                TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("-----else  WSOviResponse::KErrorCodeUnauthorized()")));
+				if (!pCtx.GetSenRemoteServiceSessionL(WSOviContextKeys::KServiceSession))
+				    {
+				    pCtx.Add(WSOviContextKeys::KServiceSession, *(MSenRemoteServiceSession*)remoteServiceSession);
+				    }
+		            pCtx.Update(WSOviContextKeys::KReAuthNeeded, ETrue);
+		            oviServiceSession->ClearCredentialL();
+		            oviServiceSession->SetStatusL();//in order to compute state                
+			    }
+			CleanupStack::PopAndDestroy(errFragment);
+			}
 	    //positive scenario, for example: signup proces already returns token
 	    else if (*errorCode == KErrNone)
 	        {
@@ -191,6 +225,10 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
             CleanupStack::PopAndDestroy(responseFragment);
             pCtx.Update(WSOviContextKeys::KRetryNeeded, 0);
 	        }
+		else
+			{
+	        TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"---- Neither 401 nor KErrNone !!");
+			}
     	}
     return KErrNone;
     }

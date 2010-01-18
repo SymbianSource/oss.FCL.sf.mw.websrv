@@ -568,7 +568,8 @@ EXPORT_C TBool CSenServiceSession::Matches(MSenServiceDescription& aOtherService
 
 
     TBool match(ETrue);
-		TRAPD(retVal,
+		TInt retVal(KErrNone);
+		TRAP(retVal,
 		    RFacetArray otherFacets;
 		    CleanupClosePushL(otherFacets);
 		    aOtherServiceDescription.FacetsL(otherFacets);

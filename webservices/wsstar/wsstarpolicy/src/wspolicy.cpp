@@ -117,7 +117,6 @@ EXPORT_C void CWSPolicy::ConstructL()
     iNormPolicy = NULL;
     count = 0;
 
-    TTime now;
     iExpiry.UniversalTime();
     TTimeIntervalDays interval(KValidityTime);
     iExpiry+=interval;

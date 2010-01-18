@@ -53,7 +53,7 @@
     const TInt32 KWSStarServiceUpdateHandler = 0x101F971B;
     const TInt32 KWSStarPolicyHandler = 0x101F9796;
 	#ifdef RD_SEN_VTCP_SUPPORT
-    	const TInt32 KWSStarVtcpHandler = 0x101F9722;
+    	//const TInt32 KWSStarVtcpHandler = 0x101F9722;
 	    const TInt32 KWSStarCoBrandingHandler = 0x101F9798;
 	#endif//RD_SEN_VTCP_SUPPORT
 #else

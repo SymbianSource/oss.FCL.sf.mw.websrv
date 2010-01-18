@@ -835,7 +835,7 @@ void CSenWSPolicyLoader::StartElementL(const TDesC8& aNsUri,
                 {
                 if ( ipPolicyContainer )
                     {
-                    CSenElement* element  = ipPolicyContainer->ExtractElement();
+                   // CSenElement* element  = ipPolicyContainer->ExtractElement();
                     delete ipPolicyContainer;
                     ipPolicyContainer = NULL;
                     }
@@ -870,7 +870,7 @@ void CSenWSPolicyLoader::StartElementL(const TDesC8& aNsUri,
                 {
                 if ( ipPolicyIdentifier )
                     {
-                    CSenElement* element  = ipPolicyIdentifier->ExtractElement();
+                    //CSenElement* element  = ipPolicyIdentifier->ExtractElement();
                     delete ipPolicyIdentifier;
                     ipPolicyIdentifier = NULL;
                     }
@@ -1010,13 +1010,13 @@ void CSenWSPolicyLoader::EndElementL(const TDesC8& aNsUri,
                     {
                     if ( ipPolicyIdentifier )
                         {
-                        CSenElement* element  = ipPolicyIdentifier->ExtractElement();
+                       // CSenElement* element  = ipPolicyIdentifier->ExtractElement();
                         delete ipPolicyIdentifier;
                         ipPolicyIdentifier = NULL;
                         }
                     if ( ipWSpolicy )
                         {
-                        CSenElement* element  = ipWSpolicy->ExtractElement();
+                       // CSenElement* element  = ipWSpolicy->ExtractElement();
                         delete ipWSpolicy;
                         ipWSpolicy = NULL;
                         }

@@ -205,7 +205,7 @@ EXPORT_C void CSenTransportProperties::BaseConstructL(const TDesC8& aNamespace,
     CSenXmlProperties::BaseConstructL(aNamespace, aLocalname, aXml, aParser);
     }
 
-void CSenTransportProperties::BaseConstructL(const TDesC8& aNamespace, 
+EXPORT_C void CSenTransportProperties::BaseConstructL(const TDesC8& aNamespace, 
                                                  const TDesC8& aLocalname, 
                                                  const TDesC8& aQualifiedName, 
                                                  const TDesC8& aXml,

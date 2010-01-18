@@ -246,7 +246,7 @@ TInt CWSStarPlugin::AddServiceDescriptionL( MSenServiceDescription& aPattern,
         CSLOG_FORMAT((aRemoteConsumer.ConnectionId(), KMinLogLevel , _L8("CWSStarPlugin::AddServiceDescriptionL - ProcessOutboundValidation returned: %d"), error));
         if ( !error )
             {
-            CWSStarSessionContext* pSessionRegisterCtx = pNewSession->SessionContext();            
+            //CWSStarSessionContext* pSessionRegisterCtx = pNewSession->SessionContext();            
             TPtrC8 cont = aPattern.Contract();
             TInt policyLeaveCode(KErrNone);
             TRAP( policyLeaveCode, error = policyHandler->InvokeL(cont); )

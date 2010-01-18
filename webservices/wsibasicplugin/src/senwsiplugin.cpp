@@ -234,6 +234,8 @@ TInt CSenWsiPlugin::CreateServiceSessionL( MSenServiceDescription& aServiceDescr
 #ifdef _SENDEBUG
                 if(retVal!=KErrNone)
                     {
+					delete pNewSession;
+					pNewSession = NULL;
                     TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenBasicWsiPlugin::CreateServiceSessionL");
                     TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel, _L8(" - CoreServiceMngr::AddServiceDescriptionL returned: %d"), retVal));
                     }

@@ -419,9 +419,9 @@ TInt CSenHttpChannelImpl::SetIapPrefsL( TUint32 aIapId, TBool aDialogPref, RConn
         
     // Set the IAP selection preferences (IAP ID, do not prompt)
     /*
-    /*Single click connectivity feature has been implemented by CSock (RConnection class).
-    /*According to this client no need to set the IAP ID. 
-    /*Automatically RConnection will use the suitable IAP
+    *Single click connectivity feature has been implemented by CSock (RConnection class).
+    *According to this client no need to set the IAP ID. 
+    *Automatically RConnection will use the suitable IAP
     */
     
 
@@ -468,8 +468,15 @@ TInt CSenHttpChannelImpl::SetIapPrefsL( TUint32 aIapId, TBool aDialogPref, RConn
     // there is NO direct API to query effective IAP ID from CommsDB.
     if (!retVal)
         {
-        iExplicitIapDefined = ETrue;
-        iIapId = aIapId;
+        #ifdef __SINGLE_CLICK_CONNECTIVITY_ENABLED__
+        	//Since we are using by default setIapId "0".
+        	//There won't be any explicitly defined Iap Id
+        	iExplicitIapDefined = EFalse;
+        	iIapId = 0;
+				#else        	
+        	iExplicitIapDefined = ETrue;
+        	iIapId = aIapId;
+        #endif //__SINGLE_CLICK_CONNECTIVITY_ENABLED__
         }
     return retVal;
     }

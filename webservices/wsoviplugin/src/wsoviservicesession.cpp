@@ -817,7 +817,7 @@ TInt CWSOviServiceSession::InitializeFromL( MSenServiceDescription& aDescription
             iTrustAnchor = pElement->Content().AllocL();
             }
         
-        CSenXmlReader* reader = XmlReader();
+       // CSenXmlReader* reader = XmlReader();
         if (!iSessionContext) 
             {
             TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::InitializeFromL");
@@ -1098,7 +1098,7 @@ void CWSOviServiceSession::PrepareOutCtxL(const TDesC8& aMessageBody)
     {
     iClientTime.UniversalTime();
     
-    CSenXmlReader* reader = XmlReader();
+    //CSenXmlReader* reader = XmlReader();
     if (iOutContext)
         {
         delete iOutContext;

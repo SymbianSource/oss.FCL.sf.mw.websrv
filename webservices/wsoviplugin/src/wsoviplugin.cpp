@@ -322,7 +322,7 @@ TInt CWSOviPlugin::CreateServiceSessionL( MSenServiceDescription& aServiceDescri
 //---------------------------------------------------------------------------
 //---------------------------------------------------------------------------
 //
-TInt CWSOviPlugin::OnEvent( const TInt aEvent, TAny* apArgument )
+TInt CWSOviPlugin::OnEvent( const TInt aEvent, TAny* /*apArgument*/ )
     {
     TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviPlugin::OnEvent");
     TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel, _L8("  -event code: %d"), aEvent));

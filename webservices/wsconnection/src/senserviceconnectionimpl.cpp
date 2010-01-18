@@ -2037,8 +2037,10 @@ void CSenServiceConnectionImpl::DoCancel()
 	        }
 
 	    TInt cancelLeaveCode(KErrNone);
-	    CSenAsyncOperation* pSenAO = CSenAsyncOperation::NewL(this);
-	    TRAP(cancelLeaveCode, iConnection.CancelSession(pSenAO->iStatus));
+	    TRAP(cancelLeaveCode, 
+	            CSenAsyncOperation* pSenAO = CSenAsyncOperation::NewL(this);
+                iConnection.CancelSession(pSenAO->iStatus);
+                );
 #ifdef _SENDEBUG
 	    if(cancelLeaveCode!=KErrNone)
 	        {
@@ -2402,8 +2404,10 @@ TInt CSenServiceConnectionImpl::CancelAllRequests()
         }
     TInt cancelLeaveCode(KErrNone);
     TInt retVal(KErrNone);
-    CSenAsyncOperation* pSenAO = CSenAsyncOperation::NewL(this);
-    TRAP( cancelLeaveCode, iConnection.CancelSession(pSenAO->iStatus); )
+    TRAP( cancelLeaveCode,
+    		CSenAsyncOperation* pSenAO = CSenAsyncOperation::NewL(this);
+    		iConnection.CancelSession(pSenAO->iStatus); 
+    		);
 
     if(cancelLeaveCode!=KErrNone)
         {
@@ -2477,6 +2481,7 @@ TInt CSenServiceConnectionImpl::SetTransportPropertiesL(const TDesC8& aPropertie
     
 TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
     {
+    TInt retVal(0);
     if ( iDispatcherEnabled ) // DISPATCHER IS ENABLED
         {
         TInt actualTransID = ipSenServiceDispatcher->GetActualTransactionID(&aTransactionID);
@@ -2503,7 +2508,11 @@ TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
             pAsyncOp = NULL;
             }
     	ipSenServiceDispatcher->RemoveFromQueue(aTransactionID);
-    	DeliverResponseL(KErrSenCancelled,NULL);
+    	TRAP(retVal, DeliverResponseL(KErrSenCancelled,NULL));
+    	if( retVal != KErrNone)
+    		{
+    		return retVal;
+    		}
     	}  
         }
     else // DISPATCHER IS DISABLED

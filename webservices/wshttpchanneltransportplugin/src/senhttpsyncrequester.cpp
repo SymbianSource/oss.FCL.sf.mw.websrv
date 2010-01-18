@@ -196,9 +196,8 @@ void CSenHttpSyncRequester::ResponseErrorL( TInt aId, TInt aError, HBufC8* apErr
 
     if (iParentObserver)
         {
-        //iContent = NULL;      To fix EPSK-76XFAN
-        iParentObserver->ResponseErrorL( aId, aError, apErrorBody,  aHttpProperties);
         iContent = apErrorBody;  // To fix EPSK-76XFAN
+        iParentObserver->ResponseErrorL( aId, aError, apErrorBody,  aHttpProperties);
         }
     else
         {

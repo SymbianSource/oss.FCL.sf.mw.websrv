@@ -132,13 +132,14 @@ TInt CWSStarValidateHandler::InvokeL(MSenSessionContext& aCtx)
     CWSStarTrustClient* pSTSClient = STSClientL(pIdentityProvider);
     if (pSTSClient)
             {
+			TInt lerror(KErrNone);
             TInt error(KErrNone);
             pSTSClient->SetHandlerCtx(&iHandlerContext);
             pSTSClient->SetVersion(iVersion);
             //validate session of concrete WebService
             HBufC8* errorMessage = NULL;
              // fix for compiler warning #550-D reverted back
-            TRAPD(lerror,error = pSTSClient->ValidateL(*pNewSession, renewing, errorMessage, onlySharing);)    
+            TRAP(lerror,error = pSTSClient->ValidateL(*pNewSession, renewing, errorMessage, onlySharing);)    
             lerror = 0; // not used in release builds
             ((MSenContext&)aCtx).Update(WSStarContextKeys::KReAuthNeeded, EFalse);
             if (errorMessage)

@@ -243,7 +243,7 @@ TInt CWSStarTrustClient::ValidateL( CWSStarServiceSession& aSession,
         iSTSSession->SetContractL(KWSStarSTSContract);
         iSTSSession->AddConsumerL(*this);
         }
-    CSenXmlReader* reader = Framework().Manager().XMLReader();
+    //CSenXmlReader* reader = Framework().Manager().XMLReader();
     CWSStarSessionContext* stsSsnContext = iSTSSession->SessionContext();
     iPassportMode = CWSStarPolicy::CheckPolicyValueL(KPassportExtensions, iSTSSession);
     if (iPassportMode)
@@ -292,7 +292,7 @@ TInt CWSStarTrustClient::ValidateL( CWSStarServiceSession& aSession,
         }
     
     //building body
-    CWSStarPlugin& frmWSStar = (CWSStarPlugin&)Framework();
+    //CWSStarPlugin& frmWSStar = (CWSStarPlugin&)Framework();
     CSenElement* pBody = CreateBodyL();
     stsSsnContext->Update(WSStarContextKeys::KBodyElement, pBody);
         pBodyXML = pBody->AsXmlL();

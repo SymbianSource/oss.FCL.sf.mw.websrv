@@ -275,6 +275,8 @@ TInt CSenRestPlugin::CreateServiceSessionL( MSenServiceDescription& aServiceDesc
 #ifdef _SENDEBUG
                 if(retVal!=KErrNone)
                     {
+                    delete pNewSession;
+                    pNewSession = NULL;
                     TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenRestPlugin::CreateServiceSessionL:");
                     TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8(" - CoreServiceMngr::AddServiceDescriptionL returned: %d"), retVal));
                     }

@@ -53,7 +53,7 @@ EXPORT_C CSenAtomEntry* CSenAtomEntry::NewLC()
     return pNew;
     }
 
-CSenAtomEntry::CSenAtomEntry () :
+EXPORT_C CSenAtomEntry::CSenAtomEntry () :
     CSenAtomMessage(),localState(KSenStateSave)
     {
     }

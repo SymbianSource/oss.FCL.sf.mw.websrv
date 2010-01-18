@@ -226,8 +226,9 @@ TInt CWSStarRegisterHandler::RegisterSTSClientL(
         retval = iHandlerContext.GetSenCoreServiceManager()->AddServiceDescriptionL(pSTSClient);
         if(retval != KErrNone)
             {
-            delete pSTSClient;
+            CleanupStack::PopAndDestroy(1);//pSTSClient
             }
+        else
         CleanupStack::Pop(pSTSClient); 
         pSTSClient = NULL;
         }

@@ -284,7 +284,6 @@ TInt CSenTxnState::CalculateHeadersSizeL(RHTTPHeaders aHeaders)
     TInt headersize(0); 
     TBuf8<1024> buf; 
     TPtrC8 fieldValue(buf.Ptr()); 
-  	TInt err(0);
     _LIT8(KColon,": ");   
     _LIT8(KNewLine,"\r\n"); 
 
@@ -302,7 +301,7 @@ TInt CSenTxnState::CalculateHeadersSizeL(RHTTPHeaders aHeaders)
  
         headersize += KColon().Size(); 
         
-        err = aHeaders.GetRawField(str, fieldValue);          
+        aHeaders.GetRawField(str, fieldValue);          
           
         headersize += fieldValue.Size(); 
         headersize += KNewLine().Size(); 

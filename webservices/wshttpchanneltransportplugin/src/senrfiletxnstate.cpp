@@ -124,12 +124,12 @@ TBool CSenRfileTxnState::GetNextDataPart(TPtrC8& aDataPart)
     {
     TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenRfileTxnState::GetNextDataPart")));
     TBool noMoreData = ETrue;   // No more data
-    
+    TInt retVal(KErrNone);
     if ( iFile.SubSessionHandle() )    // Send in a chunked mode from file
         {        
         if ( !iReadData )
             {
-            TRAPD(retVal,
+            TRAP(retVal,
 		            iReadData = HBufC8::NewL( KDataPartLength );  
 		            TPtr8 ptr = iReadData->Des();
 		            User::LeaveIfError( iFile.Read( ptr, KDataPartLength ) );

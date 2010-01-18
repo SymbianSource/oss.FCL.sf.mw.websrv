@@ -291,4 +291,8 @@ EXPORTS
 	_ZNK15CSenAtomMessage5TitleEv @ 290 NONAME
 	_ZNK15CSenAtomMessage7UpdatedEv @ 291 NONAME
 	_ZNK15CSenAtomMessage9PublishedEv @ 292 NONAME
+	_ZN12CSenAtomFeedC1Ev @ 293 NONAME
+	_ZN12CSenAtomFeedC2Ev @ 294 NONAME
+	_ZN13CSenAtomEntryC1Ev @ 295 NONAME
+	_ZN13CSenAtomEntryC2Ev @ 296 NONAME
 

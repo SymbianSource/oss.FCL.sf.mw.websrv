@@ -54,7 +54,7 @@ EXPORT_C CSenAtomFeed* CSenAtomFeed::NewLC( TInt64 aId )
     return self;
     }
 
-CSenAtomFeed::CSenAtomFeed(): CSenAtomMessage()
+EXPORT_C CSenAtomFeed::CSenAtomFeed(): CSenAtomMessage()
     {
     TLSLOG_L(KSenMessagesLogChannel, KSenMessagesLogLevel, "CSenAtomFeed()");     
     }

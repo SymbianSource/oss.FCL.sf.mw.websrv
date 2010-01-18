@@ -168,7 +168,7 @@ TInt CWSStarCoBrandingClient::FetchSCTL(
         {
             
         //Create a Fetch SCt body and update
-        CWSStarPlugin& frmWSStar = (CWSStarPlugin&)Framework();
+       // CWSStarPlugin& frmWSStar = (CWSStarPlugin&)Framework();
         CSenElement* pBody = CreateFSTL();
         
         if(pBody)

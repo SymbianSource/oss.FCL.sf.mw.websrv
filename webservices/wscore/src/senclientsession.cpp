@@ -1228,6 +1228,7 @@ void CSenClientSession::InitializeL(const RMessage2& aMessage)
             }
         else
             {
+            CSLOG_L(iConnectionID,KMinLogLevel ,"Still we need to handle KErrSenAuthenticationFault");
             retVal = KErrSenSoapFault;
             }
         }
@@ -1236,7 +1237,7 @@ void CSenClientSession::InitializeL(const RMessage2& aMessage)
         // Complete. Either init was ok, or some error occurred; client now knows the result
         iAuthenticationRetries = 0;
         aMessage.Complete(ESenServInitialized);
-        CSLOG_L(iConnectionID,KMinLogLevel ,"Completed with ESenServInitialized");
+        CSLOG_FORMAT((iConnectionID,KMinLogLevel ,_L8("Completed with ESenServInitialized errrcode written [%d]"), retVal));
         }
     }
 
@@ -5619,7 +5620,7 @@ void CSenClientSession::IdentityProviders(const RMessage2& aMessage)
                     	{
                     	autoSignInEl->SetContentL( KSenPropertyTrue );
                     	}
-                    TRAPD(retVal,
+                    TRAP(retVal,
 			            	    HBufC8* encPassword = SenXmlUtils::EncodeHttpCharactersLC(password);
 		                    pIdps[i]->SetUserInfoL( pIdps[i]->AuthzID(),
 		                                            pIdps[i]->AdvisoryAuthnID(),

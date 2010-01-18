@@ -243,9 +243,10 @@ TInt CWSOviRegisterHandler::RegisterAuthClientL(
         retval = iHandlerContext.GetSenCoreServiceManager()->AddServiceDescriptionL(pAuthClient);
         if(retval != KErrNone)
             {
-            delete pAuthClient;
+            CleanupStack::PopAndDestroy(1);//pAuthClient
             }
-        CleanupStack::Pop(pAuthClient); 
+        else
+        	CleanupStack::Pop(pAuthClient);
         pAuthClient = NULL;
         }
     return retval;

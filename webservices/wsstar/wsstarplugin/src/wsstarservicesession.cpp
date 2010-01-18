@@ -286,7 +286,7 @@ TInt CWSStarServiceSession::ParseMessageL(CSenSoapMessage& aSOAPMessage)
 
 //-----SCHarF ------- 7.5.3.3 Inbound messageflow    
     
-    CSenXmlReader* reader = XmlReader();
+    //CSenXmlReader* reader = XmlReader();
     CSenSoapMessage* soapMessage = &aSOAPMessage;
     ((CWSStarPlugin&)iFramework).ProcessInboundDispatchL(this, soapMessage);
     ((CWSStarPlugin&)iFramework).ProcessInboundMessageL(iInContext, soapMessage);

@@ -337,7 +337,8 @@ EXPORT_C void CSenInternalCredential::SetIdentityProviderIdL(TDesC8& aIdentityPr
     }
 EXPORT_C void CSenInternalCredential::SetAuthInfo(TDesC8& aUserId, TDesC8& aPassword)
     {
-    TRAPD(retVal,
+		TInt retVal(KErrNone);
+    TRAP(retVal,
     		IdentifierL().SetPropertyL(KUserName, aUserId);
     		IdentifierL().SetPropertyL(KPassword, aPassword);
     		);

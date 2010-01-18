@@ -60,12 +60,12 @@ void CWSOviDeviceHandler::ConstructL()
     
 TInt CWSOviDeviceHandler::InvokeL(MSenMessageContext& aCtx)
     {
-        TInt error(KErrNone);
+        
         TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviDeviceHandler::InvokeL(MSenMessageContext& aCtx)")));
         CSenTransportProperties* tp = ((CWSOviMessageContext&)aCtx).TP();
         if (!tp) return KErrNotFound;
         TPtrC8 consumerKey;
-        error = tp->PropertyL(KNCIMConsumerKeyId, consumerKey);		
+        tp->PropertyL(KNCIMConsumerKeyId, consumerKey);		
         
         const TDesC8* nAuthVersion = iHandlerContext.GetDesC8L(HandlerContextKey::KVersion);
         

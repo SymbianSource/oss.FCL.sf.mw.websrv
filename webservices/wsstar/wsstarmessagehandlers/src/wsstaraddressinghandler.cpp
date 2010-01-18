@@ -220,7 +220,7 @@ TInt CWSStarAddressingHandler::HandleInboundL(MSenMessageContext& aCtx, CSenSoap
     _LIT8(Kpp, "pp");
     _LIT8(KCredProperties, "credProperties");
     _LIT8(KCredProperty, "credProperty");
-    _LIT8(KName, "Name");
+    //_LIT8(KName, "Name");
     CWSStarMessageUtils::RArraySenElements credPropertiesElements;
     CSenElement* ppElem = CWSStarMessageUtils::FindElementL(Kpp, header);
     if(ppElem)
@@ -283,7 +283,7 @@ TInt CWSStarAddressingHandler::HandleInboundL(MSenMessageContext& aCtx, CSenSoap
 
     //    CleanupStack::PopAndDestroy(buf);
 //    CleanupStack::PopAndDestroy(inbound);
-    CSenElement& body = aMessage->BodyL();
+    //CSenElement& body = aMessage->BodyL();
     ShareMyLiterals(aCtx);
     if (aMessage->IsFault())
         {

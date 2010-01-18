@@ -223,7 +223,7 @@ TInt CWSOviOAuthClient::ValidateL( CWSOviServiceSession& aSession,
         {
         retry = EFalse;
         //building body
-        CWSOviPlugin& frmWSOvi = (CWSOviPlugin&)Framework();
+        //CWSOviPlugin& frmWSOvi = (CWSOviPlugin&)Framework();
         const TDesC8* version  = iHndCtx->GetDesC8L(HandlerContextKey::KVersion);
         TTime time;
         time.UniversalTime();
@@ -241,7 +241,7 @@ TInt CWSOviOAuthClient::ValidateL( CWSOviServiceSession& aSession,
             password.Set(iIdentityProvider->Password());
             }
         HBufC8* created(NULL);
-        CWSOviSessionContext* sessioncontext = iWSOviServiceSession->SessionContext();
+        //CWSOviSessionContext* sessioncontext = iWSOviServiceSession->SessionContext();
         const TInt* diffHandlerContext = iHndCtx->GetIntL(HandlerContextKey::KDiff);
         if( diffHandlerContext && *diffHandlerContext > 0 )
             {
@@ -403,33 +403,33 @@ TInt CWSOviOAuthClient::ValidateL( CWSOviServiceSession& aSession,
                 {
                 TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviOAuthClient::ValidateL - Consumer does not have AuthenticationCallback");
                 
-                const TDesC8* pValue = iIdentityProvider->AsElement().AttrValue( KSenAttrPromptUserInfo );
-                
-#ifdef _RD_SEN_WS_STAR_DO_NOT_PROMPT_AUTHINFO_BY_DEFAULT
+                const TDesC8* pValue = iIdentityProvider->AsElement().AttrValue( KSenAttrPromptUserInfo );                
+/* #ifdef _RD_SEN_WS_STAR_DO_NOT_PROMPT_AUTHINFO_BY_DEFAULT */ // For OVI no Notifier Plugin is popped up
                 if ( pValue && *pValue != _L8("false") )
                 // attribute has to exist, otherwise logic defaults to: DO NOT PROMPT
-#else
-                if ( !pValue || *pValue != _L8("false") )
+//#else
+//                if ( !pValue || *pValue != _L8("false") )
                 // even when attribute does NOT exist, or when it does and has any other value but "false", default to: PROMPT
-#endif                
+//#endif                
                     {
                     const TBool* renewingPtr = NAUTHSsnContext->GetIntL(WSOviContextKeys::KReAuthNeeded);
 					if ( renewingPtr && *renewingPtr )
                      	{
-                        TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel,"- Prompt is used to get AuthenticationInfo");
-                        TInt ret = (Framework().Manager()).AuthenticationForL(*iIdentityProvider,
-                                                                              authInfo);
-                        if ( ret == KErrNone )
-                            {
-                            retryCounter++;
-                            retry = ETrue;
-                            authenticationInfoPromptedFromUser = ETrue;
-                            }
+	                        TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel,"- Prompt is used to get AuthenticationInfo");
+	                        TInt ret = (Framework().Manager()).AuthenticationForL(*iIdentityProvider,
+	                                                                              authInfo);
+	                        if ( ret == KErrNone )
+	                            {
+	                            retryCounter++;
+	                            retry = ETrue;
+	                            authenticationInfoPromptedFromUser = ETrue;
+	                            }
                      	}
                     }
                 else
-                    {
-                    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel,"CWSOviOAuthClient::ValidateL - promptUserInfo = false");
+                    { 
+                    //Special Case handled for OVI Frameworks
+                    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel,"------- Notifier plugin will not be used for OVI What about UI Less SignIn !!!");
                     TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel," => prompt is not used.");
                     }
                 }
