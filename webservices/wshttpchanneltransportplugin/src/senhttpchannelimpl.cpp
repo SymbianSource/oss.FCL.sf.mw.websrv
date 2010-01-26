@@ -31,10 +31,10 @@
 #include <http.h>
 
 #include "sendebug.h" // filelogging and debugging MACROS
-#include <SenServiceConnection.h> // KErrSenNoHttpResponseBody
-#include <SenElement.h>
-#include <SenXmlUtils.h>
-#include <SenHttpTransportProperties.h>
+#include "senserviceconnection.h" // KErrSenNoHttpResponseBody
+#include "senelement.h"
+#include "senxmlutils.h"
+#include "senhttptransportproperties.h"
 #include "senhttpchannelimpl.h"
 #include "senhttpeventhandler.h"
 #include "sentxnstate.h"
@@ -47,10 +47,10 @@
 
 #include "senhttpchanneltransportplugin.h"
 //For HTTPProxyFilter
-#include <HttpFilterProxyInterface.h>
-#include <HttpFilterAcceptHeaderInterface.h>
-#include <HttpFilterCommonStringsExt.h>
-#include <DeflateFilterInterface.h>
+#include <httpfilterproxyinterface.h>
+#include <httpfilteracceptheaderinterface.h>
+#include <httpfiltercommonstringsext.h>
+#include <deflatefilterinterface.h>
 
 // CONSTANTS
 namespace

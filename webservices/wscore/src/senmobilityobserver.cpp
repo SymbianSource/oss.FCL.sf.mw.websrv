@@ -18,14 +18,15 @@
 
 
 // INCLUDE FILES
-
+#include <connpref.h>
+#include <commdbconnpref.h>
 #include "senmobilityobserver.h"
-#include <SenTransportProperties.h>
-#include "SenWSPattern.h"
-#include "MSenProperties.h"
-#include "SenLayeredTransportProperties.h"
-#include "SenLogger.h"
-#include "SenServiceManagerDefines.h"
+#include "sentransportproperties.h"
+#include "senwspattern.h"
+#include "msenproperties.h"
+#include "senlayeredtransportproperties.h"
+#include "senlogger.h"
+#include "senservicemanagerdefines.h"
 
 // -----------------------------------------------------------------------------
 // CALRObserver::NewL
@@ -534,20 +535,24 @@ TInt CALRObserver::StartConnection(TUint32& aId, TBool aIsSnapId)
 		    {
 			if(aIsSnapId != EFalse && aId)
                 {
+                TConnSnapPref SNAPPrefs;
                 iSnapId = aId ;
-                iSNAPPrefs.SetSnap( aId ); 
+                SNAPPrefs.SetSnap( aId ); 
                 // Start connecting with Snap
-                errRet = iConnection.Start(iSNAPPrefs);						
+                errRet = iConnection.Start(SNAPPrefs);						
                 TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection iConnection Started with SNAP");
                 }
 			else //default is iap
 				{
 	    	    if( aId )
                     {
-                    iPrefs.SetIapId( aId );
-                    SetDialogPref(EFalse) ;
+                    TCommDbConnPref iapPrefs ;
+                    iapPrefs.SetIapId( aId );
+					iapPrefs.SetDialogPreference( ECommDbDialogPrefDoNotPrompt );
+					TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::SetDialogPref is FALSE");					
+					//iapPrefs.SetDialogPreference( ECommDbDialogPrefPrompt );					
                     // Start connecting with IAP
-                    errRet = iConnection.Start(iPrefs);
+                    errRet = iConnection.Start(iapPrefs);
                     TLSLOG_FORMAT((KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , _L8("- CALRObserver::StartConnection connection started with iapid %d and preference"), aId));
                     }
 	            else
@@ -585,20 +590,6 @@ TInt CALRObserver::StartConnection(TUint32& aId, TBool aIsSnapId)
 	    }
 	return errRet;
     }	
-
-void CALRObserver::SetDialogPref(TBool aDialogPref)
-    {
-    if (aDialogPref == EFalse)
-        {
-        TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::SetDialogPref is FALSE");
-        iPrefs.SetDialogPreference( ECommDbDialogPrefDoNotPrompt );		
-        }
-    else
-        {
-        TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel ,"- CALRObserver::SetDialogPref is TRUE");
-        iPrefs.SetDialogPreference( ECommDbDialogPrefPrompt );		
-        }	
-    }
 
 // -----------------------------------------------------------------------------
 // CALRObserver::RefreshAvailability
