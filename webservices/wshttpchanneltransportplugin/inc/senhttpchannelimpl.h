@@ -160,8 +160,10 @@ protected:
 private:
     
     // New functions
-    
-    
+
+	TInt SetID(TUint32 aIapId, TBool aDialogPref, RConnection& aConnection, RSocketServ& aSocketServer, TBool aSNAP = EFalse);
+	TInt GetS60PlatformVersion(TUint& aMajor, TUint& aMinor);
+	TBool IsOCCImplementedSDK();	
     TPtrC8 SoapActionL(MSenElement& aSoapEnvelope);
     TInt SubmitRequestL(MSenResponseObserver& aObserver,
                         const TDesC8& aUri,
@@ -210,6 +212,9 @@ private:
     TBool iHasHttpContentType;
     SenMultiPartUtils::TMultiPartContentType iMultiPartContentType; // content type of MultiPart response
     RHTTPTransaction iHttpTransaction ;
+#ifndef __ENABLE_ALR__    
+    TBool iOCCenabled ;
+#endif    
     };
 
 #endif //SEN_HTTP_CHANNEL_IMPL_H

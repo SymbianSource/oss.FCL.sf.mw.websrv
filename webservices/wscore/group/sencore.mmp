@@ -100,6 +100,8 @@ LIBRARY etel.lib etelmm.lib // IMSI retrieving
 LIBRARY esock.lib		//MOBILITY
 LIBRARY commdb.lib //MOBILITY
 LIBRARY  netmeta.lib
+LIBRARY  platformver.lib //extendedconnpref.h
+LIBRARY  extendedconnpref.lib //extendedconnpref.h
 #endif
 #ifndef RD_SEN_COMPILE_SIS_PACKAGE_FILES
 LIBRARY senlogger.lib   // for TLS based logging

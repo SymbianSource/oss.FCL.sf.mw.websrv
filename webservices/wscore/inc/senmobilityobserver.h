@@ -88,6 +88,9 @@ class CALRObserver  : public CActive, public MMobilityProtocolResp
 	TInt StartConnection(TUint32& aId, TBool aIsSnapId) ;
 	TInt OpenSocketSever() ;
 	void RefreshAvailabilityL() ;
+	TInt SetID(TUint32 aId, TBool aDialogPref, RConnection& aConnection, RSocketServ& aSocketServer, TBool aSNAP);
+	TBool IsOCCImplementedSDK();
+	TInt GetS60PlatformVersion(TUint& aMajor, TUint& aMinor);
 
 	/**
 	* By default Symbian OS constructor is private.
@@ -100,8 +103,8 @@ class CALRObserver  : public CActive, public MMobilityProtocolResp
 	TUint32 iIapId;
 	TUint32 iNewIapId;
 	TUint32 iSnapId;
-	 CSenXmlReader &iReader ;
-	private:    // Data
+	CSenXmlReader &iReader ;
+	TBool iOCCenabled;
 	};
     
 #endif /*M_SEN_MOBILITY_OBSERVER_H    */

@@ -608,6 +608,7 @@ TInt CSenHttpChannelTransportPlugin::ApplyPropertiesL()
 
 TInt CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL(TUint32 aIapId)
     {
+    TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL()");
     TUint32 effectiveIapId(KErrNone);
     TBool explicitIapIdDefined(EFalse);
     if(iHttpChannel)
@@ -616,7 +617,8 @@ TInt CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL(TUint32 aIapId)
         }
 
     TInt retVal(KErrNone);
-    if(!explicitIapIdDefined || explicitIapIdDefined && effectiveIapId != aIapId)
+    TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("- explicitIapIdDefined[%d], effectiveIapId[%d], aIapId[%d]"), explicitIapIdDefined, effectiveIapId, aIapId));
+    if(!explicitIapIdDefined || (explicitIapIdDefined && (effectiveIapId != aIapId) ))
         {
         TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ResetHttpChannel():");
 
@@ -624,7 +626,7 @@ TInt CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL(TUint32 aIapId)
         iHttpChannel = NULL;
         delete iRequester;
         iRequester = NULL;
-        TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KNormalLogLevel, _L8("- New IAP ID: %d"), aIapId));
+        TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("- New IAP ID: %d"), aIapId));
         CSenHttpChannel* pHttpChannel = CSenHttpChannelImpl::NewL(iServiceManager, aIapId);
         
         CleanupStack::PushL(pHttpChannel);
