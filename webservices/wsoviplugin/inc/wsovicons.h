@@ -200,7 +200,9 @@ namespace WSOviResponse
 
     _LIT8(KUserInfoLocalName,"userInfo");
     _LIT8(KUserNameLocalName,"username");
-	
+	_LIT8( KMobileUsed1,             "Mobile number" );
+    _LIT8( KMobileUsed2,             "already used today" );
+	_LIT8(KEmailUsed, "You have already a Nokia account associated with this mobile number or email address.");
 	}
 
 #endif // CONSPLUGIN_H
