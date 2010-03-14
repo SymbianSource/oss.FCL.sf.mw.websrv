@@ -139,7 +139,18 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
 						{
 						pCtx.Add(WSOviContextKeys::KServiceSession, *(MSenRemoteServiceSession*)remoteServiceSession);
 						}
-					pCtx.Update(WSOviContextKeys::KReAuthNeeded, ETrue);
+					if( ! errFragment->Text().Compare(WSOviResponse::KEmailUsed()) ||
+					       (errFragment->Text().Compare(WSOviResponse::KMobileUsed1)!= KErrNotFound &&
+					        errFragment->Text().Compare(WSOviResponse::KMobileUsed2) != KErrNotFound )
+					    )
+					    {
+					    pCtx.Update(WSOviContextKeys::KRetryNeeded, EFalse);
+					    }
+					else
+					    {
+					    pCtx.Update(WSOviContextKeys::KReAuthNeeded, ETrue);
+					    }
+					
 					oviServiceSession->ClearCredentialL();
 					oviServiceSession->SetStatusL();//in order to compute state
 				}
