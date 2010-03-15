@@ -300,7 +300,7 @@ CSenHttpChannelImpl::~CSenHttpChannelImpl()
 
 TInt CSenHttpChannelImpl::SetIapPrefsL( TUint32 aIapId, TBool aDialogPref, RConnection& aConnection, RSocketServ& aSocketServer )
    	{
-   	TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KNormalLogLevel, _L8("- SetIapPrefsL	, IAP ID (%d)"), aIapId));
+   	TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("- SetIapPrefsL	, IAP ID (%d)"), aIapId));
    	
     // Check whether IAP ID is not equal with the one that is currently in effect:
     if(iExplicitIapDefined && iIapId == aIapId )
@@ -475,7 +475,7 @@ TInt CSenHttpChannelImpl::SetID(TUint32 aId, TBool aDialogPref, RConnection& aCo
 				}
 			prefList.AppendL(&extPrefs);
 			retVal = aConnection.Start(prefList);
-			
+			TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("RConnection Start retval[%d]"), retVal));
 			if(retVal == KErrNone)
 				{
 				aConnection.GetIntSetting( _L("IAP\\Id"), iIapId);
@@ -510,10 +510,10 @@ TInt CSenHttpChannelImpl::SetSnapPrefsL( TUint32 aSnapId, TBool aDialogPref, RCo
         TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Sanp is same as currently in effect");
         return KErrNone;
         }
-		else
-			{
-			TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Sanp is different with currently in effect");
-			}        
+	else
+		{
+		TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Sanp is different with currently in effect");
+		}
 	
     // Check if socket server (connection) is already open..
     if( iExplicitIapDefined )
@@ -1046,11 +1046,13 @@ void CSenHttpChannelImpl::AddRequestHeadersL(RHTTPHeaders& aHeaders,
     // It is MANDATORY, that at least one Accept header TOKEN exists:
   if ( tokens.Count()==0 )
         {
+        TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::AddRequestHeadersL Default Token")));
         TPtrC8* pDefaultToken = new (ELeave) TPtrC8( KSenHttpChannelAcceptHeaderDefault );
         TInt error = tokens.Append( pDefaultToken );
         if ( error )
             {
             delete pDefaultToken;
+            pDefaultToken = NULL;
             }
         }
     // Http headers
@@ -1082,8 +1084,7 @@ void CSenHttpChannelImpl::AddRequestHeadersL(RHTTPHeaders& aHeaders,
                     }
 
                 TPtrC8 value = property->Value();
-                TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("- Adding HTTP HEADER, name: (%S), value: (%S)"),
-                    &name, &value));
+                TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("- Adding HTTP HEADER, name: (%S), value: (%S)"), &name, &value));
 
                 // Open stringpool strings
                 RStringF headerName = iStringPool.OpenFStringL(name);
@@ -1096,8 +1097,7 @@ void CSenHttpChannelImpl::AddRequestHeadersL(RHTTPHeaders& aHeaders,
                 // Check if the header field value already exists
                 TBool fieldValueExists = EFalse;
                 TInt fieldCount = aHeaders.FieldPartsL(headerName);
-                TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("Header < %S > field count: %d"), &name,
-                                        fieldCount));
+                TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("Header < %S > field count: %d"), &name, fieldCount));
 
                 for(TInt j=0; j<fieldCount; j++)
                     {
@@ -1119,8 +1119,7 @@ void CSenHttpChannelImpl::AddRequestHeadersL(RHTTPHeaders& aHeaders,
                 if(!fieldValueExists)
                     {
                     aHeaders.SetFieldL(headerName, headerFieldVal);
-                    TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("Header < %S: %S > added"),
-                                       &name, &value));
+                    TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("Header < %S: %S > added"),&name, &value));
                     }
 
                 // Close stringpool strings
@@ -1175,8 +1174,7 @@ void CSenHttpChannelImpl::AddRequestHeadersL(RHTTPHeaders& aHeaders,
                 {
 #ifdef _SENDEBUG
                 const TDesC8& hValStr = hVal.StrF().DesC();
-                TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("Accept: %S"),
-                                   &hValStr));
+                TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("Accept: %S"), &hValStr));
 #endif // _SENDEBUG
                 if(hVal == headerFieldVal)
                     {
@@ -1936,6 +1934,7 @@ TBool CSenHttpChannelImpl::EffectiveIapId( TUint32 &aIapId )
     	{
 		// Eventhough IAP was not explicitely set (through Serene API), this
 		// code can check what IAP end-user provided via IAP selection dialog:
+		TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::EffectiveIapId: about to call RConnection::GetIntSetting()");
 		_LIT( KIapIdKey, "IAP\\Id" );
 	    iConnection.GetIntSetting( KIapIdKey, iIapId);
 	    if ( iIapId > 0 )

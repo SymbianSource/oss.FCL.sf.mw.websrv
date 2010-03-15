@@ -2481,6 +2481,7 @@ TInt CSenServiceConnectionImpl::SetTransportPropertiesL(const TDesC8& aPropertie
     
 TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
     {
+    TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::CancelTransaction");
     TInt retVal(0);
     if ( iDispatcherEnabled ) // DISPATCHER IS ENABLED
         {

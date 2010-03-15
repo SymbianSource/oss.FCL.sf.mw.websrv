@@ -115,8 +115,11 @@ CSenHttpChannelTransportPlugin::~CSenHttpChannelTransportPlugin()
     iSessionMap.Reset(); 
 
     delete iHttpChannel;
+    iHttpChannel = NULL;
     delete iRequester;
+    iRequester = NULL;
     delete iProperties;
+    iProperties = NULL;
 
     delete ipCtx;
     ipCtx = NULL;

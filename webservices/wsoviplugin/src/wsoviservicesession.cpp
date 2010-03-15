@@ -588,6 +588,7 @@ TInt CWSOviServiceSession::SubmitL( const TDesC8& aMessage,
 
 void CWSOviServiceSession::AdaptEndpointL(TBool aToOrginal)
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase,KMinLogLevel ,"CWSOviServiceSession::AdaptEndpointL");	
     TPtrC8 oldEndpoint = Endpoint();
     if (aToOrginal)
         {
@@ -633,11 +634,16 @@ void CWSOviServiceSession::AdaptEndpointL(TBool aToOrginal)
                                   +oldEndpoint.Length());
             TPtr8 ptrNewEp = newEp->Des();
             ptrNewEp.Append(oldEndpoint);
-            ptrNewEp.Append(suffixEndpoint);
+            TInt retVal = oldEndpoint.Find(suffixEndpoint);
+            if(retVal == KErrNotFound)
+            	{
+            	ptrNewEp.Append(suffixEndpoint);
+            	}
             SetEndPointL(*newEp);
             CleanupStack::PopAndDestroy(newEp);
             }
         }
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase,KMinLogLevel ,"CWSOviServiceSession::AdaptEndpointL Completed");
     }
 CSenIdentityProvider* CWSOviServiceSession::IdentityProviderFromCoreL(
                                             const TDesC8& aProviderID)

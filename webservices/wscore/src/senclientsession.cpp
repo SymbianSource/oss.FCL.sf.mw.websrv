@@ -224,6 +224,7 @@ void RSenConnectionServerSession::Close()
         CSenMessageResourceHandler* tmp = resHandler;
         resHandler = resHandler->iNext;
         delete tmp;
+        tmp = NULL;
         }
     RSessionBase::Close();
     }
@@ -260,6 +261,7 @@ TInt RSenConnectionServerSession::PreferredCarrierAvailable( TAccessPointInfo& a
 		SendReceive(ESenCliServPrefferedCarrierAvailable, args, caSync->iStatus);
         retVal = caSync->iStatus.Int();
 		delete caSync;
+		caSync = NULL;
 		}
 	return retVal;        
 	
@@ -279,6 +281,7 @@ TInt RSenConnectionServerSession::NewCarrierActive( TAccessPointInfo& aNewAPInfo
         SendReceive(ESenCliServNewCarrierActive, args, caSync->iStatus);
         retVal = caSync->iStatus.Int();
         delete caSync;
+        caSync = NULL;
         }
     return retVal;
     }
@@ -294,6 +297,7 @@ TInt RSenConnectionServerSession::MobilityError( TInt& aError )
         SendReceive(ESenCliServMobilityError, args, caSync->iStatus);
         retVal = caSync->iStatus.Int();
         delete caSync;
+        caSync = NULL;
         }
     return retVal;        
     }
@@ -328,6 +332,7 @@ TInt RSenConnectionServerSession::ReauthenticationNeeded(CSenChunk& aSenChunk)
 		asWait.Start();
 		retVal = caSync->iStatus.Int();
 		delete caSync;
+		caSync = NULL;
 		}
 	return retVal;
 	}
