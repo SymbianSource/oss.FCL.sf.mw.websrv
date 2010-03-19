@@ -22,10 +22,13 @@
 #define M_SEN_MOBILITY_OBSERVER_H
 
 //  INCLUDES
+#include <flogger.h>
 #include <e32std.h>
 #include <in_sock.h>
 #include <es_enum.h>
+#include <CommDbConnPref.h>
 #include <comms-infras/cs_mobility_apiext.h>
+#include <connpref.h>
 #include "SenXmlReader.h"
 #include "MSenTransport.h"
 #include "SenWSDescription.h"
@@ -73,6 +76,7 @@ class CALRObserver  : public CActive, public MMobilityProtocolResp
 	TUint32 GetActiveIap() ;
 	HBufC8* GetNewIapAsTransportPropertyL() ;
 	TUint32 GetActiveSnap() ;
+	void SetDialogPref(TBool aDialogPref) ;
 	TInt OpenConnectionL(TDesC8& aAppTransportProperties,
 							 MSenTransport &aTransport,
 							 CSenWSDescription& aInitializer,
@@ -88,9 +92,6 @@ class CALRObserver  : public CActive, public MMobilityProtocolResp
 	TInt StartConnection(TUint32& aId, TBool aIsSnapId) ;
 	TInt OpenSocketSever() ;
 	void RefreshAvailabilityL() ;
-	TInt SetID(TUint32 aId, TBool aDialogPref, RConnection& aConnection, RSocketServ& aSocketServer, TBool aSNAP);
-	TBool IsOCCImplementedSDK();
-	TInt GetS60PlatformVersion(TUint& aMajor, TUint& aMinor);
 
 	/**
 	* By default Symbian OS constructor is private.
@@ -103,8 +104,10 @@ class CALRObserver  : public CActive, public MMobilityProtocolResp
 	TUint32 iIapId;
 	TUint32 iNewIapId;
 	TUint32 iSnapId;
-	CSenXmlReader &iReader ;
-	TBool iOCCenabled;
+	TCommDbConnPref iPrefs;      
+	TConnSnapPref iSNAPPrefs;      
+	 CSenXmlReader &iReader ;
+	private:    // Data
 	};
     
 #endif /*M_SEN_MOBILITY_OBSERVER_H    */

@@ -115,11 +115,6 @@ LIBRARY         inetprotutil.lib
 LIBRARY         HttpFilterCommon.lib
 LIBRARY         netmeta.lib
 
-#ifndef __ENABLE_ALR__
-LIBRARY  		platformver.lib //extendedconnpref.h
-LIBRARY  		extendedconnpref.lib //extendedconnpref.h
-#endif
-
 #ifndef RD_SEN_COMPILE_SIS_PACKAGE_FILES
 // WSF libraries:
 LIBRARY         SenServDesc.lib
