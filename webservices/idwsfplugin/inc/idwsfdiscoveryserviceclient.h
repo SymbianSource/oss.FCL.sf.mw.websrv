@@ -105,7 +105,7 @@ class CIdWsfDiscoveryServiceClient : public CIdWsfCoreServiceConsumer,
         
     private: // New functions
     
-        HBufC8* CIdWsfDiscoveryServiceClient::DsLookupRequestL(MSenServiceDescription& aPattern);
+        HBufC8* DsLookupRequestL(MSenServiceDescription& aPattern);
         
         CIdWsfDsQueryResponse* ParseResponseLC(TDesC8& aMessage);
         //void SetStatusL(TInt aStatus);

@@ -99,7 +99,7 @@ class CWSOviMessageContext : public CBase, public MSenMessageContext
         virtual TInt Add(const TDesC8& aKey, MSenMessage* apMessage, TBool aOwned = ETrue);
         virtual TInt Update(const TDesC8& aKey, MSenMessage* apMessage, TBool aOwned = ETrue);
         virtual MSenMessage* GetMessageL(const TDesC8& aKey);
-        virtual CSenChunk* CWSOviMessageContext::ChunkL();
+        virtual CSenChunk* ChunkL();
         virtual TInt SetChunk(CSenChunk* apMsgAsChunk, TBool aOwned = ETrue);
         virtual TInt SetDirection(SenContext::TContextDirection aDirection);
         

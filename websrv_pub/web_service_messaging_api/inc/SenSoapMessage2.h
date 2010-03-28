@@ -157,7 +157,7 @@ class CSenSoapMessage2 : public CSenSoapEnvelope2
         /**
          *  C++ default constructor.
          */
-        IMPORT_C CSenSoapMessage2::CSenSoapMessage2();
+        IMPORT_C CSenSoapMessage2();
 
         // New functions
 

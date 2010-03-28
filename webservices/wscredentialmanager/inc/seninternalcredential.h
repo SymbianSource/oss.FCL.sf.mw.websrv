@@ -238,7 +238,7 @@ class CSenInternalCredential : public CSenCredential2
         * @return   ETrue, if Credential has properties or
         *           EFalse, if Credential does not have properties
         */
-        IMPORT_C TBool CSenInternalCredential::HasProperties();
+        IMPORT_C TBool HasProperties();
 
         /**
         * Method for setting IdentityProviderId for this Credential.

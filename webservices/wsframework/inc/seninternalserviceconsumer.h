@@ -76,7 +76,7 @@ class CSenInternalServiceConsumer : public CSenWSDescription,
 
         IMPORT_C virtual void SetStatusL(const TInt aStatus);
 
-        IMPORT_C CSenIdentifier& CSenInternalServiceConsumer::Identifier() const;
+        IMPORT_C CSenIdentifier& Identifier() const;
 
         IMPORT_C TInt ChunkByTxnIdL(TInt aTxnId, CSenChunk*& aChunk);
 

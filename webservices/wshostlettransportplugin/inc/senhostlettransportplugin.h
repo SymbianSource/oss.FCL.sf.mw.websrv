@@ -91,7 +91,7 @@ class CSenHostletTransportPlugin : public CSenTransport
         virtual TInt PropertiesL(HBufC8*& aProperties);
         virtual TInt CompleteTransaction(const TInt aTxnId, const TInt aStatus = KErrNone);
         virtual TInt CancelTransaction(const TInt aTxnId);
-        virtual TPtrC8 CSenHostletTransportPlugin::UriSchemeL();
+        virtual TPtrC8 UriSchemeL();
         
         virtual MSenProperties& PropertiesL();
         
@@ -169,7 +169,7 @@ class CSenActiveHostletRequest : public CActive
                                  MSenTransport& aParent,
                                  MSenTransportContext& aParentCtx);
 
-        CSenChunk* CSenActiveHostletRequest::FindChunkL(const TInt aTxnId, TInt& aIndex) ;                      
+        CSenChunk* FindChunkL(const TInt aTxnId, TInt& aIndex) ;                      
 
         CSenTransportProperties* NewPropertiesByTypeL( MSenProperties::TSenPropertiesClassType aType, const TDesC8& aPropertiesAsXml );
 

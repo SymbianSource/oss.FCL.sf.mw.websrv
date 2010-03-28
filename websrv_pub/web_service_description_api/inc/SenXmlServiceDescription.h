@@ -530,7 +530,7 @@ class CSenXmlServiceDescription : public CSenDomFragment,
         *         of retry attempts (each showing a dialog) is service invocation
         *         framework spesific; typically 3 retries are permitted.     
         */
-        IMPORT_C void CSenXmlServiceDescription::SetPromptUserInfoL( TBool aPromptUserInfoMode );
+        IMPORT_C void SetPromptUserInfoL( TBool aPromptUserInfoMode );
 
         /**
         * Getter for current userinfo mode (KSenAttrPromptUserInfo attribute).

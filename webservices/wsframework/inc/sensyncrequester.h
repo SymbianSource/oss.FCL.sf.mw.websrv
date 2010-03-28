@@ -153,7 +153,7 @@ class CSenSyncRequester : public CBase,
          virtual MSenTransport& TransportL();
          virtual CSenIdentifier& Identifier() const;  
          virtual TInt ChunkByTxnIdL(TInt aTxnId, CSenChunk*& aChunk);
-         virtual MSenRemoteHostlet* CSenSyncRequester::Hostlet() const;
+         virtual MSenRemoteHostlet* Hostlet() const;
 
          virtual TInt SendToHostletL(MSenRemoteHostlet& aReceiver,
                                      const TDesC8& aMessage,

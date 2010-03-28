@@ -96,7 +96,7 @@ class CSenSoapMessage : public CSenSoapEnvelope
         /**
          *    C++ default constructor.
          */
-        IMPORT_C CSenSoapMessage::CSenSoapMessage();
+        IMPORT_C CSenSoapMessage();
 
         // New functions
         

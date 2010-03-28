@@ -86,7 +86,7 @@ class CSenLocalTransportPlugin : public CSenTransport
         virtual TInt PropertiesL(HBufC8*& aProperties);
         virtual TInt CompleteTransaction(const TInt aTxnId, const TInt aStatus);
         virtual TInt CancelTransaction(const TInt aTxnId);
-        virtual TPtrC8 CSenLocalTransportPlugin::UriSchemeL();
+        virtual TPtrC8 UriSchemeL();
 
         virtual MSenProperties& PropertiesL();
         

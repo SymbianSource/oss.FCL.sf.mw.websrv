@@ -125,8 +125,8 @@ class CSenXMLDAO :  public CSenBaseFragment,
         const TDesC8& ProxyHost();
         CDesC8Array& SupportedFrameworksL();
 
-        MSIF* CSenXMLDAO::DefaultFrameworkL(const TDesC8& aFrameworkID, 
-                                            const TDesC8& aCue);
+        MSIF* DefaultFrameworkL(const TDesC8& aFrameworkID, 
+                                const TDesC8& aCue);
 
         TBool Owns(CSenWSDescription* aSD);
 

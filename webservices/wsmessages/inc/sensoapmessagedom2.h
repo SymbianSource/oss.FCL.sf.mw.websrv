@@ -134,7 +134,7 @@ class CSenSoapMessageDom2 : public CSenSoapMessage2
         /**
          *  C++ default constructor.
          */
-        IMPORT_C CSenSoapMessageDom2::CSenSoapMessageDom2();
+        IMPORT_C CSenSoapMessageDom2();
 
         IMPORT_C CSenFragmentBase* CreateBodyFragmentL(const TDesC8& aNsUri,
                                                        const TDesC8& aLocalName,

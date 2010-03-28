@@ -108,7 +108,7 @@ class CWSStarMessageContext : public CBase, public MSenMessageContext
         virtual TInt Add(const TDesC8& aKey, MSenMessage* apMessage, TBool aOwned = ETrue);
         virtual TInt Update(const TDesC8& aKey, MSenMessage* apMessage, TBool aOwned = ETrue);
         virtual MSenMessage* GetMessageL(const TDesC8& aKey);// codescannerwarnings
-        virtual CSenChunk* CWSStarMessageContext::ChunkL(); // codescannerwarnings
+        virtual CSenChunk* ChunkL(); // codescannerwarnings
         virtual TInt SetChunk(CSenChunk* apMsgAsChunk, TBool aOwned = ETrue); // not implemented
         virtual TInt SetDirection(SenContext::TContextDirection aDirection); // not implemented
         
