@@ -26,25 +26,25 @@
 
 
 // INCLUDE FILES
-#include "senserviceconnection.h"
+#include "SenServiceConnection.h"
 #include "senhttpchanneltransportplugin.h"
 #include "senhttpchannelimpl.h"
 #include "senhttpsyncrequester.h"
-#include "senxmlutils.h"
-#include "senidentityprovider.h"
+#include "SenXmlUtils.h"
+#include "SenIdentityProvider.h"
 #include "senwspattern.h"
-#include "senfragment.h"
-#include "senelement.h"
+#include "SenFragment.h"
+#include "SenElement.h"
 #include "sendebug.h"
-#include "msenproperty.h"
-#include "senhttptransportproperties.h" // Utils\inc
+#include "MSenProperty.h"
+#include "SenHttpTransportProperties.h" // Utils\inc
 #include "sentransportcontext.h"
 #include "senlayeredhttptransportproperties.h" // internal Framework\inc
 #include "msenmessagecontext.h"
-#include "msenmessage.h"
-#include "sensoapmessage2.h"
-#include "rsendocument.h"
-#include "senparser.h"
+#include "MSenMessage.h"
+#include "SenSoapMessage2.h"
+#include "RSenDocument.h"
+#include "SenParser.h"
 #include "senservicesession.h"
 #include "senlogger.h"
 #include "senclientsession.h"

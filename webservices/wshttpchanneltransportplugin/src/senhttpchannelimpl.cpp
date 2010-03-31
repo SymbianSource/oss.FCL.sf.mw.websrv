@@ -31,10 +31,10 @@
 #include <http.h>
 
 #include "sendebug.h" // filelogging and debugging MACROS
-#include "senserviceconnection.h" // KErrSenNoHttpResponseBody
-#include "senelement.h"
-#include "senxmlutils.h"
-#include "senhttptransportproperties.h"
+#include "SenServiceConnection.h" // KErrSenNoHttpResponseBody
+#include "SenElement.h"
+#include "SenXmlUtils.h"
+#include "SenHttpTransportProperties.h"
 #include "senhttpchannelimpl.h"
 #include "senhttpeventhandler.h"
 #include "sentxnstate.h"
