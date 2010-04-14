@@ -103,7 +103,8 @@ void CSenConnAgentSync::RunL()
 
 void CSenConnAgentSync::Start()
 	{
-	SetActive();
+	if(!IsActive())
+		SetActive();
 	}
 
 RSenServiceConnection::RSenServiceConnection(RFileLogger* aLog)
@@ -498,7 +499,8 @@ TInt RSenServiceConnection::SendFileProgress( TInt aTxnId,
         iFirst = resHandler;
 
         CActiveScheduler::Add(resHandler);
-        resHandler->SetActive();
+        if(!resHandler->IsActive())
+        	resHandler->SetActive();
         resHandler->iStatus = KRequestPending;
 
         TIpcArgs args(&resHandler->iProgressData, resHandler->iSoapOrCid);

@@ -163,10 +163,10 @@ RHTTPTransaction CSenTxnState::Transaction() const
 
 TInt CSenTxnState::Cancel()
     {
-        if (iTimeOut)
-        iTimeOut->Cancel();
-        ipTransaction.Cancel();
-        return KErrNone;
+    if (iTimeOut)
+    	iTimeOut->Cancel();
+    ipTransaction.Cancel();
+    return KErrNone;
     }
 void CSenTxnState::SetSession(RHTTPSession aSession) 
     {

@@ -85,7 +85,6 @@ SYSTEMINCLUDE /epoc32/include/ecom
 SYSTEMINCLUDE /epoc32/include/libc
 
 MW_LAYER_SYSTEMINCLUDE
-APP_LAYER_SYSTEMINCLUDE
 
 LIBRARY ecom.lib
 LIBRARY euser.lib 
@@ -93,7 +92,7 @@ LIBRARY efsrv.lib
 LIBRARY estor.lib 
 LIBRARY flogger.lib
 LIBRARY bafl.lib
-LIBRARY imut.lib        // imcvcodc.h - base64 encode and decode
+LIBRARY inetprotutil.lib // for base64 encoding
 LIBRARY sysutil.lib     // sysutil.h
 LIBRARY etel.lib etelmm.lib // IMSI retrieving
 #ifdef __ENABLE_ALR__

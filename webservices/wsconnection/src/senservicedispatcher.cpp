@@ -156,7 +156,9 @@ TInt CSenServiceDispatcher::ExecuteL(CSenServiceDispatcher* aThis)
     
     for(;;)
         {
+        TLSLOG_L(KSenDispatcherLogChannel, KSenDispatcherLogLevel, "CSenServiceDispatcher::ExecuteL Before User::WaitForAnyRequest()");
         User::WaitForAnyRequest();
+        TLSLOG_L(KSenDispatcherLogChannel, KSenDispatcherLogLevel, "CSenServiceDispatcher::ExecuteL After User::WaitForAnyRequest()");
 
         //If iDispatchMessages = FALSE then stop dispacthing messages.
         //Is called from the destructor and thread will end in cleaner way

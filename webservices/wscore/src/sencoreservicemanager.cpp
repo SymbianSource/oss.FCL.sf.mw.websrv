@@ -973,9 +973,8 @@ HBufC8* CSenCoreServiceManager::DecodeFromBase64LC(const TDesC8& aSource)
     }
 
 // private getter, which always initializes the base64codec
-TImCodecB64& CSenCoreServiceManager::Base64Codec()
+TBase64& CSenCoreServiceManager::Base64Codec()
     {
-    iBase64Codec.Initialise();
     return iBase64Codec;
     }
 

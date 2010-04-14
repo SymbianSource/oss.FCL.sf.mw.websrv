@@ -22,7 +22,7 @@
 #define SEN_MTOM_UTILS_H
 
 #include <e32math.h>
-#include <imcvcodc.h>
+
 
 #include <SenSoapEnvelope2.h>
 #include <RSenDocument.h>

@@ -168,7 +168,8 @@ void RSenConnectionServerSession::SendFileProgress(TInt aTxnId, TBool aIncoming,
     iFirst = resHandler;
 
     CActiveScheduler::Add(resHandler);
-    resHandler->SetActive();
+    if(!resHandler->IsActive())
+    	resHandler->SetActive();
     resHandler->iStatus = KRequestPending;
 
     TIpcArgs args(&resHandler->iProgressData, resHandler->iSoapOrCid);
@@ -361,7 +362,8 @@ void CSenConnAgentSync::RunL()
 
 void CSenConnAgentSync::Start()
 	{
-	SetActive();
+	if(!IsActive())
+		SetActive();
 	}
 
 CSenClientSession* CSenClientSession::NewL(MSenServiceManager& aServer, CSenServerContext& aCtx)
@@ -4248,6 +4250,7 @@ void CSenClientSession::CancelRequestL(const RMessage2& aMessage)
             TInt cancelledTxnId(*pTxnId);
             txnIds.Remove(i);
             delete pTxnId;
+            pTxnId = NULL;
             CSLOG_FORMAT((iConnectionID, KNormalLogLevel , _L8("- Now processing txn with id %d"), cancelledTxnId));
 
 

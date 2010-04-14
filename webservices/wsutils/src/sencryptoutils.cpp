@@ -22,16 +22,13 @@
 
 
 
-
-
-#include "sencryptoutils.h"
-#include <imcvcodc.h>
-#include "senguidgen.h"
 #include <e32math.h>
-#include <SenDomFragment.h>
-#include <SenNameSpace.h>
+#include <tconvbase64.h>
+#include "sencryptoutils.h"
+#include "senguidgen.h"
+#include "SenDomFragment.h"
+#include "SenNameSpace.h"
 #include "SenWsSecurityHeader.h"
-//#include "senxmldebug.h"
 
 namespace
     {
@@ -90,57 +87,46 @@ EXPORT_C HBufC8* SenCryptoUtils::EncodeBase64L(const TDesC8& aData)
         {
         return NULL;
         }
-
-    TInt remainder = aData.Length() % KToBase64CoefficientNominative;
-    TInt length = aData.Length() * KToBase64CoefficientNumerator;
-    length /= KToBase64CoefficientNominative;
-    if (remainder)
-        {
-        length++;
-        length += KToBase64CoefficientNominative - remainder;
-        }
-
-    HBufC8* buffer = HBufC8::NewLC(length);
-    
-    
-    TImCodecB64 base64Codec;
-    base64Codec.Initialise();
-    TPtr8 des = buffer->Des();  // don't blame me, it's the compiler's fault    
-    base64Codec.Encode(aData, des);
-    
-    CleanupStack::Pop(buffer);
+    TInt length = aData.Length(); 
+    TInt destLen = (length + 1 ) * 2;
+    HBufC8* buffer = HBufC8::NewMaxL(destLen);
+    TInt test = buffer->Des().Length(); 
+    TPtr8 encodedPtr(buffer->Des());
+    TBase64 base64Codec;
+    TInt error = base64Codec.Encode(aData, encodedPtr);
+	if(error > 1) //There is a problem in encoding always returns 1
+		{
+		delete buffer;
+		buffer = NULL;		
+		}
+	else
+		{
+		//Successful encoding
+		}
     return buffer;
 }
 
 EXPORT_C HBufC8* SenCryptoUtils::DecodeBase64L(const TDesC8& aData)
 {
-    const TUint8 KBase64Fill = '=';
-
-    TInt length = aData.Length();
-    if (aData[length-1] == KBase64Fill)
-        {
-        length--;
-        if (aData[length-2] == KBase64Fill)
-            {
-            length--;
-            }
-        }
-    length *= KToBase64CoefficientNominative;
-    length /= KToBase64CoefficientNumerator;
-    if (length <= 0)
-        {
-        return NULL;
-        }
-
-    HBufC8* buffer = HBufC8::NewLC(length);
-
-    TImCodecB64 base64Codec;
-    base64Codec.Initialise();
-    TPtr8 des = buffer->Des();  // don't blame me, it's the compiler's fault    
-
-    base64Codec.Decode(aData, des);
-
-    CleanupStack::Pop(buffer);
+	TInt data_len = aData.Length();
+	HBufC8* buffer = NULL;
+	if (data_len > 0)
+		{
+		buffer = aData.AllocL();
+		buffer->Des().Zero(); //added
+		TPtr8 des( buffer->Des() );
+		TBase64 base64Codec;
+//		if (base64Codec.Decode(aData,des) != EFalse)
+//			{
+//			//Successful decoding
+//			}
+//		else
+//			{
+//			delete buffer;			
+//			buffer = NULL;
+//			}
+		base64Codec.Decode(aData, des);
+		}
     return buffer;    
 }
 
