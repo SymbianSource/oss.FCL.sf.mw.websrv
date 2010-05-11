@@ -715,7 +715,7 @@ TInt CWSOviServiceSession::SendErrorToConsumerL( const TInt aErrorCode,
                                                      MSenProperties* aResponseTransportProperties )
     {
     TLSLOG_L(KSenClientSessionLogChannelBase+aConsumer.ConnectionId()  , KMinLogLevel,"CWSOviServiceSession::SendErrorToConsumerL");
-    TLSLOG_FORMAT((KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KNormalLogLevel , _L8("- ErrorCode: %d"), aErrorCode ));
+    TLSLOG_FORMAT((KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel , _L8("- ErrorCode: %d"), aErrorCode ));
     ((CWSOviPlugin&)iFramework).ProcessInboundDispatchL(this, aErrorCode, apError, aResponseTransportProperties);
     TInt answer = CanHandleErrorL();
     if (answer)

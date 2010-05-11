@@ -998,6 +998,7 @@ void CSenClientSession::ServiceL(const RMessage2& aMessage)
         	{
         	CSLOG_L(iConnectionID,KMinLogLevel ,"ESenServGetIdentityProviders");
         	IdentityProviders(aMessage);
+	       	CSLOG_L(iConnectionID,KMinLogLevel ,"ESenServGetIdentityProviders Completed");
         	break;
         	}
         default:
@@ -5552,6 +5553,7 @@ void CSenClientSession::IdentityProviders(const RMessage2& aMessage)
         const RPointerArray<CSenIdentityProvider> pIdps = ((MSenCoreServiceManager&)iManager).IdentityProvidersL();
         
         const TInt count = pIdps.Count();
+        CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("- TOTAL IDP Found: %d"), count));		
   
         // Calculate required heap allocation size:
         TInt size(0);
@@ -5666,11 +5668,12 @@ void CSenClientSession::IdentityProviders(const RMessage2& aMessage)
                 }
             CSLOG_L(iConnectionID,KMaxLogLevel ,"- Requested descriptions:");
             CSLOG_ALL(iConnectionID,KMaxLogLevel ,(*pIdPrs));
+		     CSLOG_L(iConnectionID,KMinLogLevel ,"CSenClientSession::IdentityProviders completed");			
             }
     #ifdef _SENDEBUG
         else
             {
-            CSLOG_FORMAT((iConnectionID, KNormalLogLevel , _L8("- AllocDescToRMsgL failed: %d"), retVal));
+            CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("- AllocDescToRMsgL failed: %d"), retVal));
             }
     #endif // _SENDEBUG
 

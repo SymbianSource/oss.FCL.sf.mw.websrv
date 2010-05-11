@@ -107,7 +107,7 @@ public:
     TInt CancelTransaction(const TInt aTxnId);
     void CancelAllTransactions();
 
-    void SetExplicitIapDefined(TBool aExplicitIapDefined);
+    virtual void SetExplicitIapDefined(TBool aExplicitIapDefined);
     /*
     * Getter for currently effective IAP ID
     * @param aIapId will be assigned to hold
@@ -131,6 +131,8 @@ public:
     void EnableTimeOutL(TInt aTxnId, TInt aTimeOutSec);
     void DisableTimeOutL(TInt aTxnId);
     virtual TInt32 UsedIap();
+    virtual void ResetIapId();
+    virtual void ResetUsedIapId();
     
 protected:
     CSenHttpChannelImpl(MSenIdentityManager& aManager);

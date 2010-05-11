@@ -389,6 +389,8 @@ TInt CSenServiceManagerImpl::RegisterIdentityProviderL(
     TPtr8 ptr = provider->Des();
     TInt retVal = iConnection.RegisterIdentityProvider(ptr);
     delete provider;
+    provider = NULL;
+	TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RegisterIdentityProviderL(aProvider) Completed");    
     return retVal;
     }
 
@@ -1198,6 +1200,7 @@ TInt CSenServiceManagerImpl::IdentityProvidersL( RIdentityProviderArray& aList )
             if(retVal == KErrNone)
                 {
                 retVal = ExtractIdentiyProvidersL(descriptions, aList);
+                TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("-ExtractIdentiyProvidersL returned [%d]"), retVal));
                 }
             }
         }
@@ -1301,6 +1304,10 @@ TInt CSenServiceManagerImpl::ExtractIdentiyProvidersL(TPtrC8& aIdPs,
 
             }
         } //  END OF: if idp.Length() > 0
+    else
+       	{
+		TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::ExtractIdentiyProvidersL aIdPs(aIdPs, aList) aIdPs = 0 length");
+        }
     return retVal;
     }
 TAny* CSenServiceManagerImpl::InterfaceByUid( TUid aUID )

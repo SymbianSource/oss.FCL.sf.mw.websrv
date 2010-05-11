@@ -631,6 +631,7 @@ EXPORT_C TInt CSenWebServiceSession::SendErrorToConsumerL( const TInt aErrorCode
                                                            MSenRemoteServiceConsumer& aConsumer,
                                                            MSenProperties* aResponseTransportProperties )
     {
+    CSLOG_FORMAT((aConsumer.ConnectionId() , KMinLogLevel, _L8("CSenWebServiceSession::SendErrorToConsumerL - aErrorCode [%d]"), aErrorCode));
     CleanupStack::PushL(apError);
     TInt retVal(KErrNone);
 

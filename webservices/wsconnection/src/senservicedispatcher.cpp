@@ -314,6 +314,7 @@ TInt CSenServiceDispatcher::AddToTheQueue(TThreadMessage aThreadMessage)
     }
 TBool CSenServiceDispatcher::RemoveFromQueue(TInt aTransactionID)
     {
+    TLSLOG_FORMAT((KSenDispatcherLogChannel, KSenDispatcherLogLevel, _L("CSenServiceDispatcher::RemoveFromQueue - VrtlTxnID (%d)"), aTransactionID));
     //This method gets called from two places 1)main thread from
     //CancelTransaction(aTransactionID) method and 2)child thread from
     //ExecuteL method once message has been dispacthed.
@@ -370,6 +371,7 @@ RTransactionsMap& CSenServiceDispatcher::TransactionMap()
 
 TInt CSenServiceDispatcher::AddToTheTransMap(TInt* pVrtlaTxnId,TInt* pActlTxnId)
     {
+    TLSLOG_FORMAT((KSenDispatcherLogChannel, KSenDispatcherLogLevel, _L("CSenServiceDispatcher::AddToTheTransMap - VrtlTxnID [%d], ActlTxnId [%d]"), pVrtlaTxnId, pActlTxnId));
     TInt returnValue = KErrNone;
     //Wait on transaction map critical section if it is locked, and then add to 
     //the map.
@@ -384,6 +386,7 @@ TInt CSenServiceDispatcher::AddToTheTransMap(TInt* pVrtlaTxnId,TInt* pActlTxnId)
 
 TInt CSenServiceDispatcher::RemoveFromTransMap(TInt* pVrtlaTxnId)
     {
+    TLSLOG_FORMAT((KSenDispatcherLogChannel, KSenDispatcherLogLevel, _L("CSenServiceDispatcher::RemoveFromTransMap - VrtlTxnID [%d]"), pVrtlaTxnId));
     TInt returnValue = KErrNone;
     //Is called from the main thread after we recieve the response.
     returnValue = TransactionMap().Find(*pVrtlaTxnId);
@@ -398,6 +401,7 @@ TInt CSenServiceDispatcher::RemoveFromTransMap(TInt* pVrtlaTxnId)
 
 TInt CSenServiceDispatcher::UpdateTransMap(TInt* pVrtlaTxnId,TInt* pActlTxnId)
     {
+    TLSLOG_FORMAT((KSenDispatcherLogChannel, KSenDispatcherLogLevel, _L("CSenServiceDispatcher::UpdateTransMap - VrtlTxnID [%d], ActlTxnId [%d]"), pVrtlaTxnId, pActlTxnId));
     TInt returnValue = KErrNone;
     //Is called from the main thread from HandleMessageChildAOL method.
     //Typically gets called when ESenReAuthAndResendNeeded and ESenResendNeeded

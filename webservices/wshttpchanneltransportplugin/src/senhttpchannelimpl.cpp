@@ -16,15 +16,6 @@
 */
 
 
-
-
-
-
-
-
-
-
-
 #include <uri8.h>
 #include <es_sock.h>
 #include <in_sock.h>
@@ -185,10 +176,6 @@ TBool CSenHttpChannelImpl::IsOCCImplementedSDK()
 // Ask IAP from user
 void CSenHttpChannelImpl::ConstructL()
     {
-    // Open connection to the file logger server
-    TLSLOG_OPEN(KSenHttpChannelLogChannelBase, KSenHttpChannelLogLevel, KSenHttpChannelLogDir, KSenHttpChannelLogFile);
-    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL - Log file opened")));
-
     // Open the RHTTPSession
     TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("- Opening HTTP/TCP session.")));
 
@@ -252,10 +239,11 @@ void CSenHttpChannelImpl::ConstructL( TUint32 aIapId )
 #ifndef __ENABLE_ALR__
 	IsOCCImplementedSDK();
 #endif	
-
-    const TInt result = SetIapPrefsL(aIapId, ETrue, iConnection, iSockServ);
-    User::LeaveIfError( result );
-    
+	if(aIapId > 0)
+		{
+    	const TInt result = SetIapPrefsL(aIapId, ETrue, iConnection, iSockServ);
+    	User::LeaveIfError( result );
+    	}
     }
 
 CSenHttpChannelImpl::~CSenHttpChannelImpl()
@@ -292,18 +280,16 @@ CSenHttpChannelImpl::~CSenHttpChannelImpl()
         
     iConnection.Close();
     iSockServ.Close();
-
-    // Close the log file and the connection to the server.
-    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("Log file closed.")));
-    TLSLOG_CLOSE(KSenHttpChannelLogChannelBase);
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::~CSenHttpChannelImpl() Completed");
     }
 
 TInt CSenHttpChannelImpl::SetIapPrefsL( TUint32 aIapId, TBool aDialogPref, RConnection& aConnection, RSocketServ& aSocketServer )
    	{
-   	TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("- SetIapPrefsL	, IAP ID (%d)"), aIapId));
+   	TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("- SetIapPrefsL	, aIapId (%d)"), aIapId));
+   	TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("- SetIapPrefsL	, iIapId (%d)"), iIapId));
    	
     // Check whether IAP ID is not equal with the one that is currently in effect:
-    if(iExplicitIapDefined && iIapId == aIapId )
+    if(iExplicitIapDefined || iIapId == aIapId && iIapId > 0)
         {
         TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetIapPrefsL: Iap Id is same as currently in effect");
         return KErrNone;
@@ -323,13 +309,21 @@ TInt CSenHttpChannelImpl::SetIapPrefsL( TUint32 aIapId, TBool aDialogPref, RConn
         }
     else
         {
-        // Connect to a socket server    
-        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetIapPrefsL: Connecting to new socket server");    
-        User::LeaveIfError( aSocketServer.Connect() );       
-
-        // Open new connection
-        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetIapPrefsL: Opening new RConnection using the socket server.");       
-        User::LeaveIfError( aConnection.Open(aSocketServer) ); 
+        if(aConnection.SubSessionHandle())
+        	{
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Re-using existing RConnection => calling RConnection::Stop");
+        	aConnection.Stop();
+        	}
+        else
+            {
+            // Connect to a socket server    
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetIapPrefsL: Connecting to new socket server");    
+            User::LeaveIfError( aSocketServer.Connect() );       
+    
+            // Open new connection
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetIapPrefsL: Opening new RConnection using the socket server.");       
+            User::LeaveIfError( aConnection.Open(aSocketServer) );        
+            }
         }
         
     // Set the IAP selection preferences (IAP ID, do not prompt)    
@@ -419,17 +413,39 @@ TInt CSenHttpChannelImpl::SetID(TUint32 aId, TBool aDialogPref, RConnection& aCo
 			//TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel, "- Setting up OCC Silent Connection");
 			//extPrefs.SetNoteBehaviour(TExtendedConnPref::ENoteBehaviourConnSilent);
 			//extPrefs.SetBearerSet(TExtendedConnBearer::EExtendedConnBearerUnknown);
-			extPrefs.SetIapId(aId);
-			extPrefs.SetSnapId(0);
+			if(aId != 0)
+				{
+				extPrefs.SetIapId(aId);
+				extPrefs.SetSnapId(0);
+				}
+			else
+				{
+				extPrefs.SetSnapPurpose(CMManager::ESnapPurposeInternet);
+				extPrefs.SetConnSelectionDialog(ETrue);
+				}
 			prefList.AppendL(&extPrefs);
 			retVal = aConnection.Start(prefList);
 			if(retVal == KErrNone)
 			    {
-			    iIapId = aId;
+			    if(aId == 0)
+			    	{
+                    aConnection.GetIntSetting( _L("IAP\\Id"), iIapId);
+                    TName name;
+                    retVal = aConnection.Name(name);
+                    if(retVal == KErrNone)
+                        {
+                        TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("IAP Name [%S]"), &name));
+                        }
+                    TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("GetIntSetting returned IAP [%d]"), iIapId));			    
+			    	}
+			    else
+			    	{	
+			    	iIapId = aId;
+			    	}
 			    }
 			 else
 			    {
-				TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("IAP ->Start retVal [%d]"), retVal));
+                TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("IAP ->Start retVal [%d]"), retVal));
 			    }
 		    }
 		else
@@ -457,6 +473,7 @@ TInt CSenHttpChannelImpl::SetID(TUint32 aId, TBool aDialogPref, RConnection& aCo
 				TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel, "- Setting SnapPurpose Internet");
 				if(aDialogPref) //If it fails because of unavailibility of access points
 					{
+					TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel, "- Fails because of unavailibility of access points");
 					extPrefs.SetSnapPurpose(CMManager::ESnapPurposeUnknown);
 					extPrefs.SetConnSelectionDialog(ETrue);
 					}
@@ -474,6 +491,7 @@ TInt CSenHttpChannelImpl::SetID(TUint32 aId, TBool aDialogPref, RConnection& aCo
 				extPrefs.SetConnSelectionDialog(EFalse);
 				}
 			prefList.AppendL(&extPrefs);
+			TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel, "SetID: RConnection Start");
 			retVal = aConnection.Start(prefList);
 			TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("RConnection Start retval[%d]"), retVal));
 			if(retVal == KErrNone)
@@ -494,7 +512,7 @@ TInt CSenHttpChannelImpl::SetID(TUint32 aId, TBool aDialogPref, RConnection& aCo
 		    }
 		}    
 #endif    
-    if (!retVal)
+    if (!retVal && !aSNAP)
         {
         iExplicitIapDefined = ETrue;
         }	
@@ -505,7 +523,7 @@ TInt CSenHttpChannelImpl::SetSnapPrefsL( TUint32 aSnapId, TBool aDialogPref, RCo
     {
     TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("- CSenHttpChannelImpl::SetSnapPrefsL, SNAP ID (%d)"), aSnapId));
 		// Check whether SNAP ID is not equal with the one that is currently in effect:
-    if(iExplicitIapDefined && iSnapId == aSnapId )
+    if(iExplicitIapDefined && iSnapId == aSnapId)
         {
         TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Sanp is same as currently in effect");
         return KErrNone;
@@ -524,13 +542,21 @@ TInt CSenHttpChannelImpl::SetSnapPrefsL( TUint32 aSnapId, TBool aDialogPref, RCo
         }
     else
         {
-        // Connect to a socket server    
-        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Connecting to new socket server");    
-        User::LeaveIfError( aSocketServer.Connect() );       
-
-        // Open new connection
-        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Opening new RConnection using the socket server.");       
-        User::LeaveIfError( aConnection.Open(aSocketServer) ); 
+        if(aConnection.SubSessionHandle())
+        	{
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Re-using existing RConnection => calling RConnection::Stop");
+        	aConnection.Stop();
+        	}
+        else
+            {
+            // Connect to a socket server    
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Connecting to new socket server");    
+            User::LeaveIfError( aSocketServer.Connect() );       
+    
+            // Open new connection
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"- SetSnapPrefsL: Opening new RConnection using the socket server.");       
+            User::LeaveIfError( aConnection.Open(aSocketServer) );         
+            }
         }
         
         
@@ -557,7 +583,7 @@ TInt CSenHttpChannelImpl::SetSnapPrefsL( TUint32 aSnapId, TBool aDialogPref, RCo
     // there is NO direct API to query effective SNAP ID from CommsDB.
     if (!retVal)
         {
-        iExplicitIapDefined = ETrue;
+        //iExplicitIapDefined = ETrue;
         iSnapId = aSnapId;
         }
     return retVal;
@@ -697,12 +723,19 @@ TInt CSenHttpChannelImpl::InvokeHttpMethodL(CSenTxnState* aTxnState,
         // => only if property is set, and has value "FALSE", show PROMPT            
         prompt = ETrue;
         }
-
+	TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::InvokeHttpMethodL - iIapId [%d]"), iIapId)); 
 #ifndef __ENABLE_ALR__
+		TInt propRetVal = aProps.IapIdL(id);
     // Independent of dialog preference (property's existance), if IAP was predefined, it must be set        
-    if(((aProps.IapIdL(id)) == KErrNone))
+    if(propRetVal == KErrNone)
         {
+        TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::InvokeHttpMethodL SetIapPrefs - id [%d]"), id));
         retVal = SetIapPrefsL(id, prompt, iConnection, iSockServ);
+        }
+    else if(iIapId > 0)
+        {
+        TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::InvokeHttpMethodL SetIapPrefs - iIapId [%d]"), iIapId)); 
+        retVal = SetIapPrefsL(iIapId, prompt, iConnection, iSockServ);
         }
     else if(((aProps.SnapIdL(id)) == KErrNone))
         {
@@ -726,7 +759,8 @@ TInt CSenHttpChannelImpl::InvokeHttpMethodL(CSenTxnState* aTxnState,
     TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("Set Snap/IAP prefs retVal [%d]"), retVal));    
     User::LeaveIfError(retVal);
     TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::InvokeHttpMethodL After User::Leave");
-    TInt ret= iConnection.GetIntSetting(_L("IAP\\Id"), iUsedIapId);
+    //TInt ret= iConnection.GetIntSetting(_L("IAP\\Id"), iUsedIapId);
+    iUsedIapId = iIapId;
     // Check transport properties
     TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("IAP/SNAP %d"), id));
 #else
@@ -1588,6 +1622,7 @@ void CSenHttpChannelImpl::HandleResponseL(RHTTPTransaction aTransaction)
 void CSenHttpChannelImpl::HandleRunErrorL(RHTTPTransaction aTransaction,
                                           TInt aError)
     {
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMaxLogLevel,"CSenHttpChannelImpl::HandleRunErrorL()");
     TInt txnId = aTransaction.Id();
     TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::HandleRunErrorL( %d ): %d"),txnId, aError));
     CSenTxnState* pTxnState = FindTxnState(txnId);
@@ -1598,6 +1633,7 @@ void CSenHttpChannelImpl::HandleRunErrorL(RHTTPTransaction aTransaction,
     pTxnState->ResponseErrorL(aError);
     DeleteTxnState(txnId);
     aTransaction.Close();
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMaxLogLevel,"CSenHttpChannelImpl::HandleRunErrorL() Completed");
     }
 
 void CSenHttpChannelImpl::HandleRedirectRequiresConfirmationL(
@@ -1905,22 +1941,25 @@ void CSenHttpChannelImpl::SetExplicitIapDefined(TBool aExplicitIapDefined)
 
 TBool CSenHttpChannelImpl::EffectiveIapId( TUint32 &aIapId )
     {
-	TInt handle = iConnection.SubSessionHandle();
+    /*
+		TInt handle = iConnection.SubSessionHandle();
 		if (handle>0)
 		    {
-			TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::EffectiveIapId(): Current RConnection's subsession handle(%d)"), handle ));	    
-	        TUint connEnum(0);
-	        TInt err = iConnection.EnumerateConnections(connEnum);
-	        if (!err && !connEnum)
-	            {
-	            return EFalse;
-	            }
+				TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::EffectiveIapId(): Current RConnection's subsession handle(%d)"), handle ));	    
+        TUint connEnum(0);
+        TInt err = iConnection.EnumerateConnections(connEnum);
+        TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::EffectiveIapId -  EnumerateConnections retVal [%d]"), err ));
+        if (!err && !connEnum)
+            {
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::EffectiveIapId returns");
+            return EFalse;
+            }
 		    }
 	    else
 		    {
 		    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel," -> RConnection has not been initialized.");	
 		    }
-
+		*/
 	if( iExplicitIapDefined )
 		{
 		TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8(" - IAP ID is known: %d"), iIapId ));
@@ -1930,24 +1969,25 @@ TBool CSenHttpChannelImpl::EffectiveIapId( TUint32 &aIapId )
 		TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel," - IAP ID is not known.");
 		}
 		    
-    if( handle && !iExplicitIapDefined )
-    	{
+  if(/* handle && */!iExplicitIapDefined )
+  	{
 		// Eventhough IAP was not explicitely set (through Serene API), this
 		// code can check what IAP end-user provided via IAP selection dialog:
 		TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::EffectiveIapId: about to call RConnection::GetIntSetting()");
-		_LIT( KIapIdKey, "IAP\\Id" );
-	    iConnection.GetIntSetting( KIapIdKey, iIapId);
-	    if ( iIapId > 0 )
-	    	{
+	//_LIT( KIapIdKey, "IAP\\Id" );
+    //iConnection.GetIntSetting( KIapIdKey, iIapId);
+    if ( iIapId > 0 )
+    	{
 			TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("---- GetIntSetting(): retuens IAP(%d)"), iIapId ));
-	    	// Treat the end-user selection as "explicit" definition as well(!):
-	    	iExplicitIapDefined = ETrue; 
-	    	}
-	    }
-    if( iExplicitIapDefined )
-        {
-        aIapId = iIapId;
-        }
+    	// Treat the end-user selection as "explicit" definition as well(!):
+    	iExplicitIapDefined = ETrue; 
+    	}
+    }
+  if( iExplicitIapDefined )
+      {
+      aIapId = iIapId;
+      }
+  	TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::EffectiveIapId() returns(%d)"), iExplicitIapDefined ));
     return iExplicitIapDefined;
     }
 
@@ -1968,4 +2008,17 @@ TInt32 CSenHttpChannelImpl::UsedIap()
     {
     return iUsedIapId;
     }
+    
+void CSenHttpChannelImpl::ResetIapId()
+    {
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::ResetIapId()");
+    iIapId = 0; //Reset to Zero in case of errors to enable other IAP
+    }
+		
+void CSenHttpChannelImpl::ResetUsedIapId()
+    {
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::ResetUsedIapId()");
+    iUsedIapId = 0; //Reset to Zero in case of errors to enable other IAP
+    }
+    
 // END OF FILE

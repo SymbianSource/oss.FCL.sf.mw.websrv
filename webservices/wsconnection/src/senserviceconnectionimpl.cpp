@@ -922,7 +922,7 @@ TInt CSenServiceConnectionImpl::SendL(CSenConnectionChunk* apClientOp)
 
         TInt appendRetVal(KErrNone);
         appendRetVal = ChunkMapL().Append( pTxnId, apClientOp );
-        TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KNormalLogLevel , _L8("- ChunkMapL().Append(%d, %d) returned: %d"), *pTxnId, apClientOp->Chunk().Handle(), appendRetVal));
+        TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("- ChunkMapL().Append(%d, %d) returned: %d"), *pTxnId, apClientOp->Chunk().Handle(), appendRetVal));
         if( appendRetVal == KErrNone )
             {
             TMessage msg;

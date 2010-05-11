@@ -303,6 +303,7 @@ class CSenHttpChannelTransportPlugin : public CSenTransport,
         //RFileLogger iLogger;
         TInt iStatusCode; // containts latest error or zero
 		TSenDataTrafficDetails iDetails;
+		TBool iIsConnectionFailed;
     };
 
 #endif // SEN_HTTP_CHANNEL_TRANSPORT_PLUGIN_H
