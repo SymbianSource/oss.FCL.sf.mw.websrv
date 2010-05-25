@@ -176,34 +176,38 @@ TBool CSenHttpChannelImpl::IsOCCImplementedSDK()
 // Ask IAP from user
 void CSenHttpChannelImpl::ConstructL()
     {
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL()")));
+    	
     // Open the RHTTPSession
-    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("- Opening HTTP/TCP session.")));
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - Opening HTTP/TCP session.")));
 
     iSess.OpenL();
 
     // Store the string pool for this HTTP session
     iStringPool = iSess.StringPool();
-
+	TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - Calling InstallAuthenticationL()")));
     // Install this class as the callback for authentication requests
     InstallAuthenticationL( iSess );
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - Completed InstallAuthenticationL()")));
     //Install Proxy Filter  
     iDeflateFilter = EFalse;
 
 #ifdef EKA2
   //#ifndef _DEBUG 
+  	TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - Installing  HTTPProxyFilter for EKA2 build.")));
     CHttpFilterProxyInterface::InstallFilterL( iSess );
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - HTTPProxyFilter installed for EKA2 build.")));
     iSess.StringPool().OpenL(HttpFilterCommonStringsExt::GetLanguageTable());
     iSess.StringPool().OpenL(HttpFilterCommonStringsExt::GetTable());
-
+	TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - Installing  HTTPAcceptProxyFilter for EKA2 build.")));
     CHttpFilterAcceptHeaderInterface::InstallFilterL(iSess);
-    TLSLOG_L(KSenHttpChannelLogChannelBase , KNormalLogLevel,"HTTPProxyFilter installed for EKA2 build.");
-    TLSLOG_L(KSenHttpChannelLogChannelBase , KNormalLogLevel,"HTTPAcceptFilter installed for EKA2 build.");
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - HTTPAcceptProxyFilter installed for EKA2 build.")));
   //#else
   //  LOG_WRITE_L("HTTPProxyFilter is NOT in use with EKA2 debug builds.");
   //#endif
 #else // __INSTALL_HTTP_PROXY_FILTER__ is not defined by macro in .mmp
-    TLSLOG_L(KSenHttpChannelLogChannelBase , KNormalLogLevel,"HTTPProxyFilter is NOT in use with EKA1.");
-    TLSLOG_L(KSenHttpChannelLogChannelBase , KNormalLogLevel,"HTTPAcceptProxyFilter is NOT in use with EKA1.");
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"HTTPProxyFilter is NOT in use with EKA1.");
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"HTTPAcceptProxyFilter is NOT in use with EKA1.");
 #endif // __INSTALL_HTTP_PROXY_FILTER__
 
     iTransObs = CSenHttpEventHandler::NewL(this);//, &iLog);
@@ -219,6 +223,7 @@ void CSenHttpChannelImpl::ConstructL()
 #ifdef _SENDEBUG
     ListFilters();
 #endif // _SENDEBUG
+	TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() Completed")));
     }
 
 // Forces preselected IAP to be used!

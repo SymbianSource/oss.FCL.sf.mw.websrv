@@ -91,7 +91,7 @@ EXPORT_C CSenWebServiceSession::CSenWebServiceSession(TDescriptionClassType aTyp
 
 EXPORT_C void CSenWebServiceSession::ConstructL()
     {
-
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::ConstructL()"));
     // Sets the local name to "ServiceDescription"
     // and initiates the inner ipElement
     CSenServiceSession::BaseConstructL();
@@ -103,6 +103,7 @@ EXPORT_C void CSenWebServiceSession::ConstructL()
 
 EXPORT_C CSenWebServiceSession::~CSenWebServiceSession()
     {
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::~CSenWebServiceSession()"));
     delete iSecurity;
     delete iContract;
     delete iEndpoint;
@@ -2121,6 +2122,7 @@ EXPORT_C void CSenWebServiceSession::CredentialChanged(TSenCredentialChange aCha
     
 EXPORT_C  TInt CSenWebServiceSession::AddCredentialObserverL(CSenInternalCredential& aCredential)
 {
+	TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::AddCredentialObserverL()"));
 	TInt error(KErrNone);
 	RSenCredentialPtr credentialPtr = 
 	((MSenServiceManager&)iFramework.Manager()).CredentialL(
@@ -2152,7 +2154,7 @@ EXPORT_C  TInt CSenWebServiceSession::AddCredentialObserverL(CSenInternalCredent
 	}
     CredentialChanged(MSenCredentialObserver::EAdded, NULL);      
 	SetStatusL();
-
+	TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::AddCredentialObserverL() Completed"));
 	return KErrNone;
 }
 

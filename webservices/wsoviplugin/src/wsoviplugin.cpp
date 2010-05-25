@@ -76,12 +76,13 @@ CWSOviPlugin::CWSOviPlugin(MSenCoreServiceManager& aManager)
 //
 CWSOviPlugin::~CWSOviPlugin()
     {
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviPlugin::~CWSOviPlugin()")));
     iMsgHandlers.ResetAndDestroy();
     iSessionHandlers.ResetAndDestroy();
     iHandlerContexts.ResetAndDestroy();
     iVersions.Reset();
     iIMSI.Close();
-    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviPlugin::~CWSOviPlugin()")));
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviPlugin::~CWSOviPlugin() Completed")));
     }
 
 // ---------------------------------------------------------------------------
@@ -90,7 +91,7 @@ CWSOviPlugin::~CWSOviPlugin()
 //
 void CWSOviPlugin::ConstructL()
     {
-    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviPlugin::ConstructL")));
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviPlugin::ConstructL()")));
 
     BaseConstructL(KFrameworkXMLNS, KFrameworkLocalName);
     //load default setup of handlers
@@ -102,6 +103,7 @@ void CWSOviPlugin::ConstructL()
     AddHandlerL(KSecurityValue, KNullDesC8, SenHandler::EMessageHandler);
     AddHandlerL(KEncoderValue, KNullDesC8, SenHandler::EMessageHandler);
     AddHandlerL(KServiceUpdateValue, KNullDesC8, SenHandler::ESessionHandler);
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviPlugin::ConstructL() Completed")));
     }
 
 //========================================================

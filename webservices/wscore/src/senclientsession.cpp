@@ -1508,7 +1508,7 @@ TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
                                       const TDesC8& aRequest,
                                       CSenAtomEntry& aAtomEntry)
     {
-	CSLOG_L(iConnectionID, KMinLogLevel ,"CSenClientSession::ParseMessageL");
+	CSLOG_L(iConnectionID, KMinLogLevel ,"CSenClientSession::ParseMessageL(aTransactionId, aRequest, aAtomEntry)");
     CSenParser* pParser = CSenParser::NewLC();
     pParser->EnableFeature(EReportNamespaceMapping);
 	pParser->ParseL(aRequest, aAtomEntry);
@@ -1559,13 +1559,14 @@ TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
         }
 	
     CleanupStack::PopAndDestroy(pParser);
+    CSLOG_L(iConnectionID, KMinLogLevel ,"CSenClientSession::ParseMessageL(aTransactionId, aRequest, aAtomEntry) Completed");
     return KErrNone;
     }    
 TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
                                       const TDesC8& aRequest,
                                       CSenSoapEnvelope2& aSoapEnvelope)
     {
-    CSLOG_L(iConnectionID, KMinLogLevel , "CSenClientSession::ParseMessageL");
+    CSLOG_L(iConnectionID, KMinLogLevel , "CSenClientSession::ParseMessageL(aTransactionId, aRequest, aSoapEnvelope)");
     CSenParser* pParser = CSenParser::NewLC();
     pParser->EnableFeature(EReportNamespaceMapping);
 	pParser->ParseL(aRequest, aSoapEnvelope);
@@ -1659,7 +1660,7 @@ TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
             }
         }
     CleanupStack::PopAndDestroy(pParser);
-    
+    CSLOG_L(iConnectionID, KMinLogLevel , "CSenClientSession::ParseMessageL(aTransactionId, aRequest, aSoapEnvelope) Completed");
     return retVal;
     }
     
@@ -1951,7 +1952,7 @@ void CSenClientSession::SendMsgL(const RMessage2& aMessage, CSenChunk& aSenChunk
                     CleanupStack::PushL( pErrorMsg );
                     }
                 aSenChunk.ChunkHeader().SetContextId(transactionId); // temporary
-                CSLOG_FORMAT((iConnectionID, KNormalLogLevel , _L8("SendMsgL - SetContextId: %d"), transactionId));
+                CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("SendMsgL - SetContextId: %d"), transactionId));
                 }
             else 
                 {
@@ -3747,6 +3748,7 @@ TInt CSenClientSession::SendProgressToHostlet(const RMessage2& aMessage)
     }
 void CSenClientSession::AddCredentialL( const RMessage2& aMessage )
     {
+    CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL()")));
     TInt retVal(KErrNone);
     CSenChunk* pSenChunk = NULL;
 
@@ -3859,14 +3861,27 @@ void CSenClientSession::AddCredentialL( const RMessage2& aMessage )
                     iManager.AddCredentialL(pIdP, pCredential, retVal);
                     
                   	RWSDescriptionArray aMatches;
-                    	iManager.ServiceDescriptionsL(aMatches,*pSD);
-               	CleanupClosePushL(aMatches);
+                    iManager.ServiceDescriptionsL(aMatches,*pSD);
+               		CleanupClosePushL(aMatches);
 
-                    	for(TInt i = 0; i < aMatches.Count(); i++)
-                    	{
-                    		((CSenWebServiceSession*)aMatches[i])->AddCredentialObserverL(*pCredential);
-                    	}
-
+                  	for(TInt i = 0; i < aMatches.Count(); i++)
+                  		{
+                      	if(((CSenWebServiceSession*)aMatches[i]) && pCredential)
+                          {
+	                      CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("SD Type is = %d"), aMatches[i]->DescriptionClassType()));						  
+                          if( aMatches[i]->HasSuperClass( MSenServiceDescription::EServiceSession ) )
+                          	{
+                            CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() - Calling AddCredentialObserverL()")));
+                            ((CSenWebServiceSession*)aMatches[i])->AddCredentialObserverL(*pCredential);
+                            CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() - Completed AddCredentialObserverL()")));
+                          	}
+                          else
+                          	{
+                          	CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() - SD is not the session object !!! ")));
+                          	}	
+                          }
+                  		}
+                  		
                      CleanupStack::PopAndDestroy(&aMatches);
                     
                     CleanupStack::Pop(pCredential);
@@ -3881,6 +3896,7 @@ void CSenClientSession::AddCredentialL( const RMessage2& aMessage )
     CleanupStack::PopAndDestroy(pSenChunk);
         
     aMessage.Complete(retVal);
+    CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() Completed")));
     }
 
 void CSenClientSession::CredentialsL( const RMessage2& aMessage )

@@ -272,7 +272,7 @@ TInt RSenServiceManager::ServiceDescriptionsByUriL(CSenChunk& aSenChunk)
 
 TInt RSenServiceManager::IdentityProvidersL(CSenChunk& aSenChunk)
     {
-    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::IdentityProvidersL");
+    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::IdentityProvidersL()");
 
     TIpcArgs args;
     aSenChunk.ChunkToArgs(args, 0);
@@ -284,7 +284,7 @@ TInt RSenServiceManager::IdentityProvidersL(CSenChunk& aSenChunk)
 
 TInt RSenServiceManager::ServiceDescriptionsByPatternL(CSenChunk& aSenChunk)
     {
-    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::GetServiceDescriptionsByPattern");
+    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::ServiceDescriptionsByPatternL()");
 
     TIpcArgs args;
     aSenChunk.ChunkToArgs(args, 0);
@@ -296,7 +296,7 @@ TInt RSenServiceManager::ServiceDescriptionsByPatternL(CSenChunk& aSenChunk)
 
 TInt RSenServiceManager::CredentialsL(CSenChunk& aSenChunk)
     {
-    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::GetServiceDescriptionsByPattern");
+    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::CredentialsL");
 
     TIpcArgs args;
     aSenChunk.ChunkToArgs(args, 0);
@@ -308,7 +308,7 @@ TInt RSenServiceManager::CredentialsL(CSenChunk& aSenChunk)
     
 TInt RSenServiceManager::AddCredentialL(CSenChunk& aSenChunk)
     {
-    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::GetServiceDescriptionsByPattern");
+    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::AddCredentialL()");
 
     TIpcArgs args;
     aSenChunk.ChunkToArgs(args, 0);
@@ -320,7 +320,7 @@ TInt RSenServiceManager::AddCredentialL(CSenChunk& aSenChunk)
 
 TInt RSenServiceManager::RemoveCredentialsL(CSenChunk& aSenChunk)
     {
-    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::GetServiceDescriptionsByPattern");
+    TLSLOG_L(iTLSLogChannel, KMinLogLevel,"RSenServiceManager::RemoveCredentialsL()");
 
     TIpcArgs args;
     aSenChunk.ChunkToArgs(args, 0);

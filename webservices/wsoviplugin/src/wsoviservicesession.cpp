@@ -63,6 +63,7 @@ CWSOviServiceSession::CWSOviServiceSession(TDescriptionClassType aType,
 
 CWSOviServiceSession::~CWSOviServiceSession()
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::~CWSOviServiceSession()");
     delete iSessionContext;
     delete iProviderID;
     delete iTrustAnchor;
@@ -90,6 +91,7 @@ CWSOviServiceSession::~CWSOviServiceSession()
 
 void CWSOviServiceSession::ConstructL()
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::ConstructL()");             
     CSenWebServiceSession::ConstructL();
     iTokenObs = CWSOviCredentialObserver::NewL(this,iFramework.Manager().Log());
     }
@@ -263,8 +265,9 @@ TBool CWSOviServiceSession::Matches(MSenServiceDescription& aPattern)
         TPtrC8 thisProviderID = ProviderID();
         if(patternProviderID.Length()>0)
             {
-            if(!(thisProviderID.Length()>0 && patternProviderID == thisProviderID))
+            if( !(thisProviderID.Length()>0 && patternProviderID == thisProviderID) )
                 {
+                TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::Matches() - Provider Id not same returning EFalse");
                 return EFalse;
                 }
             }
@@ -701,11 +704,12 @@ TInt CWSOviServiceSession::SendToConsumerL(HBufC8* aMessage,
                               MSenRemoteServiceConsumer& aConsumer,
                               MSenProperties* aResponseTransportProperties)
     {
+    TLSLOG_L(KSenClientSessionLogChannelBase+aConsumer.ConnectionId()  , KMinLogLevel,"CWSOviServiceSession::SendToConsumerL()");
     ((CWSOviPlugin&)iFramework).ProcessInboundDispatchL(this, KErrNone, aMessage, aResponseTransportProperties);
-    TLSLOG_L(KSenClientSessionLogChannelBase+aConsumer.ConnectionId()  , KMinLogLevel,"CWSOviServiceSession::ParseMessageL(CSenSoapMessage& )");
     iRenewCounter = 0;
     iRetryCounter = 0;
-    return aConsumer.HandleMessageL( aMessage, aTxnId, aResponseTransportProperties );
+    TInt retVal = aConsumer.HandleMessageL( aMessage, aTxnId, aResponseTransportProperties );
+    return retVal;
     }
     
 TInt CWSOviServiceSession::SendErrorToConsumerL( const TInt aErrorCode,
@@ -1163,6 +1167,7 @@ TBool CWSOviServiceSession::HasSuperClass( TDescriptionClassType aType )
 
 TInt CWSOviServiceSession::ShareTokenWithL( CWSOviServiceSession* aWSOviSessionDst)
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::ShareTokenWithL()");
     TInt error(KErrNone);
     if ( !HasSecurity() )
         {
@@ -1182,22 +1187,27 @@ TInt CWSOviServiceSession::ShareTokenWithL( CWSOviServiceSession* aWSOviSessionD
         }
     else
         {
+        TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::ShareTokenWithL() returning KErrNotFound");
         return KErrNotFound;
         }
     }
     
 void CWSOviServiceSession::AddCredentialL( const TDesC8& aSecurity, TTime aValidUntil )
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::AddCredentialL(aSecurity, aValidUntil)");
     iValidUntil = aValidUntil;
     SetSecurityL(aSecurity);
     SetStatusL();
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::AddCredentialL(aSecurity, aValidUntil) Completed");
     }
     
 void CWSOviServiceSession::AddCredentialL(RSenCredentialPtr aCredentialPtr, TTime aValidUntil)
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::AddCredentialL(aCredentialPtr, aValidUntil)");
     iValidUntil = aValidUntil;
     SetCredentialPtrL(aCredentialPtr); // Share same Credential between multiple Sessions	//codescannerwarnings
     SetStatusL();
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviServiceSession::AddCredentialL(aCredentialPtr, aValidUntil) Completed");
     }
     
 TBool CWSOviServiceSession::AmIHostletSession()
