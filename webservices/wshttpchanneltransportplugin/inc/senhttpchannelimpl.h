@@ -107,7 +107,7 @@ public:
     TInt CancelTransaction(const TInt aTxnId);
     void CancelAllTransactions();
 
-    void SetExplicitIapDefined(TBool aExplicitIapDefined);
+    virtual void SetExplicitIapDefined(TBool aExplicitIapDefined);
     /*
     * Getter for currently effective IAP ID
     * @param aIapId will be assigned to hold
@@ -131,6 +131,8 @@ public:
     void EnableTimeOutL(TInt aTxnId, TInt aTimeOutSec);
     void DisableTimeOutL(TInt aTxnId);
     virtual TInt32 UsedIap();
+    virtual void ResetIapId();
+    virtual void ResetUsedIapId();
     
 protected:
     CSenHttpChannelImpl(MSenIdentityManager& aManager);
@@ -160,8 +162,10 @@ protected:
 private:
     
     // New functions
-    
-    
+
+	TInt SetID(TUint32 aIapId, TBool aDialogPref, RConnection& aConnection, RSocketServ& aSocketServer, TBool aSNAP = EFalse);
+	TInt GetS60PlatformVersion(TUint& aMajor, TUint& aMinor);
+	TBool IsOCCImplementedSDK();	
     TPtrC8 SoapActionL(MSenElement& aSoapEnvelope);
     TInt SubmitRequestL(MSenResponseObserver& aObserver,
                         const TDesC8& aUri,
@@ -210,6 +214,9 @@ private:
     TBool iHasHttpContentType;
     SenMultiPartUtils::TMultiPartContentType iMultiPartContentType; // content type of MultiPart response
     RHTTPTransaction iHttpTransaction ;
+#ifndef __ENABLE_ALR__    
+    TBool iOCCenabled ;
+#endif    
     };
 
 #endif //SEN_HTTP_CHANNEL_IMPL_H

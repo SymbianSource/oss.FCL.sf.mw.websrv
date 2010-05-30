@@ -35,9 +35,9 @@
 #include "wsstarplugin.h"
 #include "senwebservicesession.h"
 #include "wsstarsessionconsumer.h"
-#include <xmlengfilecontainer.h>
-#include <xmlengchunkcontainer.h>
-#include <xmlengelement.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengelement.h>
 #include "sensoapmessagedom2.h"
 
 class CWSStarCredentialObserver;

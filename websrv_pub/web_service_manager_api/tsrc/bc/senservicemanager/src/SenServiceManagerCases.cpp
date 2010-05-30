@@ -914,7 +914,7 @@ TInt CSenServiceManagerBCTest::UT_CSenServiceManager_AssociateServiceLL_argument
     LOCAL_ASSERT((iServiceManager->AssociateServiceL(KText, KNullDesC8)) == KErrArgument);
     LOCAL_ASSERT((iServiceManager->AssociateServiceL(KNullDesC8, KText)) == KErrArgument);
     LOCAL_ASSERT((iServiceManager->AssociateServiceL(KNullDesC8, KNullDesC8)) == KErrArgument);
-    _LIT8(KPattern, "&<>");
+    //_LIT8(KPattern, "&<>");
     iProvider->SetProviderID(KText);
     LOCAL_ASSERT((iServiceManager->RegisterIdentityProviderL(*iProvider)) == KErrNone); 
 
@@ -989,9 +989,8 @@ TInt CSenServiceManagerBCTest::UT_CSenServiceManager_DissociateServiceLL_notFoun
     if(err != KErrNone)return err;
 
     LOCAL_ASSERT((iServiceManager->DissociateServiceL(KText, KText)) == KErrNotFound);
-    _LIT8(KPattern, "&<>");
-
-    Teardown();
+//    _LIT8(KPattern, "&<>");
+	  Teardown();
     return KErrNone;
     }
 

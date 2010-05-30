@@ -22,16 +22,16 @@
 #define SEN_MTOM_UTILS_H
 
 #include <e32math.h>
-#include <imcvcodc.h>
+
 
 #include <SenSoapEnvelope2.h>
 #include <RSenDocument.h>
 
-#include <xmlengserializer.h>
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
-#include <xmlengbinarycontainer.h>
-#include <xmlengnodelist.h>
+#include <xml/dom/xmlengserializer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengbinarycontainer.h>
+#include <xml/dom/xmlengnodelist.h>
 
 // CONSTANTS
 _LIT(KMtomNoRequestSoapEnvelopePanicText, "NULL MTOM request soap envelope");

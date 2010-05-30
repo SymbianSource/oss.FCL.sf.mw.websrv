@@ -32,9 +32,9 @@
 #include "wsoviplugin.h"
 #include "senwebservicesession.h"
 #include "wsovisessionconsumer.h"
-#include <xmlengfilecontainer.h>
-#include <xmlengchunkcontainer.h>
-#include <xmlengelement.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengelement.h>
 
 class CWSOviCredentialObserver;
 class CSenHttpTransportProperties;
@@ -50,6 +50,9 @@ namespace WSOviSession
     _LIT8(KTokenCreationTimeTag,         "<TokenCreationTime>");
     _LIT8(KTokenCreationTimeEndTag,      "</TokenCreationTime>");
     _LIT8(KTokenCreationTimeLocalName,   "TokenCreationTime");
+    _LIT8(KTokenValidUntilTimeTag,         "<ValidUntil>");
+    _LIT8(KTokenValidUntilTimeEndTag,      "</ValidUntil>");
+    _LIT8(KTokenValidUntilTimeLocalName,   "ValidUntil");
     _LIT8(KTTLTag,                 		 "<TTL>");
     _LIT8(KTTLEndTag,                    "</TTL>");
     _LIT8(KTTLLocalName,                 "TTL");

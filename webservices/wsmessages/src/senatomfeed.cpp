@@ -25,7 +25,7 @@
 #include <badesca.h>
 
 #include <SenDomFragmentBase.h>
-#include <xmlengnodelist.h>
+#include <xml/dom/xmlengnodelist.h>
 
 #include "senatomfeed.h"
 #include "senatomentry.h"

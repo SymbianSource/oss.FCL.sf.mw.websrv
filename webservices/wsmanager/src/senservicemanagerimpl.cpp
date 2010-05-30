@@ -180,6 +180,7 @@ RFileLogger* CSenServiceManagerImpl::Log() const
 */
 TPtrC CSenServiceManagerImpl::NextChunkNameL()	//Codescannerwarnings
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::NextChunkNameL");
     if(ipChunkName)
         {
         iChunkNameNumber++;
@@ -204,7 +205,6 @@ TPtrC CSenServiceManagerImpl::NextChunkNameL()	//Codescannerwarnings
             pos = chunkname.Find(KDash);
             }
         TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KNormalLogLevel , _L("CSenServiceManagerImpl::NextChunkNameL(): %S"), &chunkname));
-
         return chunkname;
         }
     else
@@ -219,6 +219,7 @@ TPtrC CSenServiceManagerImpl::NextChunkNameL()	//Codescannerwarnings
 TInt CSenServiceManagerImpl::ServiceDescriptionsL(const TDesC8& aUri, 
                                                   RServiceDescriptionArray& aList)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::ServiceDescriptionsL(aUri, aList)");
     TInt retVal(KErrNone);
     TPtrC8 descriptions;
 
@@ -242,12 +243,14 @@ TInt CSenServiceManagerImpl::ServiceDescriptionsL(const TDesC8& aUri,
             }
         }
     CleanupStack::PopAndDestroy(pSenChunk); // Close chunk
+    TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceManagerImpl::ServiceDescriptionsL(aUri, aList) returns [%d]"), retVal));
     return retVal;
     }
 
 TInt CSenServiceManagerImpl::ServiceDescriptionsL(MSenServiceDescription& aSD,
                                                   RServiceDescriptionArray& aList)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::ServiceDescriptionsL(aSD, aList)");
     TInt retVal(KErrNone);
     
     HBufC8* pPattern = aSD.AsXmlL();
@@ -278,12 +281,13 @@ TInt CSenServiceManagerImpl::ServiceDescriptionsL(MSenServiceDescription& aSD,
 
     // In any case, destroy the pattern as XML buffer:
     CleanupStack::PopAndDestroy(); // pPattern
-
+		TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceManagerImpl::ServiceDescriptionsL(aSD, aList) returns [%d]"), retVal));
     return retVal;
     }
 
 TInt CSenServiceManagerImpl::RegisterServiceDescriptionL(MSenServiceDescription& aSD)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RegisterServiceDescriptionL(aSD)");
     // do not register if both endpoint and contract are 
     // missing
     if(aSD.Endpoint().Length()==0 && aSD.Contract().Length()==0)
@@ -323,7 +327,7 @@ TInt CSenServiceManagerImpl::RegisterServiceDescriptionL(MSenServiceDescription&
         // now register the XML string (descriptor) to WSF Symbian server:
         TInt retVal(iConnection.RegisterServiceDescription(ptr));
         CleanupStack::PopAndDestroy(); // pAsXml
-        
+        TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceManagerImpl::RegisterServiceDescriptionL(aSD) returns [%d]"), retVal));
         return retVal;
         }
     }
@@ -331,6 +335,7 @@ TInt CSenServiceManagerImpl::RegisterServiceDescriptionL(MSenServiceDescription&
 TInt CSenServiceManagerImpl::UnregisterServiceDescriptionL(
                                                 MSenServiceDescription& aSD)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::UnregisterServiceDescriptionL(aSD)");
     // do not unregister if both endpoint and contract are 
     // missing
     if(aSD.Endpoint().Length()==0 && aSD.Contract().Length()==0)
@@ -371,6 +376,7 @@ TInt CSenServiceManagerImpl::UnregisterServiceDescriptionL(
         TPtr8 ptr = pAsXml->Des();
         TInt retVal(iConnection.UnregisterServiceDescription(ptr));
         CleanupStack::PopAndDestroy(); // pAsXml
+        TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceManagerImpl::UnregisterServiceDescriptionL(aSD) returns [%d]"), retVal));
         return retVal;
         }
     }
@@ -378,16 +384,20 @@ TInt CSenServiceManagerImpl::UnregisterServiceDescriptionL(
 TInt CSenServiceManagerImpl::RegisterIdentityProviderL(
                                             CSenIdentityProvider& aProvider)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RegisterIdentityProviderL(aProvider)");
     HBufC8* provider = aProvider.AsXmlL();
     TPtr8 ptr = provider->Des();
     TInt retVal = iConnection.RegisterIdentityProvider(ptr);
     delete provider;
+    provider = NULL;
+	TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RegisterIdentityProviderL(aProvider) Completed");    
     return retVal;
     }
 
 TInt CSenServiceManagerImpl::UnregisterIdentityProviderL(
                                             CSenIdentityProvider& aProvider)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::UnregisterIdentityProviderL(aProvider)");
     HBufC8* provider = aProvider.AsXmlL();
     TPtr8 ptr = provider->Des();
     TInt retVal(iConnection.UnregisterIdentityProvider(ptr));
@@ -398,6 +408,7 @@ TInt CSenServiceManagerImpl::UnregisterIdentityProviderL(
 TInt CSenServiceManagerImpl::AssociateServiceL(const TDesC8& aServiceID,
                                                const TDesC8& aProviderID)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::AssociateServiceL(aServiceID, aProviderID)");
     if (aServiceID.Length() <= 0 || aProviderID.Length() <= 0)
         {
         return KErrArgument;
@@ -411,6 +422,7 @@ TInt CSenServiceManagerImpl::AssociateServiceL(const TDesC8& aServiceID,
 TInt CSenServiceManagerImpl::DissociateServiceL(const TDesC8& aServiceID,
                                                 const TDesC8& aProviderID)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::DissociateServiceL(aServiceID, aProviderID)");
     if (aServiceID.Length() <= 0 || aProviderID.Length() <= 0)
         {
         return KErrArgument;
@@ -668,6 +680,7 @@ TInt CSenServiceManagerImpl::CredentialsL(const TDesC8& aEndpoint,
                                           RCredentialArray& aCredentials,
                                           RCredentialPropertiesArray& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::CredentialsL(aEndpoint, aCredentials, aCredentialProperties)");
     TInt retVal(KErrNone);
     
     CSenXmlServiceDescription* pServDesc = CSenXmlServiceDescription::NewLC();
@@ -685,6 +698,7 @@ TInt CSenServiceManagerImpl::CredentialsL(const TDesC8& aEndpoint,
                                           RCredentialArray& aCredentials,
                                           RCredentialPropertiesArray& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::CredentialsL(aEndpoint, aIdP, aCredentials, aCredentialProperties)");
     TInt retVal(KErrNone);
     TPtrC8 credentials;
     
@@ -734,6 +748,7 @@ TInt CSenServiceManagerImpl::CredentialsL(const TDesC8& aEndpoint,
                                           RCredentialArray& aCredentials,
                                           RCredentialPropertiesArray& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::CredentialsL(aEndpoint, aUserName, aPassword, aCredentials, aCredentialProperties)");
     TInt retVal(KErrNone);
     TPtrC8 credentials;
     
@@ -780,6 +795,7 @@ TInt CSenServiceManagerImpl::CredentialsL(const MSenServiceDescription& aPattern
                                           RCredentialArray& aCredentials,
                                           RCredentialPropertiesArray& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::CredentialsL(aPattern, aCredentials, aCredentialProperties)");
     TInt retVal(KErrNone);
     TPtrC8 credentials;
     
@@ -870,6 +886,7 @@ TInt CSenServiceManagerImpl::CredentialsL(const MSenServiceDescription& aPattern
                                           RCredentialArray& aCredentials,
                                           RCredentialPropertiesArray& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::CredentialsL(aPattern, aIdP, aCredentials, aCredentialProperties)");
     TInt retVal(KErrNone);
     TPtrC8 credentials;
     
@@ -916,6 +933,7 @@ TInt CSenServiceManagerImpl::CredentialsL(const MSenServiceDescription& aPattern
                                           RCredentialArray& aCredentials,
                                           RCredentialPropertiesArray& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::CredentialsL(aPattern, aUserName, aPassword, aCredentials, aCredentialProperties)");
     TInt retVal(KErrNone);
     TPtrC8 credentials;
 
@@ -963,6 +981,7 @@ TInt CSenServiceManagerImpl::AddCredentialL(const MSenServiceDescription& aPatte
                                             const CSenIdentityProvider& aIdP,
                                             const CSenCredential2& aCredential)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::AddCredentialL(aPattern, aIdP, aCredentials)");
     TInt retVal(KErrNone);
     
     if(&aPattern == NULL || &aIdP == NULL || &aCredential== NULL)
@@ -1004,6 +1023,7 @@ TInt CSenServiceManagerImpl::AddCredentialL(const TDesC8& aEndpoint,
                                             const CSenIdentityProvider& aIdP,
                                             const CSenCredential2& aCredential)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::AddCredentialL(aEndpoint, aIdP, aCredentials)");
     CSenXmlServiceDescription* pServDesc = CSenXmlServiceDescription::NewLC();
     pServDesc->SetEndPointL(aEndpoint);
     
@@ -1019,6 +1039,7 @@ TInt CSenServiceManagerImpl::AddCredentialL(const MSenServiceDescription& aPatte
                                             const CSenCredential2& aCredential,
                                             const CSenXmlProperties& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::AddCredentialL(aPattern, aIdP, aCredentials, aCredentialProperties)");
     TInt retVal(KErrNone);
     
     if(&aPattern == NULL || &aIdP == NULL || &aCredential== NULL || &aCredentialProperties == NULL )
@@ -1067,6 +1088,7 @@ TInt CSenServiceManagerImpl::AddCredentialL(const TDesC8& aEndpoint,
                                             const CSenCredential2& aCredential,
                                             const CSenXmlProperties& aCredentialProperties)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::AddCredentialL(aEndpoint, aIdP, aCredentials, aCredentialProperties)");
     CSenXmlServiceDescription* pServDesc = CSenXmlServiceDescription::NewLC();
     pServDesc->SetEndPointL(aEndpoint);
     
@@ -1079,10 +1101,12 @@ TInt CSenServiceManagerImpl::AddCredentialL(const TDesC8& aEndpoint,
 
 TInt CSenServiceManagerImpl::RemoveCredentialsL(const CSenIdentityProvider& aIdP)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RemoveCredentialsL(aIdp)");
     TInt retVal(KErrNone);
         
     if(&aIdP == NULL)
         {
+        TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RemoveCredentialsL(aIdp) returns KErrArgument");
         return  KErrArgument; 
         }
     
@@ -1104,12 +1128,13 @@ TInt CSenServiceManagerImpl::RemoveCredentialsL(const CSenIdentityProvider& aIdP
 
     CleanupStack::PopAndDestroy(pIdPAsXml);
     
+		TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceManagerImpl::RemoveCredentialsL(aIdp) returns [%d]"), retVal));
     return retVal;
-
     }
 TInt CSenServiceManagerImpl::RemoveCredentialsL(const MSenServiceDescription& aPattern,
                                                 const CSenIdentityProvider& aIdP)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RemoveCredentialsL(aPattern, aIdP)");
     TInt retVal(KErrNone);
     
     if(&aPattern == NULL || &aIdP == NULL)
@@ -1146,6 +1171,7 @@ TInt CSenServiceManagerImpl::RemoveCredentialsL(const MSenServiceDescription& aP
                                                 const TDesC8& aUserName,
                                                 const TDesC8& aPassword)
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RemoveCredentialsL(aPattern, aUserName, aPassword)");
     CSenIdentityProvider* pIdP = CSenIdentityProvider::NewLC(KIdentityProviderName);
     pIdP->SetUserInfoL(aUserName, aUserName, aPassword);
     
@@ -1159,6 +1185,7 @@ TInt CSenServiceManagerImpl::RemoveCredentialsL(const MSenServiceDescription& aP
 
 TInt CSenServiceManagerImpl::IdentityProvidersL( RIdentityProviderArray& aList )
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::IdentityProvidersL(aList)");
     TInt retVal(KErrNone);
     TPtrC8 descriptions;
 
@@ -1173,6 +1200,7 @@ TInt CSenServiceManagerImpl::IdentityProvidersL( RIdentityProviderArray& aList )
             if(retVal == KErrNone)
                 {
                 retVal = ExtractIdentiyProvidersL(descriptions, aList);
+                TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("-ExtractIdentiyProvidersL returned [%d]"), retVal));
                 }
             }
         }
@@ -1182,7 +1210,7 @@ TInt CSenServiceManagerImpl::IdentityProvidersL( RIdentityProviderArray& aList )
 TInt CSenServiceManagerImpl::ExtractIdentiyProvidersL(TPtrC8& aIdPs, 
                                                       RIdentityProviderArray& aList)
     {
-    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::ExtractIdentiyProvidersL");
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::ExtractIdentiyProvidersL(aIdPs, aList)");
     TInt retVal(KErrNotFound);
 
     
@@ -1276,10 +1304,15 @@ TInt CSenServiceManagerImpl::ExtractIdentiyProvidersL(TPtrC8& aIdPs,
 
             }
         } //  END OF: if idp.Length() > 0
+    else
+       	{
+		TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::ExtractIdentiyProvidersL aIdPs(aIdPs, aList) aIdPs = 0 length");
+        }
     return retVal;
     }
 TAny* CSenServiceManagerImpl::InterfaceByUid( TUid aUID )
     {
+    TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::InterfaceByUid(aUID)");
     if ( aUID == KSenInterfaceUidInternalServiceManager )
 		{
 		TLSLOG_FORMAT(( KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceConnectionImpl::InterfaceByUid(%d) == KSenInterfaceUidInternalServiceManager" ), aUID.iUid ));

@@ -26,31 +26,31 @@
 
 
 // INCLUDE FILES
-#include "senserviceconnection.h"
+#include "SenServiceConnection.h"
 #include "senhttpchanneltransportplugin.h"
 #include "senhttpchannelimpl.h"
 #include "senhttpsyncrequester.h"
-#include "senxmlutils.h"
-#include "senidentityprovider.h"
+#include "SenXmlUtils.h"
+#include "SenIdentityProvider.h"
 #include "senwspattern.h"
-#include "senfragment.h"
-#include "senelement.h"
+#include "SenFragment.h"
+#include "SenElement.h"
 #include "sendebug.h"
-#include "msenproperty.h"
-#include "senhttptransportproperties.h" // Utils\inc
+#include "MSenProperty.h"
+#include "SenHttpTransportProperties.h" // Utils\inc
 #include "sentransportcontext.h"
 #include "senlayeredhttptransportproperties.h" // internal Framework\inc
 #include "msenmessagecontext.h"
-#include "msenmessage.h"
-#include "sensoapmessage2.h"
-#include "rsendocument.h"
-#include "senparser.h"
+#include "MSenMessage.h"
+#include "SenSoapMessage2.h"
+#include "RSenDocument.h"
+#include "SenParser.h"
 #include "senservicesession.h"
 #include "senlogger.h"
 #include "senclientsession.h"
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
-#include <xmlengserializer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengserializer.h>
 
 
 
@@ -104,7 +104,8 @@ CSenHttpChannelTransportPlugin::CSenHttpChannelTransportPlugin(CSenTransportCont
     iProperties(NULL),
     iConsumerMap(EFalse, ETrue), 
     iSessionMap(EFalse, EFalse), // iConsumerMap deletes the txnIds (using same "new reserved" TInt here!)
-    iStatusCode(0)
+    iStatusCode(0),
+    iIsConnectionFailed(EFalse)
     {
     }
 
@@ -115,11 +116,18 @@ CSenHttpChannelTransportPlugin::~CSenHttpChannelTransportPlugin()
     iSessionMap.Reset(); 
 
     delete iHttpChannel;
+    iHttpChannel = NULL;
     delete iRequester;
+    iRequester = NULL;
     delete iProperties;
+    iProperties = NULL;
 
     delete ipCtx;
     ipCtx = NULL;
+
+    // Close the log file and the connection to the server.
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("SenHttpChannel - Log file closed.")));
+    TLSLOG_CLOSE(KSenHttpChannelLogChannelBase);
 
     TLSLOG(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,(_L("Got last data chunk.")));
     TLSLOG_CLOSE(KSenHttpChannelObserverLogChannelBase);
@@ -131,6 +139,10 @@ void CSenHttpChannelTransportPlugin::ConstructL()
     // Open connection to the file logger server
     TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ConstructL(): log file opened.");
     TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ConstructL - Version 2 [2006-05-09]");
+
+    // Open connection to the file logger server
+    TLSLOG_OPEN(KSenHttpChannelLogChannelBase, KSenHttpChannelLogLevel, KSenHttpChannelLogDir, KSenHttpChannelLogFile);
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("SenHttpChannel - Log file opened")));
 
     if( ipCtx )
         {
@@ -452,10 +464,29 @@ void CSenHttpChannelTransportPlugin::ResponseReceivedL(TInt aRequestId,
 // Method to catch async error responses from httpchannel
 void CSenHttpChannelTransportPlugin::ResponseErrorL(TInt aRequestId, TInt aErrorCode, HBufC8* apErrorBody,CSenHttpTransportProperties* aHttpProperties)
     {
+    TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("CSenHttpChannelTransportPlugin::ResponseErrorL() - aErrorCode [%d]"), aErrorCode));
     CleanupStack::PushL(apErrorBody);
-    iHttpChannel->DisableTimeOutL(aRequestId);
+    if( (aErrorCode < KErrNone) && (apErrorBody == NULL) || aErrorCode == KErrAbort)
+    	{
+    	TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ResponseErrorL() Set iIsConnectionFailed True");
+    	iHttpChannel->ResetIapId();
+    	iHttpChannel->ResetUsedIapId();
+    	iHttpChannel->SetExplicitIapDefined(EFalse);
+    	iIsConnectionFailed = ETrue;
+    	TUint32 zeroIap = 0;
+			TBuf8<128> buf;
+	    buf.AppendFormat(_L8("%u"), zeroIap);
+    	LayeredPropertiesL().SetPropertyL(KIapIdLocalName, buf); //Reset the layered properties in case of wrong IAP
+    	}
+    else
+    	{
+    	iHttpChannel->SetExplicitIapDefined(ETrue);
+    	}	
+    if(iHttpChannel)
+    	{
+    	iHttpChannel->DisableTimeOutL(aRequestId);
+    	}
 #ifdef _SENDEBUG    
-    TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ResponseErrorL:");
     TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KNormalLogLevel, _L8("- Request's txnID: %d"), aRequestId));
     if ( apErrorBody )
         {
@@ -555,17 +586,28 @@ TInt CSenHttpChannelTransportPlugin::ApplyPropertiesL()
     // ALWAYS HANDLE IAP ID FIRST, SINCE IT *CAN RESET* HTTPCHANNEL!
     
     TUint32 iapId(KErrNone);
-
     retVal = LayeredPropertiesL().IapIdL(iapId);
-    if(retVal==KErrNone)
+    TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("- CSenHttpChannelTransportPlugin::ApplyPropertiesL() - iapId [%d]"), iapId));
+	TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("- LayeredPropertiesL() retVal [%d]"), retVal)); 
+    if(iIsConnectionFailed)
         {
-        TInt resetPerformed = ResetHttpChannelByIapIdL(iapId);
+		TInt resetPerformed = ResetHttpChannelByIapIdL(0); //Incase of connection error set Iap ID 0
 #ifdef _SENDEBUG
         if(resetPerformed == KErrNone)
             {
             TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KNormalLogLevel, _L8("- IAP re-set performed: (%d)"), iapId));
             }
 #endif // _SENDEBUG
+        }
+    else if(retVal==KErrNone)
+        {
+       	TInt resetPerformed = ResetHttpChannelByIapIdL(iapId);
+#ifdef _SENDEBUG
+        if(resetPerformed == KErrNone)
+            {
+            TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KNormalLogLevel, _L8("- IAP re-set performed: (%d)"), 0));
+            }
+#endif // _SENDEBUG				
         }
 
     // Handle ProxyHost and ProxyPort
@@ -608,6 +650,7 @@ TInt CSenHttpChannelTransportPlugin::ApplyPropertiesL()
 
 TInt CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL(TUint32 aIapId)
     {
+    TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL()");
     TUint32 effectiveIapId(KErrNone);
     TBool explicitIapIdDefined(EFalse);
     if(iHttpChannel)
@@ -616,15 +659,16 @@ TInt CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL(TUint32 aIapId)
         }
 
     TInt retVal(KErrNone);
-    if(!explicitIapIdDefined || explicitIapIdDefined && effectiveIapId != aIapId)
+    TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("- explicitIapIdDefined[%d], effectiveIapId[%d], aIapId[%d]"), explicitIapIdDefined, effectiveIapId, aIapId));
+    if(!explicitIapIdDefined || (explicitIapIdDefined && (effectiveIapId != aIapId) ) || iIsConnectionFailed)
         {
         TLSLOG_L(KSenHttpChannelObserverLogChannelBase,KMinLogLevel,"CSenHttpChannelTransportPlugin::ResetHttpChannel():");
-
+        iIsConnectionFailed = EFalse;
         delete iHttpChannel;
         iHttpChannel = NULL;
         delete iRequester;
         iRequester = NULL;
-        TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KNormalLogLevel, _L8("- New IAP ID: %d"), aIapId));
+        TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("- New IAP ID: %d"), aIapId));
         CSenHttpChannel* pHttpChannel = CSenHttpChannelImpl::NewL(iServiceManager, aIapId);
         
         CleanupStack::PushL(pHttpChannel);
@@ -640,6 +684,7 @@ TInt CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL(TUint32 aIapId)
         {
         retVal = KErrAlreadyExists;
         }
+    TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KMinLogLevel, _L8("CSenHttpChannelTransportPlugin::ResetHttpChannelByIapIdL() - returns [%d]"), retVal));
     return retVal;
     }
 

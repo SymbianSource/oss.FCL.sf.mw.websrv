@@ -90,7 +90,7 @@ CSenHttpSyncRequester::~CSenHttpSyncRequester()
     {
     delete iContentType;
     delete iContent;
-    if (!isStopped)
+    if (!isStopped && iSchedulerWait.IsStarted())
         {
         iSchedulerWait.AsyncStop();
         }
@@ -104,7 +104,10 @@ void CSenHttpSyncRequester::RunL()
     if (!isStopped)
         {
         iStatusCode = KErrTimedOut;
-        iSchedulerWait.AsyncStop();
+	    if (iSchedulerWait.IsStarted())
+	        {
+	        iSchedulerWait.AsyncStop();
+	        }
         }
     isStopped = ETrue;
     }
@@ -112,8 +115,11 @@ TInt CSenHttpSyncRequester::RunError(TInt aError)
     {
     if (!isStopped)
         {
-        iStatusCode = aError;
-        iSchedulerWait.AsyncStop();
+    	iStatusCode = aError;
+	    if (iSchedulerWait.IsStarted())
+	        {
+	        iSchedulerWait.AsyncStop();
+	        }
         }
     isStopped = ETrue;
     return aError;
@@ -182,7 +188,7 @@ void CSenHttpSyncRequester::ResponseReceivedL( TInt /*aId*/, const TAny* aConten
     {
     iContent = apContent; // transfers ownership of content into _this_ class
     iContentType = ((HBufC8*)aContentType)->AllocL();
-    if (!isStopped)
+    if (!isStopped && iSchedulerWait.IsStarted())
         {
         iSchedulerWait.AsyncStop();
         }

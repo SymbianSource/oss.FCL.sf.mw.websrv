@@ -45,8 +45,7 @@ CWSOviTokenCreationResponse* CWSOviTokenCreationResponse::NewLC()
 // Second phase construction.
 void CWSOviTokenCreationResponse::ConstructL()
     {
-        CSenBaseFragment::BaseConstructL(TPtrC8(NULL,0),
-        		KTokenCreationResponseLocalName);
+    CSenBaseFragment::BaseConstructL(TPtrC8(NULL,0), KTokenCreationResponseLocalName);
     }
 
 void CWSOviTokenCreationResponse::StartElementL(const TDesC8& /*aNsUri*/,
@@ -78,14 +77,18 @@ void CWSOviTokenCreationResponse::StartElementL(const TDesC8& /*aNsUri*/,
         		{
         		iState = KStateSave;
         		}
-            else if (aLocalName == KTokenLocalName)
-                {
-                iState = KStateSave;
-                }
-        	else if (aLocalName == KTTLLocalName)
-        		{
-        		iState = KStateSave;
-        		}
+          else if (aLocalName == KTokenLocalName)
+              {
+              iState = KStateSave;
+              }
+          else if (aLocalName == KTTLLocalName)
+	          {
+	      	  iState = KStateSave;
+	          }
+          else if (aLocalName == KExpiresLocalName)
+              {
+              iState = KStateSave;
+              }        	
         	break;
         	}
         case KStateParsingUserInfo:
@@ -154,6 +157,21 @@ void CWSOviTokenCreationResponse::EndElementL(const TDesC8& /*aNsUri*/,
                 ResetContentL();
                 iState = KStateParsingTokenInfo;
                 }
+            else if (aLocalName == KExpiresLocalName)
+                {
+                if(iValidUntil)
+                	{
+                	delete iValidUntil;
+                	iValidUntil = NULL;
+                	}
+                TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"WSOviTokenCreationResponse::expires parsing");
+                TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("iValidUntil : %S"), &content));
+                
+                iValidUntil = content.AllocL();
+                
+                ResetContentL();
+                iState = KStateParsingTokenInfo;
+                }            
             else if ( aLocalName == KUserNameLocalName)
                 {
                 if (iUsername)
@@ -202,6 +220,7 @@ CWSOviTokenCreationResponse::~CWSOviTokenCreationResponse()
 	delete iTokenSecret;
 	delete iTTL;
 	delete iUsername;
+	delete iValidUntil;
 	}
 
 TPtrC8 CWSOviTokenCreationResponse::Token()
@@ -238,6 +257,18 @@ TPtrC8 CWSOviTokenCreationResponse::TTL()
         {
         return KNullDesC8();
         }
+    }
+
+TPtrC8 CWSOviTokenCreationResponse::ValidUntil()
+    {
+    if (iValidUntil)
+        {
+        return *iValidUntil;    
+        }
+    else 
+        {
+        return KNullDesC8();
+        }    	
     }
 
 TPtrC8 CWSOviTokenCreationResponse::Username()

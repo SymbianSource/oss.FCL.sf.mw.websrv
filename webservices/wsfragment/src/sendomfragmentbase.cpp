@@ -24,7 +24,7 @@
 
 // INCLUDE FILES
 #include "SenDomFragmentBase.h"
-#include <xmlengserializationoptions.h> // needed for TSerializationOptions
+#include <xml/dom/xmlengserializationoptions.h> // needed for TSerializationOptions
 
 
 EXPORT_C CSenDomFragmentBase* CSenDomFragmentBase::NewL()

@@ -74,6 +74,12 @@ TPtrC8 TokenSecret();
 TPtrC8 TTL();
 
 /**
+* Getter for validUntil
+* @return validUntil
+*/
+TPtrC8 ValidUntil();
+
+/**
 * Getter for username
 * @return username
 */
@@ -104,7 +110,7 @@ private:
 	HBufC8* iTTL;
 	HBufC8* iUsername;
 	TBool iIsTokenUpdate;
-
+	HBufC8* iValidUntil;
 };
 
 #endif /*WSOVITOKENCREATIONRESPONSE_H_*/

@@ -70,7 +70,6 @@ LIBRARY         bafl.lib
 LIBRARY         eikctl.lib
 LIBRARY         egul.lib 
 LIBRARY         fbscli.lib 
-LIBRARY         PBKENG.LIB 
 LIBRARY         cntmodel.lib 
 LIBRARY         aknskins.lib //for skin sbackground
 LIBRARY         gdi.lib
