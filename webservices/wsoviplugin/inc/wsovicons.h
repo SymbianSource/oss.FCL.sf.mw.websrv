@@ -164,6 +164,7 @@ namespace WSOviContextKeys
     
     _LIT8(KTTL,"TTL");
     _LIT8(KTokenCreationTime,"TokenCreationTime");
+    _LIT8(KTokenValidUntilTime,"TokenValidUntil");
     _LIT8( KTokenSecret, "TokenSecret");
     _LIT8( KToken, "Token");
     _LIT8(KOnlySharing,       "OnlySharing");
@@ -191,6 +192,7 @@ namespace WSOviResponse
 	_LIT8(KTokenCreationResponseLocalName, "tokenCreationResponse");
 	_LIT8(KTokenSecretLocalName, "tokenSecret");
 	_LIT8(KTTLLocalName, "ttl");
+	_LIT8(KExpiresLocalName, "expires");
 	_LIT8(KTokenInfoLocalName,"tokenInfo");
     _LIT8(KErrorNode,                    "error");
     _LIT8(KErrorCode,                    "errorCode");

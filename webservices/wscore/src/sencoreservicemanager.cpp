@@ -379,7 +379,7 @@ TInt CSenCoreServiceManager::InitServiceConnectionL(MSenRemoteServiceConsumer& a
             error = additions;
             additions = 0;
             }
-        CSLOG_FORMAT((aConsumer.ConnectionId(), KNormalLogLevel , _L8(" - Just added %d service description(s)."), additions));
+        CSLOG_FORMAT((aConsumer.ConnectionId(), KMinLogLevel , _L8(" - Just added %d service description(s)."), additions));
         if ( error )
             {
             retVal = error;

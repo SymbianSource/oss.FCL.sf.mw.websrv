@@ -553,12 +553,27 @@ TInt CWSOviServiceSession::SubmitL( const TDesC8& aMessage,
         const TDesC8* message = iOutContext->GetDesC8L(WSOviContextKeys::KMessageBody);
         if (message)
             {
+	        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("CWSOviServiceSession::SubmitL() - Request"));
+	        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("********************************************"));
+	        TLSLOG_ALL(KSenClientSessionLogChannelBase+aConsumer.ConnectionId()  , KMaxLogLevel , *message);
+	        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("********************************************"));
+                    
             retVal = transport.SubmitL(Endpoint(), *message, *utfTP, aResponse, aConsumer);
             }
         else
             {
+	        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("CWSOviServiceSession::SubmitL() - Request"));
+	        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("********************************************"));
+	        TLSLOG_ALL(KSenClientSessionLogChannelBase+aConsumer.ConnectionId()  , KMaxLogLevel , aMessage);
+	        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("********************************************"));            	
+            	
             retVal = transport.SubmitL(Endpoint(), aMessage, *utfTP, aResponse, aConsumer);
-            }   
+            }
+               
+        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("CWSOviServiceSession::SubmitL() - Response"));
+        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("********************************************"));
+        TLSLOG_ALL(KSenClientSessionLogChannelBase+aConsumer.ConnectionId()  , KMaxLogLevel , *aResponse);
+        TLSLOG(KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel, _L8("********************************************"));
         
         MSenProperties& prop = transport.PropertiesL();
         ((CWSOviPlugin&)iFramework).ProcessInboundDispatchL(this, retVal, aResponse, &prop );
@@ -851,6 +866,11 @@ TInt CWSOviServiceSession::InitializeFromL( MSenServiceDescription& aDescription
                     {
                     User::LeaveIfError(iSessionContext->Add(WSOviContextKeys::KTokenCreationTime, pElement->Content()));    
                     }
+                pElement = xmlSdAsElement.Element(WSOviSession::KTokenValidUntilTimeLocalName);
+                if(pElement)
+                    {
+                    User::LeaveIfError(iSessionContext->Add(WSOviContextKeys::KTokenValidUntilTime, pElement->Content()));    
+                    }                    
                 pElement = xmlSdAsElement.Element(WSOviSession::KTTLLocalName);
                 if(pElement)
                     {
@@ -887,6 +907,11 @@ void CWSOviServiceSession::AddSecurityTokenToContextL()
                 {
                 User::LeaveIfError(iSessionContext->Add(WSOviContextKeys::KTokenCreationTime, value));    
                 }
+            retVal = properties.PropertyL(WSOviSession::KTokenValidUntilTimeLocalName, value);
+            if ( retVal == KErrNone )
+                {
+                User::LeaveIfError(iSessionContext->Add(WSOviContextKeys::KTokenValidUntilTime, value));    
+                }               
             retVal = properties.PropertyL(WSOviSession::KTTLLocalName, value);
             if ( retVal == KErrNone )
                 {
@@ -924,7 +949,12 @@ void CWSOviServiceSession::AddPropertiesFromSessionContextToCredentialL()
             if ( pValue )
                 {
                 properties.SetPropertyL(WSOviSession::KTokenCreationTimeLocalName(), *pValue);
-                }        
+                }
+            pValue = iSessionContext->GetDesC8L(WSOviContextKeys::KTokenValidUntilTime);
+            if ( pValue )
+                {
+                properties.SetPropertyL(WSOviSession::KTokenValidUntilTimeLocalName(), *pValue);
+                }            
             pValue = iSessionContext->GetDesC8L(WSOviContextKeys::KTTL);
             if ( pValue )
                 {
@@ -971,6 +1001,13 @@ void CWSOviServiceSession::WriteExtensionsAsXMLToL(RWriteStream& aWriteStream)
                 aWriteStream.WriteL(*value);
                 aWriteStream.WriteL(WSOviSession::KTokenCreationTimeEndTag);
                 }
+            value = iSessionContext->GetDesC8L(WSOviContextKeys::KTokenValidUntilTime);
+            if (value)
+                {
+                aWriteStream.WriteL(WSOviSession::KTokenValidUntilTimeTag);
+                aWriteStream.WriteL(*value);
+                aWriteStream.WriteL(WSOviSession::KTokenValidUntilTimeEndTag);
+                }                
             value = iSessionContext->GetDesC8L(WSOviContextKeys::KTTL);
             if (value)
                 {
@@ -1374,6 +1411,7 @@ void CWSOviServiceSession::ClearCredentialPropertiesFromContext()
         {
         iSessionContext->Remove(WSOviContextKeys::KToken);    
         iSessionContext->Remove(WSOviContextKeys::KTokenCreationTime);
+        iSessionContext->Remove(WSOviContextKeys::KTokenValidUntilTime);
         iSessionContext->Remove(WSOviContextKeys::KTTL);
         iSessionContext->Remove(WSOviContextKeys::KTokenSecret);
         }

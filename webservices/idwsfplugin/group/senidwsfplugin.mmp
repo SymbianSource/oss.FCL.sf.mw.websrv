@@ -35,7 +35,8 @@ TARGET wsIDWSFplugin.dll
 UID 0x10009D8D 0x101F972F
 #endif
 
-paged
+PAGEDDATA
+PAGEDCODE
 //For enabling bytepair compression for code paging
 
 #ifdef EKA2
