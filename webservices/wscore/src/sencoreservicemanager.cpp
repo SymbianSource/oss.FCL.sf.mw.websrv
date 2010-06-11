@@ -379,7 +379,7 @@ TInt CSenCoreServiceManager::InitServiceConnectionL(MSenRemoteServiceConsumer& a
             error = additions;
             additions = 0;
             }
-        CSLOG_FORMAT((aConsumer.ConnectionId(), KNormalLogLevel , _L8(" - Just added %d service description(s)."), additions));
+        CSLOG_FORMAT((aConsumer.ConnectionId(), KMinLogLevel , _L8(" - Just added %d service description(s)."), additions));
         if ( error )
             {
             retVal = error;
@@ -973,9 +973,8 @@ HBufC8* CSenCoreServiceManager::DecodeFromBase64LC(const TDesC8& aSource)
     }
 
 // private getter, which always initializes the base64codec
-TImCodecB64& CSenCoreServiceManager::Base64Codec()
+TBase64& CSenCoreServiceManager::Base64Codec()
     {
-    iBase64Codec.Initialise();
     return iBase64Codec;
     }
 

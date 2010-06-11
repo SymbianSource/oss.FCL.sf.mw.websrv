@@ -21,8 +21,8 @@
 
 
 #include "RSenDocument.h"
-#include <xmlengxestd.h>
-#include <xmlengdomimplementation.h>
+#include <xml/utils/xmlengxestd.h>
+#include <xml/dom/xmlengdomimplementation.h>
 
 LOCAL_C void CleanupRSenDocument(TAny* aDocumentData)
 	{

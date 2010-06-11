@@ -52,4 +52,6 @@
 	}
  	void CTestConsumer::SetStatus(const TInt aStatus)
  	{
- 	}
+	}
+
+

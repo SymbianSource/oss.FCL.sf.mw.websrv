@@ -335,7 +335,7 @@ TInt CSenUtilsBCTest::CSenSoapEnvelope_SetBodyLL( TTestResult& aResult )
     _LIT8(KBody,"ComarchBody");
     TPtrC8 result = env->SetBodyL(KBody);
     
-    _LIT16(KRef2, "ComarchBody");
+//    _LIT16(KRef2, "ComarchBody");
     TPtrC16 result16(reinterpret_cast<const TUint16*>(result.Ptr()),(result.Size()/2));
     RDebug::Print( _L( "WSModTester: body [%S]"),&result16);
     /*EUNIT_ASSERT_EQUALS(result, KBody);*/
@@ -586,8 +586,8 @@ TInt CSenUtilsBCTest::CSenSoapEnvelope_HasHeaderL( TTestResult& aResult )
     {
     SetupL();
     
-    _LIT8(KHeaderElementName,   "HeaderElement");
-    _LIT8(KHeaderContent,       "HeaderContent");
+//    _LIT8(KHeaderElementName,   "HeaderElement");
+//    _LIT8(KHeaderContent,       "HeaderContent");
 
     CSenSoapEnvelope* pEnvelope = CSenSoapEnvelope::NewL();
     
@@ -675,14 +675,14 @@ messageID=\"URN:UUID:860949DC-134D-A989-E328-2FD7F20E31CE\" timestamp=\"2006-06-
 <sa:SASLRequest xmlns:sa=\"urn:liberty:sa:2004-04\" mechanism=\"ANONYMOUS PLAIN CRAM-MD5\" authzID=\"testuser1\"/>\
 </S:Body>\
 </S:Envelope>");
-    _LIT8(KBodyAsString,     "\
+/*    _LIT8(KBodyAsString,     "\
 <S:Body xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:sa=\"urn:liberty:sa:2004-04\">\
 <sa:SASLRequest xmlns:sa=\"urn:liberty:sa:2004-04\" mechanism=\"ANONYMOUS PLAIN CRAM-MD5\" authzID=\"testuser1\"/>\
-</S:Body>");
+</S:Body>");*/
 
-    _LIT8(KEmptyBodyAsString,       "<S:Body/>");
+    //_LIT8(KEmptyBodyAsString,       "<S:Body/>");
 
-    _LIT8(KEmptyBodyWithNsAsString, "<S:Body xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"/>");
+  //  _LIT8(KEmptyBodyWithNsAsString, "<S:Body xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"/>");
     CSenParser* pParser = CSenParser::NewLC();
     CSenSoapEnvelope* pEnvelope = CSenSoapEnvelope::NewL();
 	pEnvelope->SetReader( *iXmlReader );
@@ -997,14 +997,14 @@ messageID=\"URN:UUID:860949DC-134D-A989-E328-2FD7F20E31CE\" timestamp=\"2006-06-
 <sa:SASLRequest xmlns:sa=\"urn:liberty:sa:2004-04\" mechanism=\"ANONYMOUS PLAIN CRAM-MD5\" authzID=\"testuser1\"/>\
 </S:Body>\
 </S:Envelope>");
-    _LIT8(KBodyAsString,     "\
+/*    _LIT8(KBodyAsString,     "\
 <S:Body xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\" xmlns:sa=\"urn:liberty:sa:2004-04\">\
 <sa:SASLRequest xmlns:sa=\"urn:liberty:sa:2004-04\" mechanism=\"ANONYMOUS PLAIN CRAM-MD5\" authzID=\"testuser1\"/>\
 </S:Body>");
+*/
+  //  _LIT8(KEmptyBodyAsString,       "<S:Body/>");
 
-    _LIT8(KEmptyBodyAsString,       "<S:Body/>");
-
-    _LIT8(KEmptyBodyWithNsAsString, "<S:Body xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"/>");
+    //_LIT8(KEmptyBodyWithNsAsString, "<S:Body xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\"/>");
     CSenParser* pParser = CSenParser::NewLC();
 	CSenSoapMessage* pMessage = CSenSoapMessage::NewL();
 	pMessage->SetReader( *iXmlReader );	
@@ -1615,7 +1615,7 @@ TInt CSenUtilsBCTest::SenDateUtils_FromXmlDateTimeLL( TTestResult& aResult )
     if(err != KErrUnderflow) return err;
 
     //garbage year
-    _LIT8(KIn15, "xxxx-02-28T13:20:65Z");
+//    _LIT8(KIn15, "xxxx-02-28T13:20:65Z");
     //EUNIT_ASSERT_LEAVE
     //ASSERT(SenDateUtils::FromXmlDateTimeL(KIn15));
 
@@ -1980,12 +1980,17 @@ TInt CSenUtilsBCTest::SenTransportProperties_NewLC_2L(TTestResult& aResult )
 		Flag=1;
 	else
 		Flag=0;
-	if(!( Flag )) KErrArgument;
-	CleanupStack::PopAndDestroy(pXmlElement);
+	if(!( Flag )) 
+		{
+	  CleanupStack::PopAndDestroy(pXmlElement);
+	  CleanupStack::PopAndDestroy(pElement);
+	  return KErrArgument;
+		}
+  CleanupStack::PopAndDestroy(pXmlElement);
 	CleanupStack::PopAndDestroy(pElement);
-    Teardown();
-    return KErrNone;
-	}
+  Teardown();
+  return KErrNone;
+}
 	
 
 TInt CSenUtilsBCTest::SenTransportProperties_AsUtf8LL(TTestResult& aResult )
@@ -2021,7 +2026,7 @@ TInt CSenUtilsBCTest::SenTransportProperties_SetPropertyLL(TTestResult& aResult 
 TInt CSenUtilsBCTest::SenTransportProperties_PropertyLL(TTestResult& aResult )
 {
     SetupL();
-	_LIT8(KValue,"Value");
+	//_LIT8(KValue,"Value");
 	TPtrC8 ValuePtr;
 	TPtrC8 ValuePtr1;
 	CSenTransportProperties* pElement= CSenTransportProperties::NewL();
@@ -2617,7 +2622,7 @@ TInt CSenUtilsBCTest::SenTransportProperties_SetMaxTimeToLiveLL(TTestResult& aRe
 TInt CSenUtilsBCTest::SenTransportProperties_MaxTimeToLiveLL(TTestResult& aResult )
 {
 	TTestResult Result;
-	SenTransportProperties_SetMaxTimeToLiveLL( Result);
+	return SenTransportProperties_SetMaxTimeToLiveLL( Result);
 }
 
 TInt CSenUtilsBCTest::SenTransportProperties_SetMinTimeToLiveLL(TTestResult& aResult )
@@ -2706,7 +2711,7 @@ TInt CSenUtilsBCTest::SenTransportProperties_ReadFromLL(TTestResult& aResult )
 TInt CSenUtilsBCTest::SenTransportProperties_CloneL(TTestResult& aResult )
 {
 	SetupL();
-	TBool Flag;
+	TBool Flag = 0;
 	TInt var;
 	CSenTransportProperties* pElement= CSenTransportProperties::NewL();
 	CleanupStack::PushL(pElement);
@@ -2714,9 +2719,13 @@ TInt CSenUtilsBCTest::SenTransportProperties_CloneL(TTestResult& aResult )
     pClone = (CSenTransportProperties*)pElement->Clone(var); 
     if(pClone != NULL)
     	Flag = 1;
-    if(!(Flag)) return KErrArgument;
-   
-	delete pClone;
+    if(!(Flag)) 
+    	{
+  		delete pClone;
+    	CleanupStack::PopAndDestroy(pElement);
+     	return KErrArgument;
+    	}
+    delete pClone;
     CleanupStack::PopAndDestroy(pElement);
     
     Teardown();
@@ -2744,8 +2753,12 @@ TInt CSenUtilsBCTest::SenTransportProperties_IsSafeToCastL(TTestResult& aResult 
     if(retVal != EFalse)
     	Flag = 1;
     else 
+    	{
+    		CleanupStack::PopAndDestroy(pElement);
    	    return KErrArgument; 
-    
+			}
+    //TO resolve RVCT4.0 warning
+    if (Flag);
     CleanupStack::PopAndDestroy(pElement);
     
     Teardown();
@@ -2757,20 +2770,24 @@ TInt CSenUtilsBCTest::SenTransportProperties_IsSafeToCastL(TTestResult& aResult 
 TInt CSenUtilsBCTest::SenTransportProperties_CloneLL(TTestResult& aResult )
 {
 	SetupL();
-	TBool Flag;
+	TBool Flag = 0;
 	CSenTransportProperties* pElement= CSenTransportProperties::NewL();
 	CleanupStack::PushL(pElement);
 	CSenTransportProperties* pClone = NULL;
-    pClone = (CSenTransportProperties*)pElement->CloneL(); 
-    if(pClone != NULL)
-    	Flag = 1;
-    if(!(Flag)) return KErrArgument;
-   
-	delete pClone;
+  pClone = (CSenTransportProperties*)pElement->CloneL(); 
+  if(pClone != NULL)
+  	Flag = 1;
+  if(!(Flag)) 
+  	{
+  	delete pClone;
     CleanupStack::PopAndDestroy(pElement);
+  	return KErrArgument;
+    } 
+	delete pClone;
+  CleanupStack::PopAndDestroy(pElement);
     
-    Teardown();
-    return KErrNone;    
+  Teardown();
+  return KErrNone;    
     
 }
 
@@ -2792,7 +2809,7 @@ TInt CSenUtilsBCTest::SenTransportProperties_ApplyBindingLL(TTestResult& aResult
 TInt CSenUtilsBCTest::SenTransportProperties_MinTimeToLiveLL(TTestResult& aResult )
 {
 	TTestResult Result;
-	SenTransportProperties_SetMinTimeToLiveLL(Result);
+	return SenTransportProperties_SetMinTimeToLiveLL(Result);
 }
 
 TInt CSenUtilsBCTest::SenHttpTransportProperties_NewLL(TTestResult& aResult)

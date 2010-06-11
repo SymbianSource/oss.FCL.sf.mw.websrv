@@ -32,6 +32,8 @@
 #include <httpstd.h>
 #include <SenHttpTransportProperties.h>
 #include "senlayeredhttptransportproperties.h"
+#include <SenDateUtils.h>
+
 using namespace OAuth;
 
 
@@ -139,7 +141,17 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
 						{
 						pCtx.Add(WSOviContextKeys::KServiceSession, *(MSenRemoteServiceSession*)remoteServiceSession);
 						}
-					pCtx.Update(WSOviContextKeys::KReAuthNeeded, ETrue);
+					if( ! errFragment->Text().Compare(WSOviResponse::KEmailUsed()) ||
+					  (errFragment->Text().Compare(WSOviResponse::KMobileUsed1)!= KErrNotFound &&
+					   errFragment->Text().Compare(WSOviResponse::KMobileUsed2) != KErrNotFound )
+					  )
+					    {
+					    pCtx.Update(WSOviContextKeys::KRetryNeeded, EFalse);
+					    }
+					else
+					    {
+					    pCtx.Update(WSOviContextKeys::KReAuthNeeded, ETrue);
+					    }
 					oviServiceSession->ClearCredentialL();
 					oviServiceSession->SetStatusL();//in order to compute state
 				}
@@ -206,6 +218,20 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
                         }
                     else
                         {
+					    TPtrC8 validUntil = responseFragment->ValidUntil();
+					    if (validUntil.Length())
+					        {
+					        TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,validUntil);
+					        User::LeaveIfError(pCtx.Update(WSOviContextKeys::KTokenValidUntilTime,validUntil));
+					        }
+						else
+							{
+							TTime tmpValidUntil = Time::MaxTTime();
+							TBuf8<SenDateUtils::KXmlDateTimeMaxLength> pValidUntil;
+							SenDateUtils::ToXmlDateTimeUtf8L(pValidUntil, tmpValidUntil);
+					        User::LeaveIfError(pCtx.Update(WSOviContextKeys::KTokenValidUntilTime,pValidUntil));
+							}
+                       
                         pCtx.SetTokenKeysL(token);
                         }
                     }

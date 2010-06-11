@@ -32,7 +32,7 @@
 
 #include "sendebug.h"
 #include "senlogger.h"
-#include <xmlengnodelist.h>
+#include <xml/dom/xmlengnodelist.h>
 
 CSenAtomMessage::CSenAtomMessage() 
 //:iTitle(NULL), iId(NULL), iUpdated(NULL), iPublished(NULL)

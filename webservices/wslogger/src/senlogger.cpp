@@ -25,10 +25,8 @@
 
 
 #include "senlogger.h"
-//#include <flogger.h>
 #include <f32file.h>
 #include <s32file.h> 
-#include <versit.h>
 
 namespace
     {
@@ -49,7 +47,6 @@ EXPORT_C TInt CSenLogger::CreateL(TInt aChannel, TInt aLevel, const TDesC& aLogD
 EXPORT_C TInt CSenLogger::CreateL(TInt aChannel, TInt aLevel, const TDesC& aLogDir, const TDesC& aLogFileName, TFileLoggingMode aMode)
     {
     TInt index(KErrNotFound);
-    //	  CSenLogger* pSenLogger = (CSenLogger*)Dll::Tls();
     CSenLogger* pSenLogger = NULL;
     TWsTls* tls = (TWsTls*)Dll::Tls();
     if( !tls )
@@ -65,12 +62,11 @@ EXPORT_C TInt CSenLogger::CreateL(TInt aChannel, TInt aLevel, const TDesC& aLogD
   		pSenLogger = new (ELeave) CSenLogger();
         if ( pSenLogger )
             {
-            //      		  Dll::SetTls(pSenLogger);
             tls->iLogger = pSenLogger;
       		pSenLogger->iCount = 0;
       		//reading the configuration file for the logging levels!!!
       		
-      		/*the file has the  following format
+      		/*the file has the  following format (IN ANSI)
       		* ==============================================================================
       		  * LogChannel LogLevel
       		    1000 0
@@ -92,74 +88,56 @@ EXPORT_C TInt CSenLogger::CreateL(TInt aChannel, TInt aLevel, const TDesC& aLogD
       	    RFs fs;
       	    res=fs.Connect();
       	      if(res==KErrNone)
+			{
+			RFileReadStream readStream;
+	      	res=readStream.Open(fs, KPath, EFileRead|EFileStreamText);
+			if(res == KErrNone)
 				{
-      	     
-                RFileReadStream readStream;
-      	        res=readStream.Open(fs,KPath,EFileRead|EFileStreamText);
-      	   		if(res==KErrNone)
-      	     		{
-      	      		TInt error;
-      	      		TBool result;
-      	      		TInt retVal;
-      	      		
-      	      		CLineReader *readLine = CLineReader::NewL(readStream);
-                    CleanupStack::PushL(readLine);
-      	    		
-                	do
-      	    		    {
-      	      		    result=readLine->ReadLineL(0,error);
-      	      		    
-      	       	        if(result==CLineReader::ELineHasContent)
-      	       			    {
-      	       			    
-              	      		TInt *key = new (ELeave) TInt;
-              	      	
-          	      		
-      	       			    TLex8 lexBuf(readLine->iBufPtr);
-      	     			    retVal = lexBuf.Val(*key);
-      	     			    
-      	     			    if(retVal!=0)
-      	     			        {
-      	     			        delete key;
-                             
-      	     			        continue;
-      	     			        }
-      	     			    else
-      	     			        {
-                  	      		TInt *value = new (ELeave) TInt;
-                  	      
-      	      		
-  	     			            lexBuf.SkipSpace();
-  	     			            retVal=lexBuf.Val(*value);
-  	     			            if(retVal==0)
-	  	     			            {
-  	     			    	        retVal = pSenLogger->iMap.Append(key,value);
-  	     			    	        if(retVal != KErrNone)
-  	     			    	            {
-  	     			    	            delete key;
-  	     			    	            delete value;
-      	    		                   
-  	     			    	            }
-  	     			    	   
-  		     			            }
-  		     			         else
-  		     			            {
-  		     			              delete key;
-  	     			    	          delete value;
-  		     			                
-  		     			            }
-      	     			    	
-      	     			        }
-      	       			    }
-      	       			 
-      	    		    }while(error!=KErrEof);
-      	    		 
-      	    		 CleanupStack::PopAndDestroy(readLine);
-      	      	     readStream.Close();
-      	     		}
-      	     
-      	      	fs.Close();
-      	      	}
+				TInt error;
+				TInt retVal;
+				do
+					{
+					TBuf8<128> readLineBuf;
+					TRAP(error, readStream.ReadL(readLineBuf, (TChar)'\n'));
+					if(error == KErrNone)
+						{      
+						TInt32 length(0);
+						length = readLineBuf.Length() ;
+						TInt *key = new (ELeave) TInt;
+						TLex8 lexBuf(readLineBuf);
+						retVal = lexBuf.Val(*key);
+
+						if(retVal!=0)
+							{
+							delete key;
+							continue;
+							}
+						else
+							{
+							TInt *value = new (ELeave) TInt;
+							lexBuf.SkipSpace();
+							retVal=lexBuf.Val(*value);
+							if(retVal==0)
+								{
+								retVal = pSenLogger->iMap.Append(key,value);
+								if(retVal != KErrNone)
+									{
+									delete key;
+									delete value;
+									}
+								}
+							else
+								{
+								delete key;
+								delete value;
+								}
+							}
+						}
+					}while(error == KErrNone);
+				readStream.Close();
+				}
+			fs.Close();
+			}
             }
         else
             {

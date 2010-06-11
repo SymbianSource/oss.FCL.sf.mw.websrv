@@ -74,7 +74,8 @@ void CSenRegistrationTimer::IssueRegistrations( TBool aRegisterFilesObserver )
 	if (!IsActive())
         {
         iTimer.After( iStatus, interval );
-        SetActive();
+        if(!IsActive())
+        	SetActive();
         }
     }
 

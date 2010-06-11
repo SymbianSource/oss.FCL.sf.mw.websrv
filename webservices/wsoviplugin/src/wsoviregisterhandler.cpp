@@ -51,15 +51,18 @@ CWSOviRegisterHandler::CWSOviRegisterHandler(MSenHandlerContext& aCtx):CSenSessi
 // Destructor
 CWSOviRegisterHandler::~CWSOviRegisterHandler()
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviRegisterHandler::~CWSOviRegisterHandler()");
     }
 
 // Second phase construction.
 void CWSOviRegisterHandler::ConstructL()
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviRegisterHandler::ConstructL()");
     }
     
 TInt CWSOviRegisterHandler::InvokeL(MSenSessionContext& aCtx)
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviRegisterHandler::InvokeL()");
     MSenServiceDescription& pServiceDescription = *(MSenServiceDescription*)aCtx.GetSenWSDescriptionL(WSOviContextKeys::KServiceDescription());
     const TDesC8* action = aCtx.GetDesC8L(WSOviContextKeys::KRegisterAction());
     TInt result(KErrNone);
@@ -148,6 +151,7 @@ TInt CWSOviRegisterHandler::RegisterServiceDescriptionL(MSenServiceDescription& 
 TInt CWSOviRegisterHandler::UnregisterServiceDescriptionL(
     MSenServiceDescription& aServiceDescription)
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviRegisterHandler::UnregisterServiceDescriptionL()");
     TInt retval(KErrNone);
     CWSOviServiceSession *pSession = NULL;
     TPtrC8 contract = aServiceDescription.Contract();
@@ -268,13 +272,13 @@ TInt CWSOviRegisterHandler::UnRegisterAuthClientL(
     if(aServiceDescription->DescriptionClassType() ==
                 MSenServiceDescription::EOviOAuthClient)
         {
-        TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviRegisterHandler::CWSOviRegisterHandler - This ServiceDescription is already an NAUTH Client")));
+        TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviRegisterHandler::UnRegisterAuthClientL - This ServiceDescription is already an NAUTH Client")));
         pAuthClient = (CWSOviOAuthClient*)aServiceDescription;
         retval = iHandlerContext.GetSenCoreServiceManager()->RemoveServiceDescriptionL(*pAuthClient);
         }
     else
         {
-        
+        TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviRegisterHandler::UnRegisterAuthClientL - This ServiceDescription is not NAUTH Client")));
         pSession = CWSOviServiceSession::NewLC(*(CSIF*)iHandlerContext.GetAnyL(HandlerContextKey::KSIF()));
         retval = pSession->InitializeFromL(*aServiceDescription);
         if(retval != KErrNone)

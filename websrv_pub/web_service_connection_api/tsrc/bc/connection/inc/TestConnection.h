@@ -68,7 +68,7 @@ class CTestConnection : public CBase //:public CSenServiceConnection
     		
     		
     	//MSENFRAGMENT
-         CSenElement& AsElement() ;
+//         CSenElement& AsElement() ;
          CSenElement* ExtractElement() ;
          void SetReader(CSenXmlReader& aReader) ;
          CSenXmlReader* Reader() ;

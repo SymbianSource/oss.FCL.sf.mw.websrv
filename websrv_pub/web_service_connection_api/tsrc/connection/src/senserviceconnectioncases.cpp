@@ -46,9 +46,9 @@
 
 //#include <SenVtcpTransportProperties.h>
 #include "testproperty.h"
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
-//#include <XmlEngSerializer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+//#include <xml/dom/XmlEngSerializer.h>
 
 #include <e32base.h> // for CActive
 #include <aknnotewrappers.h> 

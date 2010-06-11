@@ -18,14 +18,17 @@
 
 
 // INCLUDE FILES
-
+#include <connpref.h>
+#include <commdbconnpref.h>
 #include "senmobilityobserver.h"
-#include <SenTransportProperties.h>
-#include "SenWSPattern.h"
-#include "MSenProperties.h"
-#include "SenLayeredTransportProperties.h"
-#include "SenLogger.h"
-#include "SenServiceManagerDefines.h"
+#include "sentransportproperties.h"
+#include "senwspattern.h"
+#include "msenproperties.h"
+#include "senlayeredtransportproperties.h"
+#include "senlogger.h"
+#include "senservicemanagerdefines.h"
+#include <versioninfo.h>  // VersionInfo
+#include <extendedconnpref.h>
 
 // -----------------------------------------------------------------------------
 // CALRObserver::NewL
@@ -64,6 +67,7 @@ void CALRObserver::ConstructL()
 #endif    
     User::LeaveIfError( iSocketServer.Connect());
     TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "CALRObserver::ConstructL()");
+    IsOCCImplementedSDK();
     }
 
 // -----------------------------------------------------------------------------
@@ -76,7 +80,8 @@ CALRObserver::CALRObserver(MMobilityProtocolResp &aMobilityObserver, CSenXmlRead
      iIapId(0),
      iNewIapId(0),
      iSnapId(0),
-     iReader(aReader)
+     iReader(aReader),
+     iOCCenabled(EFalse)
     {
     CActiveScheduler::Add( this );
     }
@@ -139,8 +144,59 @@ void CALRObserver::RunL()
         //RunL status error: " ) );
         User::Leave(iStatus.Int()) ;
         }
-    }    
-
+    }
+    
+// On return, aMajor and aMinor contain the version information
+TBool CALRObserver::IsOCCImplementedSDK()
+	{   
+	TBool occ = EFalse;
+	// Obtain the version number
+	TUint major;
+	TUint minor;	
+	TLSLOG(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel,(_L("CSenHttpChannelImpl::IsOCCImplementedSDK()")));		
+	TInt ret = GetS60PlatformVersion(major, minor);
+	if (ret == KErrNone)
+		{
+		if(major == 5 && minor == 2)
+			{
+			occ = ETrue;
+			iOCCenabled = ETrue;
+			TLSLOG(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel,(_L("---- IsOCCImplementedSDK() returns TRUE")));
+			}
+		else
+			{
+			TLSLOG(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel,(_L("---- IsOCCImplementedSDK() returns False")));
+			}
+		}
+	return occ;
+	}
+	
+// On return, aMajor and aMinor contain the version information
+TInt CALRObserver::GetS60PlatformVersion(TUint& aMajor, TUint& aMinor)
+	{   
+	TInt ret = KErrNone;
+	// Connect to the file server session
+	RFs fsSession;
+	TLSLOG(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel,(_L("CSenHttpChannelImpl::GetS60PlatformVersion()")));	
+	ret = fsSession.Connect();
+	if(ret == KErrNone)
+		{
+		CleanupClosePushL(fsSession); // Obtain the version numberTUint major;
+		VersionInfo::TPlatformVersion platformVersion;  
+		TLSLOG_L(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, "--- GetS60PlatformVersion getting Version info");		
+		ret = VersionInfo::GetVersion(platformVersion, fsSession);   
+		CleanupStack::PopAndDestroy();  // fsSession		
+		if (ret == KErrNone)       
+			{     
+			aMajor = platformVersion.iMajorVersion;  
+			aMinor = platformVersion.iMinorVersion;   
+		   	TLSLOG_FORMAT((KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, _L8("--- GetS60PlatformVersion Version: Major [%d], Minor[%d]"), aMajor, aMinor));
+			}		
+		}
+	TLSLOG_FORMAT((KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, _L8("--- GetS60PlatformVersion returns [%d]"), ret));
+	return ret;
+	}	
+	
 // -----------------------------------------------------------------------------
 // CALRObserver::RunError
 // -----------------------------------------------------------------------------
@@ -362,7 +418,7 @@ TInt CALRObserver::OpenConnectionL(TDesC8& aAppTransportProperties,
 
     TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- trying to get SNAPID from pTransportProperties ");
 	TInt error = pTransportProperties->SnapIdL(id) ;
-	if(error || id >= (TUint)KErrNotFound) //
+	if(error || id >= (TUint)KErrNotFound) //SNAP not found
 		{
         TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- trying to get IAPID from pTransportProperties ");
 	    error = pTransportProperties->IapIdL(id);		
@@ -372,7 +428,7 @@ TInt CALRObserver::OpenConnectionL(TDesC8& aAppTransportProperties,
 		isSnap = ETrue ;
 		}  
 		
-    if(error || id >= (TUint)KErrNotFound) 
+    if(error || id >= (TUint)KErrNotFound) //IAP also not found
 	    {
     	//Application Did not provide IAP ID through transport properties
     	//Now we need to check consumer and provider policy of service description
@@ -384,7 +440,7 @@ TInt CALRObserver::OpenConnectionL(TDesC8& aAppTransportProperties,
             CSenWSPattern* pConsumerPolicy = (CSenWSPattern*)&aInitializer;
 		    TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- trying to get SNAPID from pConsumerPolicy ");
 			error = pConsumerPolicy->ConsumerSnapId( id );
-			if(error || id >= (TUint)KErrNotFound) 
+			if(error || id >= (TUint)KErrNotFound) //SNAP not found
 			    {
         		TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- trying to get IAPID from pConsumerPolicy ");
 				error = pConsumerPolicy->ConsumerIapId( id );			 	
@@ -444,6 +500,11 @@ TInt CALRObserver::OpenConnectionL(TDesC8& aAppTransportProperties,
         {
         //check with first Snapid
         isStartConnectionRequired = ETrue ;
+        if(iOCCenabled != EFalse)
+	        {
+	        isSnap = ETrue; //We must start with SNAP for OCC
+			TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- isSnap Modified for OCC Support ");     
+			}
      	TLSLOG_FORMAT((KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , _L8("- StartConnection required as (iIapId == 0 && iSnapId == 0) openId = %d, isSnap = %d, iIapId = %d and iSnapId = %d "), openId, isSnap, iIapId, iSnapId));
         }
     else if(isSnap != EFalse && openId != iSnapId)
@@ -494,6 +555,146 @@ TInt CALRObserver::OpenConnectionL(TDesC8& aAppTransportProperties,
      	TLSLOG_FORMAT((KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , _L8("- CALRObserver::OpenConnectionL returnd %d "), error));
         return error ;
 	}
+	
+TInt CALRObserver::SetID(TUint32 aId, TBool aDialogPref, RConnection& aConnection, RSocketServ& aSocketServer, TBool aSNAP)
+	{
+   /*
+    * Single click connectivity feature has been implemented by CSock (RConnection class).
+    * According to this client no need to set the IAP ID. 
+    * Automatically RConnection will use the suitable IAP
+    */
+    TInt retVal = KErrNone;
+    TLSLOG_FORMAT((KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, _L8("CSenHttpChannelImpl  called with ID [%d]"), aId));
+	    
+	if (iOCCenabled == EFalse)	    
+		{
+		if(aSNAP != EFalse && aId)
+		    {
+		    TConnSnapPref SNAPPrefs;
+		    iSnapId = aId ;
+		    SNAPPrefs.SetSnap( aId ); 
+		    // Start connecting with Snap
+		    retVal = iConnection.Start(SNAPPrefs);						
+		    TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection iConnection Started with SNAP");
+		    }
+		else //default is iap
+			{
+		    if( aId )
+		        {
+		        TCommDbConnPref iapPrefs ;
+		        iapPrefs.SetIapId( aId );
+				iapPrefs.SetDialogPreference( ECommDbDialogPrefDoNotPrompt );
+				TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::SetDialogPref is FALSE");					
+				//iapPrefs.SetDialogPreference( ECommDbDialogPrefPrompt );					
+		        // Start connecting with IAP
+		        retVal = iConnection.Start(iapPrefs);
+		        TLSLOG_FORMAT((KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , _L8("- CALRObserver::StartConnection connection started with iapid %d and preference"), aId));
+		        }
+		    else
+		    	{
+		    	if (iIapId != 0)
+		        	{
+		        	//OpenSocketSever is already called for this iIapId When multiple
+		        	//sendL are calld for the same IAPId StartConnection may be called
+		        	//unintentionaly and may create crash
+		        	//strange case StartConnection must not be called in this case
+		        	TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection connection StartConnection must not be called as aId == 0 and iIapId != 0");
+		        	}
+		    	else
+		        	{
+		        	//Using Default Connection
+		            TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection connection started Using Default Connection");
+		        	retVal = iConnection.Start();	            	
+		        	}
+		    	}
+			}
+		}
+	else
+		{
+		if (aSNAP == EFalse)
+			{
+			/* If IAP id is zero, it is interpreted as
+		    * client's request for not requesting any specific IAP.
+		    * Default value is 0.
+		    * 
+		    * If IAP id is set, SNAP id shall be zero.
+		    * If IAP id is set, SNAP purpose shall be CMManager::ESnapPurposeUnknown.
+		    * If IAP id is set, Connection selection dialog shall be disabled.
+		    * If IAP id is set, bearer set shall be EExtendedConnBearerUnknown.
+		    * If IAP id is set, forced roaming is disabled automatically.
+		    * Either SNAP purpose, SNAP id, or IAP id shall be given, or Connection
+		    * selection dialog shall be enabled.
+		    */
+		    
+		    TLSLOG_L(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, "- Setting up OCC with IAP Settings");
+			TConnPrefList prefList;
+			TExtendedConnPref extPrefs;
+			//extPrefs.SetSnapPurpose( CMManager::ESnapPurposeUnknown);
+			//TLSLOG_L(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, "- Setting up OCC Silent Connection");
+			//extPrefs.SetNoteBehaviour(TExtendedConnPref::ENoteBehaviourConnSilent);
+			//extPrefs.SetBearerSet(TExtendedConnBearer::EExtendedConnBearerUnknown);
+			extPrefs.SetIapId(aId);
+			extPrefs.SetSnapId(0);
+			prefList.AppendL(&extPrefs);
+			retVal = aConnection.Start(prefList);
+			if(retVal == KErrNone)
+			    {
+			    iIapId = aId;
+			    }
+			 else
+			    {
+				TLSLOG_FORMAT((KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, _L8("IAP ->Start retVal [%d]"), retVal));
+			    }
+		    }
+		else
+		    {
+		    /**
+		    * Sets SNAP id. If SNAP id is zero, it is interpreted as 
+		    * client's request for not requesting any specific SNAP.
+		    * Default value is 0.
+		    *
+		    * If SNAP id is set, IAP id shall be zero.
+		    * If SNAP id is set, SNAP purpose shall be CMManager::ESnapPurposeUnknown.
+		    * If SNAP id is set, Connection selection dialog shall be disabled.
+		    * Either SNAP purpose, SNAP id, or IAP id shall be given, or Connection
+		    * selection dialog shall be enabled.
+		    */
+			TLSLOG_L(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, "- Setting up OCC with SNAP Settings");
+			TConnPrefList prefList;
+			TExtendedConnPref extPrefs;
+			//extPrefs.SetSnapPurpose( CMManager::ESnapPurposeUnknown);
+			//TLSLOG_L(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, "- Setting up OCC Silent Connection");
+			//extPrefs.SetNoteBehaviour(TExtendedConnPref::ENoteBehaviourConnSilent);
+			//extPrefs.SetBearerSet(TExtendedConnBearer::EExtendedConnBearerUnknown);
+			if(aId == 0)
+				{
+				TLSLOG_L(KSenSenMobilityLogChannelBase , KSenSenMobilityLogLevel, "- Setting SnapPurpose Internet");
+				if(aDialogPref) //If it fails because of unavailibility of access points
+					{
+					extPrefs.SetSnapPurpose(CMManager::ESnapPurposeUnknown);
+					extPrefs.SetConnSelectionDialog(ETrue);
+					}
+				else
+					{
+					extPrefs.SetSnapPurpose(CMManager::ESnapPurposeInternet);
+					//extPrefs.SetNoteBehaviour(TExtendedConnPref::ENoteBehaviourConnSilent);					
+					}
+				}
+			else
+				{
+				extPrefs.SetSnapId(aId);
+				extPrefs.SetIapId(0);	
+				extPrefs.SetSnapPurpose(CMManager::ESnapPurposeUnknown);
+				extPrefs.SetConnSelectionDialog(EFalse);
+				}
+			prefList.AppendL(&extPrefs);
+			retVal = aConnection.Start(prefList);							
+		    }
+		}    
+    
+	return retVal;
+	}
+
 // -----------------------------------------------------------------------------
 // CALRObserver::StartConnection
 // -----------------------------------------------------------------------------
@@ -529,45 +730,13 @@ TInt CALRObserver::StartConnection(TUint32& aId, TBool aIsSnapId)
 				TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection iConnection closed as new SNAPID for the same connection");				      
 				}
 			}
-		errRet = OpenSocketSever();		
+			
+		errRet = OpenSocketSever();
+		
 		if (!errRet)
 		    {
-			if(aIsSnapId != EFalse && aId)
-                {
-                iSnapId = aId ;
-                iSNAPPrefs.SetSnap( aId ); 
-                // Start connecting with Snap
-                errRet = iConnection.Start(iSNAPPrefs);						
-                TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection iConnection Started with SNAP");
-                }
-			else //default is iap
-				{
-	    	    if( aId )
-                    {
-                    iPrefs.SetIapId( aId );
-                    SetDialogPref(EFalse) ;
-                    // Start connecting with IAP
-                    errRet = iConnection.Start(iPrefs);
-                    TLSLOG_FORMAT((KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , _L8("- CALRObserver::StartConnection connection started with iapid %d and preference"), aId));
-                    }
-	            else
-	            	{
-	            	if (iIapId != 0)
-		            	{
-		            	//OpenSocketSever is already called for this iIapId When multiple
-		            	//sendL are calld for the same IAPId StartConnection may be called
-		            	//unintentionaly and may create crash
-		            	//strange case StartConnection must not be called in this case
-		            	TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection connection StartConnection must not be called as aId == 0 and iIapId != 0");
-		            	}
-	            	else
-		            	{
-		            	//Using Default Connection
-	                    TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::StartConnection connection started Using Default Connection");
-		            	errRet = iConnection.Start();	            	
-		            	}
-	            	}
-				}
+			errRet = SetID(aId, EFalse, iConnection, iSocketServer, aIsSnapId);
+			
 			if (errRet == KErrNone)
     			{	
      			//iConnection.GetIntSetting( _L( "IAP\\Id" ), aId );
@@ -585,20 +754,6 @@ TInt CALRObserver::StartConnection(TUint32& aId, TBool aIsSnapId)
 	    }
 	return errRet;
     }	
-
-void CALRObserver::SetDialogPref(TBool aDialogPref)
-    {
-    if (aDialogPref == EFalse)
-        {
-        TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel , "- CALRObserver::SetDialogPref is FALSE");
-        iPrefs.SetDialogPreference( ECommDbDialogPrefDoNotPrompt );		
-        }
-    else
-        {
-        TLSLOG_L(KSenSenMobilityLogChannelBase, KSenSenMobilityLogLevel ,"- CALRObserver::SetDialogPref is TRUE");
-        iPrefs.SetDialogPreference( ECommDbDialogPrefPrompt );		
-        }	
-    }
 
 // -----------------------------------------------------------------------------
 // CALRObserver::RefreshAvailability

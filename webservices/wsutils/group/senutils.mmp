@@ -79,10 +79,7 @@ USERINCLUDE     ../../wslogger/inc // for TLS based logging
 USERINCLUDE   ../../wsdescription/inc      // removes <SenXmlServiceDescription.h> warning..
 USERINCLUDE   ../../wsxml/inc								//senxmldebug.h
 
-//SYSTEMINCLUDE   ../../wsServiceDescription/inc      // removes <SenXmlServiceDescription.h> warning..
-
 MW_LAYER_SYSTEMINCLUDE
-APP_LAYER_SYSTEMINCLUDE
 
 LIBRARY         euser.lib
 LIBRARY         hash.lib
@@ -90,7 +87,8 @@ LIBRARY         estor.lib
 LIBRARY         efsrv.lib // TVolumeInfo => hostid for CMD5 based UUID (URN) generation
 LIBRARY         flogger.lib
 LIBRARY         bafl.lib    // RStringbase
-LIBRARY imut.lib // for base64 encoding
+LIBRARY 				inetprotutil.lib // for base64 encoding
+
 // WSF libraries
 #ifndef RD_SEN_COMPILE_SIS_PACKAGE_FILES
 LIBRARY         SenLogger.lib // for TLS based logging

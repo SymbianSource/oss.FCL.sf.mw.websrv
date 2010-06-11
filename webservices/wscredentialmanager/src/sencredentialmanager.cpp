@@ -47,7 +47,7 @@
 #include "senwebservicesession.h"
 
 #include <SenServiceConnection.h> // KErrSenNoPermission ( -30315 )
-#include <xmlengnodelist.h> 
+#include <xml/dom/xmlengnodelist.h> 
 #include <SenCredential.h>
 
 #include <SenXmlUtils.h>
@@ -1336,6 +1336,7 @@ TInt CSenCredentialManager::RemoveCredentialL(TInt aInternalCredentialId)
 RSenCredentialPtr CSenCredentialManager::CredentialL( TInt aInternalCredentialId,
                                                       TInt& aErrorTo )
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenCredentialManager::CredentialL()");
     TInt count = iCredentialArray.Count();
     for (TInt i=0; i<count; i++)
         {
@@ -1391,7 +1392,8 @@ RSenCredentialPtr CSenCredentialManager::CredentialL( TInt aInternalCredentialId
             return iCredentialArray[i];
             }
         }
-    aErrorTo = KErrNotFound;     
+    aErrorTo = KErrNotFound;
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenCredentialManager::CredentialL() Completed"); 
     return RSenCredentialPtr();
     }
 

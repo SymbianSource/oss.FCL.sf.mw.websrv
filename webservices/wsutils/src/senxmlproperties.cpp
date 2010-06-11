@@ -339,8 +339,14 @@ TInt CSenXmlProperties::RemovePropertyL(const TDesC8& aName)
 
 CSenXmlProperties::~CSenXmlProperties()
     {
-    delete ipReader;
-    delete ipFragment;
+    if(ipReader)
+    	{
+		delete ipReader;    	
+    	}
+    if(ipFragment)
+    	{
+    	delete ipFragment;
+    	}
     }
 
 void CSenXmlProperties::BaseConstructL(const TDesC8& aLocalname, 
@@ -348,7 +354,7 @@ void CSenXmlProperties::BaseConstructL(const TDesC8& aLocalname,
                                        CSenXmlReader* aParser)
     {
     ipFragment = CSenPropertiesFragment::NewL(aLocalname);
-    if ( aParser && aXml != KNullDesC8 )
+    if ( aParser && &aXml && (aXml != KNullDesC8()) )
         {
         // Do parsing
         ipFragment->ParseWithL(*aParser);

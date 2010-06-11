@@ -16,12 +16,6 @@
 */
 
 
-
-
-
-
-
-
 // INCLUDE FILES
 #include <e32std.h>
 #include <s32strm.h>
@@ -159,7 +153,8 @@ TInt CSenServicePolicy::RebuildServicePolicyFrom(MSenServicePolicy& aTemplate)
                 }
             }
         }
-    delete copy; 
+    delete copy;
+    copy = NULL;
     return retVal;  
     }
     

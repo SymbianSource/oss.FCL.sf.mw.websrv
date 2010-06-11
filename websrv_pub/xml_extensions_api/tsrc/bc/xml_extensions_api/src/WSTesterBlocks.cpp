@@ -811,6 +811,13 @@ TInt CWSTester::_S_NewSAXFragment( CStifItemParser& aItem )
 					iStringPool.OpenStringL(KAttribute()),
 					iStringPool.OpenStringL(KAttributeValue())));
 
+		if (err != KErrNone) 
+			{
+			iLog->Log(_L("Retrieving the attribute failed. Error: %d"), err );
+			CleanupStack::PopAndDestroy();
+			return err;
+	    }
+
 			// make a new array for all attributes including namespace (to be added)
 			RAttributeArray justAttributes;
 
@@ -836,6 +843,13 @@ TInt CWSTester::_S_NewSAXFragment( CStifItemParser& aItem )
 					iStringPool.OpenStringL(KNullDesC8()),
 					iStringPool.OpenStringL(KAttribute()),
 					iStringPool.OpenStringL(KAttributeValue())));
+
+		if (err != KErrNone) 
+			{
+			iLog->Log(_L("Retrieving the attribute failed. Error: %d"), err );
+			CleanupStack::PopAndDestroy();
+			return err;
+	    }
 
 			RAttributeArray justAttributes;
 			justAttributes.Append(justAttribute);
@@ -2105,7 +2119,7 @@ TInt CWSTester::_C_CopyFrom( CStifItemParser& aItem )
 
 	HBufC8* pTestXml = HBufC8::NewLC( xmlDoc.Length() );
 	pTestXml->Des().Append(xmlDoc);
-	CSenElement* newElement;
+	CSenElement* newElement = NULL;
 
 	//adding parsed document to SenElement and copy it to iElement
 
@@ -2255,20 +2269,20 @@ TInt CWSTester::_C_AllocAttrValue ( CStifItemParser& aItem )
 	TBuf8<128> name;
 	name.Append(arg);
 
-	RAttributeArray apAttrs;
+	/*RAttributeArray apAttrs;
 
 	HBufC8* newAttr;
 
-	/*TRAPD(r, newAttr = ((CSenBaseElement*)iElement)->AllocAttrValueL(apAttrs, name) );
+	TRAPD(r, newAttr = ((CSenBaseElement*)iElement)->AllocAttrValueL(apAttrs, name) );
 	if (r != KErrNone) {
 		iLog->Log(_L("AllocAttrValueL failed. Error: %d"), r );
 		return r;
-	}*/
+	}
 
 	if ( newAttr!= NULL ){
         delete newAttr;
 	    newAttr = NULL;
-    }
+    }*/
 
 	iLog->Log(_L("******* _C_AllocAttrValue -> Ended! ********"));
 	return error;
@@ -3005,7 +3019,7 @@ TInt CWSTester::_C_ParseDomFragment( CStifItemParser& aItem )
 		return error;
 	}
 //AsXML "UTF8"
-	HBufC8* pBuf;
+	HBufC8* pBuf = NULL;
 
 	TRAPD(rAsXml, pBuf = pDom->AsXmlL());
 	if (rAsXml != KErrNone)
@@ -3017,7 +3031,7 @@ TInt CWSTester::_C_ParseDomFragment( CStifItemParser& aItem )
 	iLog->Log(*pBuf);
 	LogResultL( *pBuf );
 //AsXMLUnicode
-    HBufC16* pBuf2;
+    HBufC16* pBuf2 = NULL;
 
 	TRAPD(rAsXmlUnicode, pBuf2 = pDom->AsXmlUnicodeL());
 	if (rAsXmlUnicode != KErrNone)
@@ -3083,7 +3097,7 @@ TInt CWSTester::_C_ParseXMLDocument( CStifItemParser& aItem )
 	// close fsSession
 	CleanupStack::PopAndDestroy();
 	// Store parsed documed in file
-	HBufC8* pBuf;
+	HBufC8* pBuf = NULL;
 	// Convert document
 	TRAPD(rAsXml, pBuf = pDom->AsXmlL());
 	if (rAsXml != KErrNone)

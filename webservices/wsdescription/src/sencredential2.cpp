@@ -279,7 +279,10 @@ EXPORT_C CSenCredential2::CSenCredential2()
 
 EXPORT_C CSenCredential2::~CSenCredential2()
     {
-    delete iId;
+    if(iId)
+    	{
+    	delete iId;    	
+    	}
     }
 
 EXPORT_C void CSenCredential2::SetIdL(const TDesC8& aNewId)

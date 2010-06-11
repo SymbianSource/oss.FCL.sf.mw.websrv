@@ -754,7 +754,7 @@ void CWSStarPlugin::RemoveHandler(const TDesC8& aCue)
     TInt count = iMsgHandlers.Count();
     for(TInt i=0;i<count; i++)
         {
-        if (iMsgHandlers[i]->Name() == aCue)
+        if( iMsgHandlers[i] && (iMsgHandlers[i]->Name() == aCue) )
             {
             delete iMsgHandlers[i];
             iMsgHandlers.Remove(i);
@@ -764,7 +764,7 @@ void CWSStarPlugin::RemoveHandler(const TDesC8& aCue)
     count = iSessionHandlers.Count();
     for(TInt i=0;i<count; i++)
         {
-        if (iSessionHandlers[i]->Name() == aCue)
+        if( iSessionHandlers[i] && (iSessionHandlers[i]->Name() == aCue) )
             {
             delete iSessionHandlers[i];
             iSessionHandlers.Remove(i);
@@ -789,13 +789,15 @@ TInt CWSStarPlugin::ProcessOutboundValidationL( MSenServiceDescription& aPattern
         {
         CWSStarPolicyHandler* policyHandler = (CWSStarPolicyHandler*)Handler(WSStarConfig::KPolicyValue);
         pSessionValidateCtx = CWSStarSessionContext::NewLC(Manager().XMLReader(), &aPattern, policyHandler);
-        pSessionValidateCtx->Add(WSStarContextKeys::KServiceSession(), *(MSenRemoteServiceSession*)aRemoteServiceSession);
+        if(pSessionValidateCtx)
+        	pSessionValidateCtx->Add(WSStarContextKeys::KServiceSession(), *(MSenRemoteServiceSession*)aRemoteServiceSession);
         ((CWSStarServiceSession*)aRemoteServiceSession)->SetSessionContext(pSessionValidateCtx);
         CleanupStack::Pop(pSessionValidateCtx);
         }
     else
         {
-        pSessionValidateCtx->Update(WSStarContextKeys::KServiceSession(), *(MSenRemoteServiceSession*)aRemoteServiceSession);
+        if(pSessionValidateCtx)
+        	pSessionValidateCtx->Update(WSStarContextKeys::KServiceSession(), *(MSenRemoteServiceSession*)aRemoteServiceSession);
         }
     TInt error(KErrNone);
     TRAPD(errorL, error = pSTShandler->InvokeL(*pSessionValidateCtx));
@@ -841,9 +843,7 @@ TInt CWSStarPlugin::ProcessOutboundValidationL( MSenServiceDescription& aPattern
             aErrorMessage = pNotOwnedErrorMsg->AllocL();
             }
         }
-    
-    
-    
+
     if (cberrorL!=KErrNone)
         {
         TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSStarPlugin::ProcessOutboundValidationL() !!!!leave from validate handler")));
@@ -1051,7 +1051,8 @@ void CWSStarPlugin::GenerateDeviceIdL()
     CSenGuidGen* pGuidGenerator = CSenGuidGen::NewLC();
     delete iDeviceId;
     iDeviceId = NULL;
-    iDeviceId = pGuidGenerator->GetRandomGuid8LC();
+    if(pGuidGenerator)
+    	iDeviceId = pGuidGenerator->GetRandomGuid8LC();
     TPtr8 deviceIdDes = iDeviceId->Des();
     deviceIdDes.LowerCase();
     CleanupStack::Pop(iDeviceId);
