@@ -50,7 +50,7 @@ UID 0x10009D8D 0x10282C47
     #endif
 #endif
 
-#if defined(ARMCC)
+#if defined(EABI)
   DEFFILE     ../eabi/WsPolicy.def
 #elif defined(WINSCW)
   DEFFILE     ../BWINSCW/WsPolicy.def

@@ -86,7 +86,7 @@ LIBRARY         XMLFRAMEWORK.lib
     LIBRARY         WsStarXmlEngineUtils.lib
 #endif
 
-    #if defined(ARMCC)
+    #if defined(EABI)
       DEFFILE ../eabi/SenFragment_3.0.DEF
     #elif defined(WINSCW)
       DEFFILE ../BWINSCW/SenFragment_3.0.DEF

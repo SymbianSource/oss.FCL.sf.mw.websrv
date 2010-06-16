@@ -143,7 +143,7 @@ LIBRARY wsnotdlg.lib
 #endif
 
 #ifdef EKA2
-  #if defined(ARMCC)
+  #if defined(EABI)
     DEFFILE ../eabi/SENNOTIFIERPLUGIN.DEF
   #elif defined(WINSCW)
     DEFFILE ../BWINSCW/SENNOTIFIERPLUGIN.DEF

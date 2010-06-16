@@ -57,7 +57,7 @@ SYSTEMINCLUDE   ../../inc
 LIBRARY           euser.lib 
 
 #ifdef SYMBIAN_SECURE_ECOM 
-  #if defined(ARMCC)
+  #if defined(EABI)
     DEFFILE ../eabi/SENNOTPLUGINDLGCLIENT.DEF
   #elif defined(WINSCW)
     DEFFILE ../BWINSCW/SENNOTPLUGINDLGCLIENT.DEF
@@ -67,7 +67,7 @@ LIBRARY           euser.lib
     DEFFILE ../BMARM/SENNOTPLUGINDLGCLIENT.DEF
   #endif
 #else // not SYMBIAN_SECURE_ECOM 
-  #if defined(ARMCC)
+  #if defined(EABI)
     DEFFILE ../EABI/SENNOTPLUGINDLGCLIENT_2.6.DEF
   #elif defined(WINSCW)
     DEFFILE ../BWINSCW/SENNOTPLUGINDLGCLIENT_2.6.DEF
