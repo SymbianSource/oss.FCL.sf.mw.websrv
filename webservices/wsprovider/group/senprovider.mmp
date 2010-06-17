@@ -47,7 +47,7 @@ UID             0x1000008d 0x10282C42
     #endif
 #endif
 
-#if defined(ARMCC)
+#if defined(EABI)
   DEFFILE     ../eabi/SENPROVIDER.DEF
 #elif defined(WINSCW)
   DEFFILE     ../BWINSCW/SENPROVIDER.DEF

@@ -129,7 +129,7 @@ LIBRARY wsCredentialManager.lib
     LIBRARY         WsStarXmlEngineSerializer.lib
 #endif
 
-#if defined(ARMCC)
+#if defined(EABI)
     DEFFILE     ../eabi/SENFRAMEWORK.DEF
 #elif defined(WINSCW)
     DEFFILE     ../BWINSCW/SENFRAMEWORK.DEF

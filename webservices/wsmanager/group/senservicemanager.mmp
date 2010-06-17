@@ -48,7 +48,7 @@ UID             0x1000008d 0x101F9739
     #endif
 #endif
 
-#if defined(ARMCC)
+#if defined(EABI)
 DEFFILE ../eabi/SENSERVMGR.DEF
 #elif defined(WINSCW)
 DEFFILE ../BWINSCW/SENSERVMGR.DEF

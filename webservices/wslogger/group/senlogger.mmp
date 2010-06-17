@@ -68,7 +68,7 @@ LIBRARY         versit.lib
 
 LANG            SC
 
-#if defined(ARMCC)
+#if defined(EABI)
   DEFFILE ../eabi/SENLOGGER.DEF
 #elif defined(WINSCW)
   DEFFILE ../BWINSCW/SENLOGGER.DEF

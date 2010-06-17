@@ -100,7 +100,7 @@ LIBRARY         wsMessages.lib
 #endif
 
 LANG        SC
-#if defined(ARMCC)
+#if defined(EABI)
   DEFFILE ../eabi/SENHOSTCONN.DEF
 #elif defined(WINSCW)
   DEFFILE ../BWINSCW/SENHOSTCONN.DEF

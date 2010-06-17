@@ -114,7 +114,7 @@ LIBRARY         wsLogger.lib    // for TLS based file logging
 #endif
 
 LANG        SC
-#if defined(ARMCC)
+#if defined(EABI)
   DEFFILE ../eabi/SENSERVCONN.DEF
 #elif defined(WINSCW)
   DEFFILE ../BWINSCW/SENSERVCONN.DEF

@@ -79,7 +79,7 @@ LIBRARY         XMLFRAMEWORK.lib
 LIBRARY         efsrv.lib  // fileserver
 #endif // EKA2
 
-#if defined(ARMCC)
+#if defined(EABI)
   DEFFILE ../eabi/SENXML.DEF
 #elif defined(WINSCW)
   DEFFILE ../BWINSCW/SENXML.DEF

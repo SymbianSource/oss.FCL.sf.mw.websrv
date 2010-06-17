@@ -75,7 +75,7 @@ LIBRARY			wsUtils.lib
 #endif
 LANG        SC
 
-#if defined(ARMCC)
+#if defined(EABI)
 #ifdef __ENABLE_ALR__
 	DEFFILE ../EABI/senconnagent32.def
 #else

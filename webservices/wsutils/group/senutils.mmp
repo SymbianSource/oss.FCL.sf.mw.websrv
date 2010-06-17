@@ -103,7 +103,7 @@ LIBRARY         wsxml.lib
 
 LANG            SC
 
-#if defined(ARMCC)
+#if defined(EABI)
 	#if defined (RD_SEN_COMPILE_SIS_PACKAGE_FILES)
 		DEFFILE ../EABI/SENUTILS_V2.DEF
 	#else

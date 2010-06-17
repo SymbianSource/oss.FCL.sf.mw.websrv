@@ -87,7 +87,7 @@ LIBRARY         SecEnv.lib
 #endif //WINSCW
 #endif // __CRYPTO_HW__
 /*
-#if defined(ARMCC)
+#if defined(EABI)
 LIBRARY PLPVARIANT.LIB
 #elif defined(WINSCW)
 #elif defined(WINS)
@@ -113,7 +113,7 @@ LIBRARY			wsFramework.lib
 LIBRARY         wsUtils.lib
 #endif
 
-#if defined(ARMCC)
+#if defined(EABI)
 DEFFILE ../eabi/SENIDENTITYMANAGER.DEF
 #elif defined(WINSCW)
 DEFFILE ../BWINSCW/SENIDENTITYMANAGER.DEF

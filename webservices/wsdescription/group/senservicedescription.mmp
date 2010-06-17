@@ -102,7 +102,7 @@ LIBRARY         wsLogger.lib
     LIBRARY         xmlframework.lib
 #endif // otherwise cXMLreader is used
 
-#if defined(ARMCC)
+#if defined(EABI)
 	#if defined (RD_SEN_COMPILE_SIS_PACKAGE_FILES)
 		DEFFILE ../EABI/SENSERVDESC_V2.DEF
 	#else
