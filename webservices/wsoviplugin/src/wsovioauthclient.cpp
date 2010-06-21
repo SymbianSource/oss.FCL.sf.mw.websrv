@@ -231,15 +231,33 @@ TInt CWSOviOAuthClient::ValidateL( CWSOviServiceSession& aSession,
         
         TPtrC8 userName(KNullDesC8);
         TPtrC8 password(KNullDesC8);
+		TPtrC8 validator(KNullDesC8);
         if ( authenticationInfoPromptedFromUser )
             {
+		     TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel," --- Setting username/password from authenticationInfoPromptedFromUser");
             userName.Set(authInfo().iUsername);
             password.Set(authInfo().iPassword);
             }
         else
             {
+		     TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel," --- Setting username/password from IDP");
             userName.Set(iIdentityProvider->UserName());
             password.Set(iIdentityProvider->Password());
+
+			/* Below code will be required when we need to get validator from IDP but Now Crashes */
+			/*CSenElement* validatorTag(NULL);
+			if (iIdentityProvider->FrameworkId() == KDefaultOviFrameworkID)
+				{
+				CSenElement* el( NULL );
+				iIdentityProvider->AccountExtensions( el );
+				if (el)
+					{
+					_LIT8(KWSAccAttrAccountValidator,      "Validator");
+					validatorTag = el->Element(KWSAccAttrAccountValidator);
+					validator.Set(validatorTag->Content());
+				        TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviOAuthClient::ValidateL() - NCIM Valiadtor read successfully");
+					}
+				}*/
             }
         HBufC8* created(NULL);
         //CWSOviSessionContext* sessioncontext = iWSOviServiceSession->SessionContext();
@@ -259,7 +277,8 @@ TInt CWSOviOAuthClient::ValidateL( CWSOviServiceSession& aSession,
         CreateBodyL(*version,
                     userName,
                     password,
-					*created);
+			*created/*,
+			validator*/);
         CleanupStack::PopAndDestroy(created);
 
         
@@ -372,10 +391,12 @@ TInt CWSOviOAuthClient::ValidateL( CWSOviServiceSession& aSession,
             time -= TTimeIntervalMicroSeconds(diff.Int64());
             HBufC8* created = SenCryptoUtils::GetTimestampL(time);
             CleanupStack::PushL(created);
+							
             CreateBodyL(*version,
                         userName,
                         password,
-                        *created);
+                        *created/*,
+			validator*/);
             CleanupStack::PopAndDestroy(created);
             retVal = iAuthSession->SubmitL(*iBody, *transPropAsXml, *this, response);
             aSession.SetTransportL(ipTransport);//ownership moved
@@ -733,7 +754,7 @@ TBool CWSOviOAuthClient::HasEqualPrimaryKeysL(MSenServiceDescription& aCandidate
     return retVal; 
     }
 
-void CWSOviOAuthClient::CreateBodyL(const TDesC8& aXmlNs, const TDesC8& aUsername, const TDesC8& aPassword, const TDesC8& aCreated)
+void CWSOviOAuthClient::CreateBodyL(const TDesC8& aXmlNs, const TDesC8& aUsername, const TDesC8& aPassword, const TDesC8& aCreated, const TDesC8& aValidator)
     {
     if(aPassword == KNullDesC8())
     	{
@@ -744,7 +765,8 @@ void CWSOviOAuthClient::CreateBodyL(const TDesC8& aXmlNs, const TDesC8& aUsernam
     HBufC8* nonce = SenCryptoUtils::GetRandomNonceL();
     CleanupStack::PushL(nonce);
     HBufC8* passDec = SenXmlUtils::DecodeHttpCharactersLC( aPassword );
-    HBufC8* digest = CWSOviUtils::DigestAuthStringL(*nonce, aCreated, aUsername, *passDec);
+	HBufC8* digest = CWSOviUtils::DigestAuthStringL(*nonce, aCreated, aUsername, *passDec, aValidator);
+
     CleanupStack::PopAndDestroy(passDec);
     CleanupStack::PushL(digest);
                     

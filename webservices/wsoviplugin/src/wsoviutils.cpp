@@ -84,7 +84,7 @@ HBufC8* CWSOviUtils::NormalizeStringLC(const TDesC8& aMethod, const TDesC8& aUrl
 	return pNormalizedString;
 	}
 
-HBufC8* CWSOviUtils::DigestAuthStringL(const TDesC8& aNonce, const TDesC8& aTimestamp, const TDesC8& aUser, const TDesC8& aPassword)
+HBufC8* CWSOviUtils::GenerateValidatorL(const TDesC8& aUser, const TDesC8& aPassword)
 	{
 	_LIT8(KFormatUser, "/accounts/%S/");
 	HBufC8* validatorString = HBufC8::NewLC(KFormatUser().Length()+aUser.Length());
@@ -93,17 +93,40 @@ HBufC8* CWSOviUtils::DigestAuthStringL(const TDesC8& aNonce, const TDesC8& aTime
 	CSHA1* sha1 = CSHA1::NewL();
 	sha1->Update(*validatorString);
 	TPtrC8 validator = sha1->Final(aPassword);
-	CleanupStack::PopAndDestroy(validatorString);
+	CleanupStack::PopAndDestroy(validatorString);		
 	CleanupStack::PushL(sha1);
 	HBufC8* base64validator = SenCryptoUtils::EncodeBase64L(validator);
-	sha1->Reset();
-	sha1->Update(aNonce);
-	sha1->Update(aTimestamp);
-	TPtrC8 digest = sha1->Final(*base64validator);
-	delete base64validator;
-	HBufC8* digestBase64 = SenCryptoUtils::EncodeBase64L(digest);
 	CleanupStack::PopAndDestroy(sha1);
-	return digestBase64;
+	return base64validator;
+	}
+
+HBufC8* CWSOviUtils::DigestAuthStringL(const TDesC8& aNonce, const TDesC8& aTimestamp, const TDesC8& aUser, const TDesC8& aPassword, const TDesC8& aValidator )
+	{
+	if ( aValidator == KNullDesC8 )
+		{
+		CSHA1* sha1 = CSHA1::NewL();
+		CleanupStack::PushL(sha1);
+		HBufC8* base64validator = GenerateValidatorL(aUser, aPassword);
+		//sha1->Reset();
+		sha1->Update(aNonce);
+		sha1->Update(aTimestamp);
+		TPtrC8 digest = sha1->Final(*base64validator);
+		delete base64validator;
+		HBufC8* digestBase64 = SenCryptoUtils::EncodeBase64L(digest);
+		CleanupStack::PopAndDestroy(sha1);
+		return digestBase64;
+		}
+	else
+		{
+		CSHA1* sha1 = CSHA1::NewL();
+		CleanupStack::PushL(sha1);
+		sha1->Update(aNonce);
+		sha1->Update(aTimestamp);		
+		TPtrC8 digest = sha1->Final(aValidator);
+		HBufC8* digestBase64 = SenCryptoUtils::EncodeBase64L(digest);
+		CleanupStack::PopAndDestroy(sha1);
+		return digestBase64;
+		}
 	}
 
 
