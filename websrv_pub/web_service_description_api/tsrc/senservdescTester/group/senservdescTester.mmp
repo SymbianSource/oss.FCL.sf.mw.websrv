@@ -37,7 +37,6 @@ CAPABILITY      ALL -TCB
 //TARGETPATH      ?target_path
 DEFFILE         senservdescTester.def
 
-SYSTEMINCLUDE   /epoc32/include 
 MW_LAYER_SYSTEMINCLUDE //SYSTEMINCLUDE
 #ifdef SBSV2
 	USERINCLUDE     ../inc 

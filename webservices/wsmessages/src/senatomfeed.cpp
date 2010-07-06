@@ -113,7 +113,7 @@ EXPORT_C void CSenAtomFeed::RemoveEntryL(const TDesC8& aEntryId )
     //from table
     for (TInt aIndex = 0; aIndex < iEntries.Count(); aIndex++ )
         {
-        const TDesC8& tmp = iEntries[aIndex]->IdTag();//delete this
+       // const TDesC8& tmp = iEntries[aIndex]->IdTag();//delete this
         if(aEntryId.Compare(iEntries[aIndex]->IdTag())==0)
             {
             delete iEntries[aIndex];

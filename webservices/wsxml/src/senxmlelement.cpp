@@ -1232,13 +1232,14 @@ EXPORT_C const CSenNamespace* CSenXmlElement::AddNamespaceL(
     if (pNamespace == NULL) // does not exist
         {
         CSenNamespace* pNewNamespace =
-            CSenNamespace::NewL(aNewNamespace.Prefix(), aNewNamespace.URI());
-
+        CSenNamespace::NewL(aNewNamespace.Prefix(), aNewNamespace.URI());
+		CleanupStack::PushL(pNewNamespace); 
         // allocate array if not already reserved
         if(!ipNamespaces)
             {
             ipNamespaces = new (ELeave) RPointerArray<CSenNamespace>;
             }
+        CleanupStack::Pop();			
         ipNamespaces->Append(pNewNamespace);
         pNamespace = pNewNamespace;
         }
@@ -1254,12 +1255,14 @@ EXPORT_C const CSenNamespace* CSenXmlElement::AddNamespaceL(
 		{
 		if ( aUri.Length() > 0)
 			{
-				pNamespace = CSenNamespace::NewL(aPrefix, aUri);
+			pNamespace = CSenNamespace::NewL(aPrefix, aUri);
+			CleanupStack::PushL(pNamespace); 
 			// allocate array if not already reserved
 			if(!ipNamespaces)
 				{
 				ipNamespaces = new (ELeave) RPointerArray<CSenNamespace>;
 				}
+			 CleanupStack::Pop();				
 			ipNamespaces->Append(pNamespace);
 			}
 		}

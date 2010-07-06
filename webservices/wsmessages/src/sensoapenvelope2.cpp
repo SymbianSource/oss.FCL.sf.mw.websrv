@@ -188,7 +188,8 @@ CSenSoapEnvelope2::CSenSoapEnvelope2()
 :   ipBodyFragment(NULL),
     ipHeaderFragment(NULL),
     ipSoapAction(NULL),
-    iFault(EFalse)
+    iFault(EFalse),
+    iTransactionId(KErrNotFound)
     {
     }
 

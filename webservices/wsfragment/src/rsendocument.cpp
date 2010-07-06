@@ -59,12 +59,17 @@ EXPORT_C RSenDocument RSenDocument::NewLC()
     RXmlEngDocument doc;
     doc.OpenL(domImpl);
     RSenDocument document;
+    CleanupClosePushL(document);
+	document.ipData =  NULL;
+	document.iInternal = NULL;
     document.ipData = new (ELeave) TSenDocumentData;
     document.iInternal =
         (reinterpret_cast<RSenDocument*>(const_cast<RXmlEngDocument*>(&doc)))->iInternal;
     document.ipData->iInternal = document.iInternal;
+	document.ipData->ipOpenDocuments = NULL;
     document.ipData->ipOpenDocuments = new (ELeave) TInt(1);
     document.ipData->iDomImpl = domImpl;
+    CleanupStack::Pop();
     TCleanupItem cleanup(CleanupRSenDocument, document.ipData);
     CleanupStack::PushL(cleanup);
     return document;
@@ -89,12 +94,17 @@ EXPORT_C RSenDocument RSenDocument::NewLC(void* aInternal)
     RXmlEngDocument doc;
     doc.OpenL(domImpl, aInternal);
     RSenDocument document;
+    CleanupClosePushL(document);
+	document.ipData =  NULL;
+	document.iInternal = NULL;	 
     document.ipData = new (ELeave) TSenDocumentData;
     document.iInternal =
         (reinterpret_cast<RSenDocument*>(const_cast<RXmlEngDocument*>(&doc)))->iInternal;
     document.ipData->iInternal = document.iInternal;
+	document.ipData->ipOpenDocuments = NULL;	
     document.ipData->ipOpenDocuments = new (ELeave) TInt(1);
     document.ipData->iDomImpl = domImpl;
+     CleanupStack::Pop();
     TCleanupItem cleanup(CleanupRSenDocument, document.ipData);
     CleanupStack::PushL(cleanup);
     return document;
@@ -108,26 +118,28 @@ EXPORT_C RSenDocument RSenDocument::Copy()
 
 EXPORT_C void RSenDocument::Close()
     {
-    *ipData->ipOpenDocuments = *ipData->ipOpenDocuments - 1;
-    if ( !*ipData->ipOpenDocuments )
-        {
-        RXmlEngDOMImplementation domImpl = ipData->iDomImpl;
-        iInternal = ipData->iInternal;
-        delete ipData->ipOpenDocuments;
-        delete ipData;
-        RXmlEngDocument::Close();
-        domImpl.Close();
-    	TBool* pDisabled = (TBool*)Dll::Tls();
-    	if ( !pDisabled )
-    	    {
-            XmlEngineCleanup();
-    	    }
-        }
-    else
-        {
-        iInternal = NULL;
-        }
-       
+	if(ipData && ipData->ipOpenDocuments)
+		{
+	    *ipData->ipOpenDocuments = *ipData->ipOpenDocuments - 1;
+	    if ( !*ipData->ipOpenDocuments )
+	        {
+	        RXmlEngDOMImplementation domImpl = ipData->iDomImpl;
+	        iInternal = ipData->iInternal;
+	        delete ipData->ipOpenDocuments;
+	        delete ipData;
+	        RXmlEngDocument::Close();
+	        domImpl.Close();
+	    	TBool* pDisabled = (TBool*)Dll::Tls();
+	    	if ( !pDisabled )
+	    	    {
+	            XmlEngineCleanup();
+	    	    }
+	        }
+	    else
+	        {
+	        iInternal = NULL;
+	        }
+       }
     }
 
 EXPORT_C void RSenDocument::Destroy()

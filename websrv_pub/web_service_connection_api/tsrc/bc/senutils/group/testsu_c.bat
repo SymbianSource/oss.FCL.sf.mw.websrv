@@ -20,4 +20,4 @@ md e:\BCTest\results
 
 ATSINTERFACE.EXE -testmodule SenUtilsBCTest
 
-copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\ASP_SenUtils.txt
+copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_SenUtils.txt

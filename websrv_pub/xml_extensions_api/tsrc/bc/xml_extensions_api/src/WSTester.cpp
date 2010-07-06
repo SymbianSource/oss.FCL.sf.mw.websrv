@@ -92,7 +92,8 @@ CWSTester::CWSTester(
 //
 void CWSTester::ConstructL()
     {
-    //__UHEAP_MARK;
+ //   __UHEAP_MARK;
+    TestModuleIf().SetBehavior(CTestModuleIf::ETestLeaksHandles);
     iLog = CStifLogger::NewL( KWSTesterLogPath, 
                           KWSTesterLogFile,
                           CStifLogger::ETxt,

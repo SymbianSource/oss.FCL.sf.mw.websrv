@@ -21,4 +21,4 @@ md e:\BCTest\results
 
 ATSINTERFACE.EXE -testmodule NewSoapClassesBCTest
 
-copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\ASP_NewSoapClasses.txt
+copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_NewSoapClasses.txt

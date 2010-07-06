@@ -787,8 +787,6 @@ TBool CServicePolicy::ClientPolicy(const TDesC8& aKey)
             return EFalse;
     }                    
 
-    return EFalse;
-    
 }
 HBufC8* CServicePolicy::ClientPolicyValue(const TDesC8& aKey)
     {

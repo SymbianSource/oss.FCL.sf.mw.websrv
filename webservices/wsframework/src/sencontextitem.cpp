@@ -107,6 +107,7 @@ EXPORT_C CSenContextItem::~CSenContextItem()
                     ipData = NULL;
                     }
                 }
+                break;
             case ECSenWSDescription:
                 {
                 CSenWSDescription* p = (CSenWSDescription*) ipData;
