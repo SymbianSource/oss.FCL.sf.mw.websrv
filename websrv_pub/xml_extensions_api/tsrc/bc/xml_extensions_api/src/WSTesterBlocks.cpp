@@ -248,6 +248,11 @@ TInt CWSTester::_S_RegisterIdentityProvider( CStifItemParser& aItem ){
 		{
 			// Test case not passed
 			iLog->Log(_L("Registering identity provider 1 failed. Error: %d"), error );
+			if(error == -30321)
+			{
+				iWriter.WriteL(_L8("Registering identity provider 1 failed. End-user denies permission."));
+				iWriter.CommitL();
+			}
 			return error;
 		}
         return KErrNone;
@@ -279,6 +284,11 @@ TInt CWSTester::_S_RegisterServiceDescription( CStifItemParser& aItem ){
 	if (error != KErrNone )
 	{
 		iLog->Log(_L("Registering Service Description failed. Error: %d"), error );
+		if(error == -30321)
+		{
+			iWriter.WriteL(_L8("Registering Service Description failed.End-user denies permission"));
+			iWriter.CommitL();
+		}
 		return error;
 	}
     return KErrNone;
@@ -464,7 +474,7 @@ TInt CWSTester::_S_StartTransaction( CStifItemParser& aItem ) {
 
 	TInt retVal = iSenServiceConnection->StartTransaction();
 	
-	iLog->Log(_L("### _S_StartTransaction -> ended###"));
+	iLog->Log(_L("### _S_StartTransaction -> ended: %d"), retVal);
 	return retVal;
 }
 
@@ -474,7 +484,7 @@ TInt CWSTester::_S_TransactionCompleted( CStifItemParser& aItem ) {
 
 	TInt retVal = iSenServiceConnection->TransactionCompleted();
 	
-	iLog->Log(_L("### _S_TransactionCompleted -> ended###"));
+	iLog->Log(_L("### _S_TransactionCompleted -> ended: %d"), retVal);
 	return retVal;
 }
 
@@ -2733,6 +2743,7 @@ void CWSTester::SetStatus(const TInt aStatus)
 	{
 
 		iLog->Log(_L("******* SetStatus -> Started! ********"));
+		iLog->Log(_L("Status: %d"), aStatus);
 
 	switch( aStatus )
 		{
@@ -3267,7 +3278,6 @@ HBufC8* CWSTester::DeBase64DescL(TDesC8& aMessage)
 
 	HBufC8* pResult8 = HBufC8::NewLC( source8.Length() );
 	TPtr8 result8 = pResult8->Des();
-	iBase64Codec.Initialise();
 	iBase64Codec.Decode(source8	, result8);
 	aMessage = result8;
 	CleanupStack::Pop(); // pResult8

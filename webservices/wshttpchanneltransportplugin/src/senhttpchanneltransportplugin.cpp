@@ -482,10 +482,7 @@ void CSenHttpChannelTransportPlugin::ResponseErrorL(TInt aRequestId, TInt aError
     	{
     	iHttpChannel->SetExplicitIapDefined(ETrue);
     	}	
-    if(iHttpChannel)
-    	{
     	iHttpChannel->DisableTimeOutL(aRequestId);
-    	}
 #ifdef _SENDEBUG    
     TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KNormalLogLevel, _L8("- Request's txnID: %d"), aRequestId));
     if ( apErrorBody )

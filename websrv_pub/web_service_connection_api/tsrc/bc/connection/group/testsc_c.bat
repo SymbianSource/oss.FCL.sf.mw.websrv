@@ -20,4 +20,4 @@ md e:\BCTest\results
 
 ATSINTERFACE.EXE -testmodule CSenServiceConnectionBCTest
 
-copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\ASP_ServiceConnection.txt
+copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_ServiceConnection.txt

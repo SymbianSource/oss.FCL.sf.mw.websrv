@@ -33,7 +33,6 @@ SOURCE                  TestHostlet.cpp
 
 //USERINCLUDE             ../inc
 
-//SYSTEMINCLUDE           /epoc32/include
 SYSTEMINCLUDE       	/Epoc32/include/libc
 MW_LAYER_SYSTEMINCLUDE //SYSTEMINCLUDE
 

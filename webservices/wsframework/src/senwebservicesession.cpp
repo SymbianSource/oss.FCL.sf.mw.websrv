@@ -98,6 +98,7 @@ EXPORT_C void CSenWebServiceSession::ConstructL()
     // Init member variables
     iClientServerInterval = 0;
     iValidUntil = Time::NullTTime();
+    iMaxTime = Time::NullTTime();;
     iFrameworkId = iFramework.Id().AllocL();
     }
 
@@ -1553,9 +1554,12 @@ EXPORT_C const TTime& CSenWebServiceSession::ValidUntilL()
         }
     else
         {
-        const TTime& MAX_TIME = Time::MaxTTime();
-        return MAX_TIME; // if no expiration was set, the session is
+        //const TTime& MAX_TIME = Time::MaxTTime();
+        //return MAX_TIME; // if no expiration was set, the session is
                          // valid forever(!)
+         iMaxTime = Time::MaxTTime();
+         return iMaxTime;             
+                         
         }
     }
 

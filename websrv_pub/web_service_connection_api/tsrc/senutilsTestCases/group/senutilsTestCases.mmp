@@ -55,7 +55,6 @@ SOURCE          senutilsTestCasesBlocks.cpp
 //RESOURCE        resource_file2
 
 MW_LAYER_SYSTEMINCLUDE //SYSTEMINCLUDE
-SYSTEMINCLUDE   /epoc32/include 
 SYSTEMINCLUDE   /epoc32/include/xml
 SYSTEMINCLUDE   /epoc32/include/libc
 

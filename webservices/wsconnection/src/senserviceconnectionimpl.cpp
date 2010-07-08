@@ -621,6 +621,7 @@ TInt CSenServiceConnectionImpl::SubmitL(CSenConnectionChunk& aClientOp)
             TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"SubmitL - ESenInternalError");
             retVal = KErrSenInternal;
             }
+            break;
         default:
             {
             TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"SubmitL - default");
@@ -2511,16 +2512,19 @@ TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
     		}
     	else
         	{
-    	TMessage message = ipSenServiceDispatcher->GetMessageFromQueue(aTransactionID);
-    	CSenAsyncOperation* pAsyncOp = message.iSenAsyncOperation;
-    	if (pAsyncOp)
-    	    {
-            TInt idx = AsyncOpsArrayL().Find(pAsyncOp);    
-            if (idx >= 0)
-                {
-                AsyncOpsArrayL().Remove(idx);
-                }
-    	    pAsyncOp->iActive = NULL;
+	    	TMessage message = ipSenServiceDispatcher->GetMessageFromQueue(aTransactionID);
+	    	CSenAsyncOperation* pAsyncOp = message.iSenAsyncOperation;
+	    	if (pAsyncOp)
+	    	    {
+	            TInt idx(-1);
+	            TRAP( retVal,
+					idx = AsyncOpsArrayL().Find(pAsyncOp);
+		            if (idx >= 0)
+		                {
+		                AsyncOpsArrayL().Remove(idx);
+		                }
+				  );
+	    	    pAsyncOp->iActive = NULL;
     	    
     	    pAsyncOp->Cancel();
             delete pAsyncOp;

@@ -56,7 +56,6 @@ DEFFILE         senservicemanagerTester.def
 
 	SOURCEPATH      ../src
 #endif // SBSV2
-SYSTEMINCLUDE   /epoc32/include 
 MW_LAYER_SYSTEMINCLUDE //SYSTEMINCLUDE
 SYSTEMINCLUDE   /epoc32/include/libc
 
