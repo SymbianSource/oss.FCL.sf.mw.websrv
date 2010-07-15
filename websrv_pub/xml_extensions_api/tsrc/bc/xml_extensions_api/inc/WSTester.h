@@ -24,8 +24,8 @@
 #include <StifLogger.h>
 #include <TestScripterInternal.h>
 #include <StifTestModule.h>
-#include <f32file.h>
-#include <imcvcodc.h> // for base64 codec
+#include <s32file.H>
+#include <tconvbase64.h>
 #include <s32strm.h>
 
 //Sen
@@ -484,7 +484,7 @@ virtual TInt _S_SAXTest( CStifItemParser& aItem );
         //logging
         CStifLogger* iLog;
         //For decrypting data....
-		TImCodecB64 iBase64Codec;
+				TBase64 iBase64Codec;
         RFs	iFsSession;
         TInt iRunCase;
         TInt iStarted;

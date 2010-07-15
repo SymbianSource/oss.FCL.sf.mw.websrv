@@ -11,15 +11,17 @@
 ;
 ; Contributors:
 ;
-; Description:        
+; Description:
 ;
+; Languages
+; none -  English only by default
 &EN
 
 ; Installation header
 ; Only one component name as we only support English
 ; UID is the main app's UID
 
-#{"WebServices Description"},(0x10282CAB),3,0,0,TYPE=SA
+#{"WebServices Utils"},(0x20016BAB),3,0,0,TYPE=SA
 [0x101F7961],0,0,0,{"Series60ProductID"}
 
 ; Non-localised vendor name
@@ -29,6 +31,6 @@
 %{"Nokia Corporation"}
 
 ; Files to install and to where
-"\Epoc32\Release\armv5\urel\SenServDescBCTest.dll"-"!:\sys\bin\SenServDescBCTest.dll"
-"\Epoc32\winscw\c\testSD_c.bat"-"!:\testSD.bat"
-"\Epoc32\winscw\c\testframework\testframework_senservdesc.ini"-"!:\testframework\testframework_senservdesc.ini"
+"\Epoc32\Release\armv5\urel\SenUtilsBCTest.dll"-"!:\sys\bin\SenUtilsBCTest.dll"
+"\Epoc32\winscw\c\testSU_c.bat"-"!:\testSU.bat"
+"\Epoc32\winscw\c\testframework\testframework_senutils.ini"-"!:\testframework\testframework_senutils.ini"

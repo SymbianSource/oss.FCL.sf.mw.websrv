@@ -47,11 +47,11 @@
  	}
   	MSenMessage::TClass CTestMSenMessage::Type() 
   	{
-  		EMessageBase;
+  		return EMessageBase;
   	}
   	MSenMessage::TDirection CTestMSenMessage::Direction() 
   	{
-  		EOutbound;
+  		return EOutbound;
   	}
 	TInt CTestMSenMessage::SetContext(MSenMessageContext* apNotOwnedContext) 
 	{

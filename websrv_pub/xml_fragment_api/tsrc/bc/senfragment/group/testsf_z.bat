@@ -14,10 +14,11 @@ rem
 rem Description:        
 rem
 
-copy C:\TestFramework\TestFramework_hostlet.ini C:\TestFramework\TestFramework.ini
+copy z:\TestFramework\TestFramework_senfragment.ini c:\TestFramework\TestFramework.ini
+
 md e:\BCTest
 md e:\BCTest\results
 
-ATSINTERFACE.EXE -testmodule HostletConnectionBCTest
+ATSINTERFACE.EXE -testmodule SenFragmentBCTest
 
-copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_HostConn.txt
+copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_SenFragment.txt

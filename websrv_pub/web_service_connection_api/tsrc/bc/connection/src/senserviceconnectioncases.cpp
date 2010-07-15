@@ -46,8 +46,8 @@
 
 //#include <SenVtcpTransportProperties.h>
 #include "testproperty.h"
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
+#include <XmlEngChunkContainer.h>
+#include <XmlEngFileContainer.h>
 //#include <XmlEngSerializer.h>
 
 #include <e32base.h> // for CActive
@@ -83,11 +83,11 @@ namespace
     _LIT8(KTestPassword,        "012345678901234");
 #elif VALIMO_ADDRESSBOOK_SERVICE
     // Addressbook service hosted inside Nokia intra by ASP / testing team
-    _LIT8(KWSPContract,         "urn:nokia:test:addrbook:2004-09");
+//    _LIT8(KWSPContract,         "urn:nokia:test:addrbook:2004-09");
     _LIT8(KAuthServEndpoint,    "http://10.21.32.110/tfs/IDPSSO_IDWSF10");
-    _LIT8(KASProviderID,        "provider01");
-    _LIT8(KTestAuthzID,         "john");
-    _LIT8(KTestPassword,        "password");
+//    _LIT8(KASProviderID,        "provider01");
+//    _LIT8(KTestAuthzID,         "john");
+//    _LIT8(KTestPassword,        "password");
 #elif SYSOPENDIGIA_ADDRESSBOOK_SERVICE
     _LIT8(KWSPContract,         "urn:nokia:test:addrbook:2004-09");
     _LIT8(KAuthServEndpoint,    "http://ys01liw022.partner.yomi.com:9080/tfs/IDPSSO_IDWSF");
@@ -104,8 +104,8 @@ namespace
 #endif // FN_ADDRESSBOOK_SERVICE
 
 
-    _LIT8(KASContract,              "urn:liberty:as:2004-04");
-    _LIT8(KHttpsEndPoint,           "https://10.21.32.110/sereneHardCoded/WS_WSI_R9980_001" );    
+//    _LIT8(KASContract,              "urn:liberty:as:2004-04");
+//    _LIT8(KHttpsEndPoint,           "https://10.21.32.110/sereneHardCoded/WS_WSI_R9980_001" );    
     
     _LIT8(KWSIFrameworkID,          "WS-I");
     _LIT8(KIDWSFFrameworkID,        "ID-WSF");
@@ -133,21 +133,21 @@ namespace
 // ARMv5
     _LIT(KIAPName,                  "Internet");
 #endif  
-    _LIT8(KLoggerFileNameProperty,  "HttpLoggerFileName");
+//    _LIT8(KLoggerFileNameProperty,  "HttpLoggerFileName");
 
-    _LIT(KFileToRead,               "c:\\Logs\\LoggingHttpFilter\\httptrace.xml");
-    _LIT8(KFileName,                "httptrace.xml");
+//    _LIT(KFileToRead,               "c:\\Logs\\LoggingHttpFilter\\httptrace.xml");
+//    _LIT8(KFileName,                "httptrace.xml");
 
-    _LIT8(KHTTPMethodGet,           "GET");
-    _LIT8(KHTTPMethodPost,          "POST");
+//    _LIT8(KHTTPMethodGet,           "GET");
+//    _LIT8(KHTTPMethodPost,          "POST");
     
 //    const TBool MultipleSimultanousRHttpSessionsSupported = EFalse;
     // If IAP changes all previously sent messages will be canceled.
     
     
     //_LIT8(KProxyHost,             "esprx00.nokia.com"); 
-    _LIT8(KProxyHost,               "172.19.160.50"); // IP address to: bsprx01.americas.nokia.com
-    const TInt KProxyPort =         8080;
+//    _LIT8(KProxyHost,               "172.19.160.50"); // IP address to: bsprx01.americas.nokia.com
+//    const TInt KProxyPort =         8080;
 
     //MSN Constants :
     //---------------
@@ -155,7 +155,7 @@ namespace
     _LIT8(KPassportPass,        "M1nkk1s");
 
     _LIT8(KStsEndpoint,         "https://login.live.com/rst2.srf");
-    _LIT8(KMSNProxy,            "tcp.mws.mobile.live.com");
+//    _LIT8(KMSNProxy,            "tcp.mws.mobile.live.com");
     //_LIT8(KMetadataEndpoint,    "http://10.132.11.31/WSStar/secpolicy/secpol.xml");
     _LIT8(KMetadataEndpoint, "https://http.mws.mobile.live.com/2006/10/MWP2007_02/SecurityPolicy/Default.aspx");   
 
@@ -597,6 +597,7 @@ TInt CSenServiceConnectionBCTest::RegisterSTSL()
 
     CleanupStack::PopAndDestroy(pattern);
     CleanupStack::PopAndDestroy(manager);
+    return error;
     }
 
 TInt CSenServiceConnectionBCTest::RegisterSTSInvalidPasswordL() 
@@ -630,6 +631,7 @@ TInt CSenServiceConnectionBCTest::RegisterSTSInvalidPasswordL()
 
     CleanupStack::PopAndDestroy(pattern);
     CleanupStack::PopAndDestroy(manager);
+    return error;
     }
 
 TInt CSenServiceConnectionBCTest::UnregisterSTSL() 
@@ -663,6 +665,7 @@ TInt CSenServiceConnectionBCTest::UnregisterSTSL()
 
     CleanupStack::PopAndDestroy(pattern);
     CleanupStack::PopAndDestroy(manager);
+    return error;
     }
     
 TInt CSenServiceConnectionBCTest::SetPolicyL( CSenXmlServiceDescription* pServDesc,
@@ -677,11 +680,13 @@ TInt CSenServiceConnectionBCTest::SetPolicyL( CSenXmlServiceDescription* pServDe
 
     if(pValue==KNullDesC8())
         {
-        clientPolicy->AddElementL(pName);
+        TRAPD(err, clientPolicy->AddElementL(pName));
+        return err;
         }
         else
         {
-        clientPolicy->AddElementL(pName).SetContentL(pValue);
+        TRAPD(err1, clientPolicy->AddElementL(pName).SetContentL(pValue));
+        return err1;
         }
     }
     
@@ -701,6 +706,7 @@ TInt CSenServiceConnectionBCTest::CreateConnectionToMessengerServiceL()
     // create connection    
     iServiceConnection = CSenServiceConnection::NewL(*this, *pServiceDesc, *this);
     CleanupStack::PopAndDestroy(pServiceDesc);
+    return KErrNone;
     }
 
 TInt CSenServiceConnectionBCTest::CreateConnectionToMessengerServiceWithoutCallbackL()
@@ -720,6 +726,7 @@ TInt CSenServiceConnectionBCTest::CreateConnectionToMessengerServiceWithoutCallb
     // create connection    
     iServiceConnection = CSenServiceConnection::NewL(*this, *pServiceDesc);
     CleanupStack::PopAndDestroy(pServiceDesc);
+    return KErrNone;
     }
 
 TInt CSenServiceConnectionBCTest::AddDeviceOptionsHeader2L(CSenSoapMessage2& aMessage)
@@ -748,6 +755,8 @@ TInt CSenServiceConnectionBCTest::AddDeviceOptionsHeader2L(CSenSoapMessage2& aMe
 
     TXmlEngElement child1_3_2 = child1_3.AddNewElementSameNsL(_L8("Version"));
     child1_3_2.AddTextL(_L8("NO_Version"));
+    
+    return KErrNone;
     }
 
 TInt CSenServiceConnectionBCTest::AddApplicationHeader2L(CSenSoapMessage2& aMessage)
@@ -764,12 +773,15 @@ TInt CSenServiceConnectionBCTest::AddApplicationHeader2L(CSenSoapMessage2& aMess
 
     TXmlEngElement child2 = application.AddNewElementSameNsL(_L8("Version"));
     child2.AddTextL(_L8("NO_VERSION"));
+    
+    return KErrNone;
     }
     
 TInt CSenServiceConnectionBCTest::StartActiveScheduler(TInt aNumberOfPendingOps)
     {
     iNumberOfPendingOps = aNumberOfPendingOps;
     CActiveScheduler::Start();
+    return KErrNone;
     }
        
 TInt CSenServiceConnectionBCTest::StopActiveScheduler()
@@ -779,6 +791,7 @@ TInt CSenServiceConnectionBCTest::StopActiveScheduler()
       {
       CActiveScheduler::Stop();
       }	
+     return KErrNone;
     }
 
 const CSenIdentityProvider* CSenServiceConnectionBCTest::IdentityProviderL() const
@@ -824,8 +837,8 @@ void CSenServiceConnectionBCTest::HandleMessageL(const TDesC8& aMessage)
         TSenDataTrafficDetails details;
         TSenDataTrafficOperations operations;
         iServiceConnection->DataTrafficDetails(details,operations);
-        TInt BytesSent = details.iTotalBytesSent;
-        TInt BytesRecieved = details.iTotalBytesRecieved;
+        //TInt BytesSent = details.iTotalBytesSent;
+        //TInt BytesRecieved = details.iTotalBytesRecieved;
         }
     
     StopActiveScheduler();
@@ -1672,7 +1685,10 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SendL_RFileL_IPCBigre
     User::LeaveIfError(this->iFsSessionHandle.ShareProtected());
 
 	retVal=iRFileHandle.Open(iFsSessionHandle, _L("c:\\private\\101FB3E7\\WS_IPCImpBigRequest"), EFileStream|EFileRead);
-	
+	if(retVal != KErrNone)
+		{
+			return retVal;
+		}
 	CleanupClosePushL(iRFileHandle);
 	TInt transactionIdOrError = iServiceConnection->SendL(iRFileHandle);
 	//LOCAL_ASSERT(transactionIdOrError2 > KErrNone);
@@ -1710,7 +1726,11 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL_IPCBig
     User::LeaveIfError(this->iFsSessionHandle.ShareProtected());
 
 	retVal=iRFileHandle.Open(iFsSessionHandle, _L("c:\\private\\101FB3E7\\WS_IPCImpBigRequest"), EFileStream|EFileRead);
-	
+	if(retVal != KErrNone)
+		{
+			return retVal;
+		}
+
 	CleanupClosePushL(iRFileHandle);
 	HBufC8 *pMsgBuf = NULL;// Buffer to get response
 	TInt transactionIdOrError = iServiceConnection->SubmitL(iRFileHandle, pMsgBuf);
@@ -1752,7 +1772,11 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL_MTOM( 
     User::LeaveIfError(this->iFsSessionHandle.ShareProtected());
 
 	retVal=iRFileHandle.Open(iFsSessionHandle, _L("c:\\private\\101FB3E7\\testPic9.jpg"), EFileStream|EFileRead);
-	
+	if(retVal != KErrNone)
+		{
+			return retVal;
+		}
+
 	CleanupClosePushL(iRFileHandle);
 	HBufC8 *pMsgBuf = NULL;// Buffer to get response
 	TInt transactionIdOrError = iServiceConnection->SubmitL(iRFileHandle, pMsgBuf);
@@ -1797,7 +1821,7 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL_MTOM( 
 TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL( TTestResult& aResult )
     {
 	SetupL() ;
-	TInt retVal(KErrNone);
+	//TInt retVal(KErrNone);
 	iSenXmlServiceDescription = CSenXmlServiceDescription::NewL();
 	iSenXmlServiceDescription->SetFrameworkIdL(KIDWSFFrameworkID);    
 	iSenXmlServiceDescription->SetEndPointL(KAddressBookServiceId);
@@ -1806,12 +1830,17 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL( TTest
 	TInt err(KErrNone);
 
 	//iServiceConnection = CSenServiceConnection::NewL(*this, KAddressBookServiceId());
-	iServiceConnection = CSenServiceConnection::NewLC(*this, *iSenXmlServiceDescription);
+	iServiceConnection = CSenServiceConnection::NewL(*this, *iSenXmlServiceDescription);
 
 	StartActiveScheduler(1);
 	User::LeaveIfError(this->iFsSessionHandle.Connect());//anil
     User::LeaveIfError(this->iFsSessionHandle.ShareProtected());
 	err = iRFileHandle.Open(iFsSessionHandle, _L("c:\\private\\101FB3E7\\Test.txt"), EFileStream|EFileRead);
+	if(err != KErrNone)
+		{
+			return err;
+		}
+
 	CleanupClosePushL(iRFileHandle);
 	HBufC8 *pMsgBuf = NULL;
 	TInt transactionIdOrError = iServiceConnection->SubmitL(iRFileHandle, pMsgBuf);
@@ -1828,7 +1857,7 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL( TTest
 	if(iFsSessionHandle.Handle())
     	iFsSessionHandle.Close(); 
     
-	CleanupStack::Pop(iServiceConnection);
+	//CleanupStack::Pop(iServiceConnection);
     __ASSERT_ALWAYS_NO_LEAVE(delete iServiceConnection);
     iServiceConnection = NULL;
 		
@@ -1844,7 +1873,7 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL( TTest
 TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SendL_RFileL( TTestResult& aResult )
     {
 	SetupL() ;
-	TInt retVal(KErrNone);
+	//TInt retVal(KErrNone);
 	iSenXmlServiceDescription = CSenXmlServiceDescription::NewL();
 	iSenXmlServiceDescription->SetFrameworkIdL(KIDWSFFrameworkID);    
 	iSenXmlServiceDescription->SetEndPointL(KAddressBookServiceId);
@@ -1853,7 +1882,7 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SendL_RFileL( TTestRe
 	TInt err(KErrNone);
 
 	//iServiceConnection = CSenServiceConnection::NewL(*this, KAddressBookServiceId());
-	iServiceConnection = CSenServiceConnection::NewLC(*this, *iSenXmlServiceDescription);
+	iServiceConnection = CSenServiceConnection::NewL(*this, *iSenXmlServiceDescription);
 
 	StartActiveScheduler(1);
 	/*
@@ -1870,17 +1899,22 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SendL_RFileL( TTestRe
  	User::LeaveIfError(this->iFsSessionHandle.Connect());//anil
     User::LeaveIfError(this->iFsSessionHandle.ShareProtected());
 	err = iRFileHandle.Open(iFsSessionHandle, _L("c:\\private\\101FB3E7\\Test.txt"), EFileStream|EFileRead);
+	if(err != KErrNone)
+		{
+			return err;
+		}
+
 	CleanupClosePushL(iRFileHandle);
 	TInt transactionIdOrError = iServiceConnection->SendL(iRFileHandle);
 	if (transactionIdOrError == KErrNone)
 	    StartActiveScheduler(1);
 //	LOCAL_ASSERT(transactionIdOrError > KErrNone);
-	
+	//CleanupStack::Pop(&iRFileHandle);
 	CleanupStack::PopAndDestroy(&iRFileHandle);
 	if(iFsSessionHandle.Handle())
     	iFsSessionHandle.Close(); 
 
-	CleanupStack::Pop(iServiceConnection);
+	//CleanupStack::Pop(iServiceConnection);
 		__ASSERT_ALWAYS_NO_LEAVE(delete iServiceConnection);
 	iServiceConnection = NULL;
 	 __ASSERT_ALWAYS_NO_LEAVE(delete iSenXmlServiceDescription);
@@ -6546,7 +6580,7 @@ TInt CSenServiceConnectionBCTest::Submit5L( TTestResult& aResult )   {
 TInt CSenServiceConnectionBCTest::Response( TTestResult& aResult )                  {
 	TInt res;
 	CTestConnection* pTest = CTestConnection::NewL();
-	MSenMessage* pMsg;
+	//MSenMessage* pMsg = NULL;
 	TRAP(res, pTest->Response());
 //	CleanupStack::Pop(pTest);
 	delete pTest;
@@ -6888,7 +6922,7 @@ TInt CSenServiceConnectionBCTest::CoBrandL(TTestResult& aResult)
     iLog->Log(_L("CoBrand->start"));
     SetupL();
     
-    TInt retVal(0);
+//    TInt retVal(0);
     iCoBrandingCallbackOption = ETrue;    
 
     _LIT8(KFramework, "WS-STAR");
@@ -6933,6 +6967,11 @@ TInt CSenServiceConnectionBCTest::CoBrandL(TTestResult& aResult)
     SetPolicyL(pSmSd, KPassportExtensions,  KNullDesC8);
 	iLog->Log(_L("CSenXmlServiceDescription* pSmSd = CSenXmlServiceDescription::NewLC()"));
     TInt error = manager->RegisterServiceDescriptionL( *pSmSd);
+	if(error != KErrNone)
+		{
+			return error;
+		}
+	
     iLog->Log(_L("manager->RegisterServiceDescriptionL( *pSmSd);"));
     
     CSenXmlServiceDescription* pScSd = CSenServicePattern::NewLC();
@@ -7000,7 +7039,7 @@ TInt CSenServiceConnectionBCTest::HostletConsumerL(TTestResult& aResult)
     
     iHostletConsumerOption = ETrue;
          
-    TInt retVal(KErrNone);
+    //TInt retVal(KErrNone);
     _LIT8(KReq,"<ab:Query xmlns:ab=\"urn:nokia:test:addrbook:2004-09\">Some Query</ab:Query>");
     _LIT8(KEndPoint, "http://10.21.32.110/sereneHardCoded/WS_CM_001_001");
     
@@ -7033,12 +7072,14 @@ TInt CSenServiceConnectionBCTest::HostletConsumerL(TTestResult& aResult)
     
     Teardown();
     iLog->Log(_L("HostletConsumer->End"));
+    return ret;
     }
 
 void CSenServiceConnectionBCTest::SetConnectionId( TInt aConnectionId )
     {
     TInt connectonId = 0;
     connectonId = aConnectionId;
+    iLog->Log(_L("Connection Id is %d"),connectonId);
     }
 
 TInt CSenServiceConnectionBCTest::DataTrafficDetailsL(TTestResult& aResult)
@@ -7048,7 +7089,7 @@ TInt CSenServiceConnectionBCTest::DataTrafficDetailsL(TTestResult& aResult)
     
     iGetDataTrafficDetails = ETrue;
          
-    TInt retVal(KErrNone);
+    //TInt retVal(KErrNone);
     _LIT8(KReq,"<ab:Query xmlns:ab=\"urn:nokia:test:addrbook:2004-09\">Some Query</ab:Query>");
     _LIT8(KEndPoint, "http://10.21.32.110/sereneHardCoded/WS_CM_001_001");
     
@@ -7081,4 +7122,5 @@ TInt CSenServiceConnectionBCTest::DataTrafficDetailsL(TTestResult& aResult)
     
     Teardown();
     iLog->Log(_L("HostletConsumer->End"));
+    return ret;
     }
