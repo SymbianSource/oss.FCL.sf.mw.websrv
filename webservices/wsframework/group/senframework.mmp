@@ -88,7 +88,6 @@ USERINCLUDE   ../../wshostletconnection/inc // MSenHostlet.h, MSenHostletRequest
 SYSTEMINCLUDE   ../../inc
 SYSTEMINCLUDE /epoc32/include/libc
 MW_LAYER_SYSTEMINCLUDE
-APP_LAYER_SYSTEMINCLUDE
 
 // System libs
 LIBRARY euser.lib 
@@ -96,7 +95,8 @@ LIBRARY flogger.lib
 LIBRARY estor.lib 
 LIBRARY ecom.lib
 LIBRARY efsrv.lib
-LIBRARY imut.lib 
+LIBRARY	inetprotutil.lib // for base64 encoding
+
 
 #ifndef RD_SEN_COMPILE_SIS_PACKAGE_FILES
 // Serene libs

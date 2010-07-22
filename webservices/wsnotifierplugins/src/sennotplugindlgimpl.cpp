@@ -348,7 +348,8 @@ void CSenNotPluginDlgImpl::StartL(const TDesC8& aBuffer, const TAny* aReturnVal,
 
     iStatus = KRequestPending;
     TRequestStatus* status = &iStatus;
-    SetActive();
+    if(!IsActive())
+    	SetActive();
     User::RequestComplete(status, KErrNone);
 
     DOLOG(_L("[ CSenNotPluginDlgImpl::StartL(aBuffer, aReturnVal, aMessage): Done ]"));

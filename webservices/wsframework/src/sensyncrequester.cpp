@@ -148,7 +148,11 @@ TInt CSenSyncRequester::HandleErrorL(const TInt aErrorCode,
                                      MSenProperties* /*aResponseTransportProperties*/)
     {
     // NONE of the errors between transport and session are handled in this level:
-    delete apError;
+    if(apError)
+    	{
+    	delete apError;
+    	apError = NULL;
+    	}
     return aErrorCode; // simply bounce the error back to the caller
     }
 
@@ -176,7 +180,8 @@ TInt CSenSyncRequester::HandleMessageL(HBufC8* apMessage,
         }
     // Now stop the SYNC wait in the SubmitL, so that the main thread 
     // of the Serene Core Active Scheduler can continue it's execution
-    iSchedulerWait.AsyncStop();
+    if(iSchedulerWait.IsStarted())
+    	iSchedulerWait.AsyncStop();
     return aTxnId;
     }
 
@@ -195,7 +200,8 @@ TInt CSenSyncRequester::HandleErrorL(HBufC8* apError,
         }
     // Now stop the SYNC wait in the SubmitL, so that the main thread 
     // of the Serene Core Active Scheduler can continue it's execution
-    iSchedulerWait.AsyncStop();
+    if(iSchedulerWait.IsStarted())
+    	iSchedulerWait.AsyncStop();
     return aTxnId;
     }
 

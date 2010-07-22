@@ -20,4 +20,4 @@ md e:\BCTest\results
 
 ATSINTERFACE.EXE -testmodule HostletConnectionBCTest
 
-copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\ASP_HostConn.txt
+copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_HostConn.txt

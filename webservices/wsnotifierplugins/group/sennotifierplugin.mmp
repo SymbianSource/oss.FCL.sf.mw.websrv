@@ -118,7 +118,7 @@ USERINCLUDE     ../inc
 
 SYSTEMINCLUDE   ../../inc
 SYSTEMINCLUDE   /epoc32/include/libc
-SYSTEMINCLUDE   /epoc32/include/uikon 
+//SYSTEMINCLUDE   /epoc32/include/uikon 
 SYSTEMINCLUDE   /epoc32/include/ecom
 
 LIBRARY avkon.lib

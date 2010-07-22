@@ -40,7 +40,7 @@
     //#include "Attribute.h"
 #endif
 
-#include <xmlengnodelist.h> 
+#include <xml/dom/xmlengnodelist.h> 
 using namespace Xml;
 using namespace SenWSInternalPolicy;
 namespace

@@ -1253,7 +1253,7 @@ TInt CSenXMLDAO::FindAllMatchingServiceDescriptions(RWSDescriptionArray& aMatche
                 }
             }
         }
-     TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel, _L8(" - total of %d matches found."), 
+     TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8(" - total of %d matches found."), 
                         aMatches.Count()));
 
     return retVal; // last error from Append() is returned atm
@@ -1604,7 +1604,7 @@ MSenProvider& CSenXMLDAO::LookupHostletForL(const TDesC8& aHostletEndpoint,
     // This method needs to be wrapped inside critical section 
     // NOTE: do *NOT* file log before this line(!):
 
-    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel,"CSenXMLDAO::LookupHostletForL:");
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenXMLDAO::LookupHostletForL:");
     TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel,(aReqThreadId));
     TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel,(aReqConsumerId));
 
@@ -1624,7 +1624,7 @@ MSenProvider& CSenXMLDAO::LookupHostletForL(const TDesC8& aHostletEndpoint,
             {
             if(pHostlet->Endpoint()==aHostletEndpoint)
                 {
-                TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel, _L8("- Matching sharable hostlet found from cache: 0x%X"), &pHostlet));
+                TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("- Matching sharable hostlet found from cache: 0x%X"), &pHostlet));
                 return *pHostlet;
                 }
             }
@@ -1652,11 +1652,11 @@ MSenProvider& CSenXMLDAO::LookupHostletForL(const TDesC8& aHostletEndpoint,
             // Next line is critical; when count goes to zero,
             // provider can be de-allocated from memory!
             pLookupInfo->IncrementLookupCount();
-            TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel, _L8("- A non-threadsafe, unsharable local provider (hostlet) was found: 0x%X - lookup info: 0x%X, lookup count: %d"), pHostlet, pLookupInfo, pLookupInfo->LookupCount()));
+            TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("- A non-threadsafe, unsharable local provider (hostlet) was found: 0x%X - lookup info: 0x%X, lookup count: %d"), pHostlet, pLookupInfo, pLookupInfo->LookupCount()));
             if(pHostlet->Reinitializable())
                 {
                 pHostlet->ReinitL();
-                TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel,"- Provider was also reinitialized.");
+                TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"- Provider was also reinitialized.");
                 }
             return *pHostlet;
             }
@@ -1693,7 +1693,7 @@ MSenProvider& CSenXMLDAO::LookupHostletForL(const TDesC8& aHostletEndpoint,
         append = iSharableProviders.Append(pHostlet);
         if(append==KErrNone)
             {
-            TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel, _L8("- Loaded new sharable hostlet instance: 0x%X"), &pHostlet));
+            TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("- Loaded new sharable hostlet instance: 0x%X"), &pHostlet));
             CleanupStack::Pop(); // pHostlet
             }
         else
@@ -1740,6 +1740,7 @@ MSenProvider& CSenXMLDAO::LookupHostletForL(const TDesC8& aHostletEndpoint,
         }
 	}
     User::LeaveIfError(append); // KErrNoMemory
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenXMLDAO::LookupHostletForL: Completed");	
     return *pHostlet;
     }
 

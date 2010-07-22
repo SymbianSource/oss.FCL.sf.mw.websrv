@@ -19,5 +19,5 @@ md e:\BCTest
 md e:\BCTest\Results
 
 ATSINTERFACE.EXE -testmodule SenServDescBCTest
-copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\ASP_WSDescription.txt
+copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_WSDescription.txt
 

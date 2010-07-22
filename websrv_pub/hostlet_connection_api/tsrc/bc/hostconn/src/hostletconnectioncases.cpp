@@ -2821,7 +2821,6 @@ TInt CSenHostletConnectionBCTest::UT_CSenHostletConnection_Send_WSIL()
     // is KSenConnectionStatusReady
     LOCAL_ASSERT( ipConsumer->iConnectionStatus == KSenConnectionStatusCreateFailed); 
     
-/*
     // Check that NO HandleErrorL callback was received:
     LOCAL_ASSERT( ipConsumer->iErrorCode == KErrNone );
     

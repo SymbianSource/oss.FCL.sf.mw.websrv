@@ -37,7 +37,7 @@
 #include <SenXmlUtils.h>
 #include <SenXmlProperties.h>
 
-#include <xmlengnodelist.h> 
+#include <xml/dom/xmlengnodelist.h> 
 #include <defaultcaps.hrh>
 
 #include "senclientsession.h"
@@ -59,9 +59,9 @@
 
 #include "SenSoapEnvelope2.h"
 #include "sensoapmessagedom2.h"
-#include "xmlengchunkcontainer.h"
-#include "xmlengfilecontainer.h"
-#include "xmlengdeserializer.h"
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengdeserializer.h>
 #include "SenParser.h"
 #include "seninternalcredential.h"
 #include "senservercontext.h"
@@ -168,7 +168,8 @@ void RSenConnectionServerSession::SendFileProgress(TInt aTxnId, TBool aIncoming,
     iFirst = resHandler;
 
     CActiveScheduler::Add(resHandler);
-    resHandler->SetActive();
+    if(!resHandler->IsActive())
+    	resHandler->SetActive();
     resHandler->iStatus = KRequestPending;
 
     TIpcArgs args(&resHandler->iProgressData, resHandler->iSoapOrCid);
@@ -224,6 +225,7 @@ void RSenConnectionServerSession::Close()
         CSenMessageResourceHandler* tmp = resHandler;
         resHandler = resHandler->iNext;
         delete tmp;
+        tmp = NULL;
         }
     RSessionBase::Close();
     }
@@ -260,6 +262,7 @@ TInt RSenConnectionServerSession::PreferredCarrierAvailable( TAccessPointInfo& a
 		SendReceive(ESenCliServPrefferedCarrierAvailable, args, caSync->iStatus);
         retVal = caSync->iStatus.Int();
 		delete caSync;
+		caSync = NULL;
 		}
 	return retVal;        
 	
@@ -279,6 +282,7 @@ TInt RSenConnectionServerSession::NewCarrierActive( TAccessPointInfo& aNewAPInfo
         SendReceive(ESenCliServNewCarrierActive, args, caSync->iStatus);
         retVal = caSync->iStatus.Int();
         delete caSync;
+        caSync = NULL;
         }
     return retVal;
     }
@@ -294,6 +298,7 @@ TInt RSenConnectionServerSession::MobilityError( TInt& aError )
         SendReceive(ESenCliServMobilityError, args, caSync->iStatus);
         retVal = caSync->iStatus.Int();
         delete caSync;
+        caSync = NULL;
         }
     return retVal;        
     }
@@ -328,6 +333,7 @@ TInt RSenConnectionServerSession::ReauthenticationNeeded(CSenChunk& aSenChunk)
 		asWait.Start();
 		retVal = caSync->iStatus.Int();
 		delete caSync;
+		caSync = NULL;
 		}
 	return retVal;
 	}
@@ -356,7 +362,8 @@ void CSenConnAgentSync::RunL()
 
 void CSenConnAgentSync::Start()
 	{
-	SetActive();
+	if(!IsActive())
+		SetActive();
 	}
 
 CSenClientSession* CSenClientSession::NewL(MSenServiceManager& aServer, CSenServerContext& aCtx)
@@ -991,6 +998,7 @@ void CSenClientSession::ServiceL(const RMessage2& aMessage)
         	{
         	CSLOG_L(iConnectionID,KMinLogLevel ,"ESenServGetIdentityProviders");
         	IdentityProviders(aMessage);
+	       	CSLOG_L(iConnectionID,KMinLogLevel ,"ESenServGetIdentityProviders Completed");
         	break;
         	}
         default:
@@ -1500,7 +1508,7 @@ TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
                                       const TDesC8& aRequest,
                                       CSenAtomEntry& aAtomEntry)
     {
-	CSLOG_L(iConnectionID, KMinLogLevel ,"CSenClientSession::ParseMessageL");
+	CSLOG_L(iConnectionID, KMinLogLevel ,"CSenClientSession::ParseMessageL(aTransactionId, aRequest, aAtomEntry)");
     CSenParser* pParser = CSenParser::NewLC();
     pParser->EnableFeature(EReportNamespaceMapping);
 	pParser->ParseL(aRequest, aAtomEntry);
@@ -1551,13 +1559,14 @@ TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
         }
 	
     CleanupStack::PopAndDestroy(pParser);
+    CSLOG_L(iConnectionID, KMinLogLevel ,"CSenClientSession::ParseMessageL(aTransactionId, aRequest, aAtomEntry) Completed");
     return KErrNone;
     }    
 TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
                                       const TDesC8& aRequest,
                                       CSenSoapEnvelope2& aSoapEnvelope)
     {
-    CSLOG_L(iConnectionID, KMinLogLevel , "CSenClientSession::ParseMessageL");
+    CSLOG_L(iConnectionID, KMinLogLevel , "CSenClientSession::ParseMessageL(aTransactionId, aRequest, aSoapEnvelope)");
     CSenParser* pParser = CSenParser::NewLC();
     pParser->EnableFeature(EReportNamespaceMapping);
 	pParser->ParseL(aRequest, aSoapEnvelope);
@@ -1651,7 +1660,7 @@ TInt CSenClientSession::ParseMessageL(TInt aTransactionId,
             }
         }
     CleanupStack::PopAndDestroy(pParser);
-    
+    CSLOG_L(iConnectionID, KMinLogLevel , "CSenClientSession::ParseMessageL(aTransactionId, aRequest, aSoapEnvelope) Completed");
     return retVal;
     }
     
@@ -1943,7 +1952,7 @@ void CSenClientSession::SendMsgL(const RMessage2& aMessage, CSenChunk& aSenChunk
                     CleanupStack::PushL( pErrorMsg );
                     }
                 aSenChunk.ChunkHeader().SetContextId(transactionId); // temporary
-                CSLOG_FORMAT((iConnectionID, KNormalLogLevel , _L8("SendMsgL - SetContextId: %d"), transactionId));
+                CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("SendMsgL - SetContextId: %d"), transactionId));
                 }
             else 
                 {
@@ -3739,6 +3748,7 @@ TInt CSenClientSession::SendProgressToHostlet(const RMessage2& aMessage)
     }
 void CSenClientSession::AddCredentialL( const RMessage2& aMessage )
     {
+    CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL()")));
     TInt retVal(KErrNone);
     CSenChunk* pSenChunk = NULL;
 
@@ -3851,14 +3861,27 @@ void CSenClientSession::AddCredentialL( const RMessage2& aMessage )
                     iManager.AddCredentialL(pIdP, pCredential, retVal);
                     
                   	RWSDescriptionArray aMatches;
-                    	iManager.ServiceDescriptionsL(aMatches,*pSD);
-               	CleanupClosePushL(aMatches);
+                    iManager.ServiceDescriptionsL(aMatches,*pSD);
+               		CleanupClosePushL(aMatches);
 
-                    	for(TInt i = 0; i < aMatches.Count(); i++)
-                    	{
-                    		((CSenWebServiceSession*)aMatches[i])->AddCredentialObserverL(*pCredential);
-                    	}
-
+                  	for(TInt i = 0; i < aMatches.Count(); i++)
+                  		{
+                      	if(((CSenWebServiceSession*)aMatches[i]) && pCredential)
+                          {
+	                      CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("SD Type is = %d"), aMatches[i]->DescriptionClassType()));						  
+                          if( aMatches[i]->HasSuperClass( MSenServiceDescription::EServiceSession ) )
+                          	{
+                            CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() - Calling AddCredentialObserverL()")));
+                            ((CSenWebServiceSession*)aMatches[i])->AddCredentialObserverL(*pCredential);
+                            CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() - Completed AddCredentialObserverL()")));
+                          	}
+                          else
+                          	{
+                          	CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() - SD is not the session object !!! ")));
+                          	}	
+                          }
+                  		}
+                  		
                      CleanupStack::PopAndDestroy(&aMatches);
                     
                     CleanupStack::Pop(pCredential);
@@ -3873,6 +3896,7 @@ void CSenClientSession::AddCredentialL( const RMessage2& aMessage )
     CleanupStack::PopAndDestroy(pSenChunk);
         
     aMessage.Complete(retVal);
+    CSLOG(iConnectionID, KMinLogLevel ,(_L("CSenClientSession::AddCredentialL() Completed")));
     }
 
 void CSenClientSession::CredentialsL( const RMessage2& aMessage )
@@ -4243,6 +4267,7 @@ void CSenClientSession::CancelRequestL(const RMessage2& aMessage)
             TInt cancelledTxnId(*pTxnId);
             txnIds.Remove(i);
             delete pTxnId;
+            pTxnId = NULL;
             CSLOG_FORMAT((iConnectionID, KNormalLogLevel , _L8("- Now processing txn with id %d"), cancelledTxnId));
 
 
@@ -5544,6 +5569,7 @@ void CSenClientSession::IdentityProviders(const RMessage2& aMessage)
         const RPointerArray<CSenIdentityProvider> pIdps = ((MSenCoreServiceManager&)iManager).IdentityProvidersL();
         
         const TInt count = pIdps.Count();
+        CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("- TOTAL IDP Found: %d"), count));		
   
         // Calculate required heap allocation size:
         TInt size(0);
@@ -5658,11 +5684,12 @@ void CSenClientSession::IdentityProviders(const RMessage2& aMessage)
                 }
             CSLOG_L(iConnectionID,KMaxLogLevel ,"- Requested descriptions:");
             CSLOG_ALL(iConnectionID,KMaxLogLevel ,(*pIdPrs));
+		     CSLOG_L(iConnectionID,KMinLogLevel ,"CSenClientSession::IdentityProviders completed");			
             }
     #ifdef _SENDEBUG
         else
             {
-            CSLOG_FORMAT((iConnectionID, KNormalLogLevel , _L8("- AllocDescToRMsgL failed: %d"), retVal));
+            CSLOG_FORMAT((iConnectionID, KMinLogLevel , _L8("- AllocDescToRMsgL failed: %d"), retVal));
             }
     #endif // _SENDEBUG
 

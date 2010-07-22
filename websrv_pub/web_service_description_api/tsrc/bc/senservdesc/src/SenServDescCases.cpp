@@ -1190,7 +1190,7 @@ TInt CSenServDesc::MT_CSenIdentityProvider_AuthzIDL( TTestResult& aResult )
     idProvider->SetUserInfoL(KText, KNullDesC8, KNullDesC8);
     
     //checking xml
-    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><AuthzID>text</AuthzID></IdentityProvider>");
+//    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><AuthzID>text</AuthzID></IdentityProvider>");
 
     TPtr16 ptr = ConvertToPtr16LC(*idProvider);
 	TInt posId(-1);
@@ -1221,7 +1221,7 @@ TInt CSenServDesc::MT_CSenIdentityProvider_AdvisoryAuthnIDL( TTestResult& aResul
     idProvider->SetUserInfoL(KNullDesC8, KText, KNullDesC8);
     
     //checking xml
-    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><AdvisoryAuthnID>text</AdvisoryAuthnID></IdentityProvider>");
+//    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><AdvisoryAuthnID>text</AdvisoryAuthnID></IdentityProvider>");
 
    // TL(ConvertToPtr16LC(*idProvider) == KRef);
 
@@ -1269,7 +1269,7 @@ TInt CSenServDesc::MT_CSenIdentityProvider_PasswordL( TTestResult& aResult )
     idProvider->SetUserInfoL(KNullDesC8, KNullDesC8, KText2);
     idProvider->SetUserInfoL(KNullDesC8, KNullDesC8, KText);
     //checking xml
-    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><Password>text</Password></IdentityProvider>");
+//	    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><Password>text</Password></IdentityProvider>");
     //TL(ConvertToPtr16LC(*idProvider) == KRef);
 
    //CleanupStack::PopAndDestroy();//Ptr
@@ -1334,7 +1334,7 @@ TInt CSenServDesc::MT_CSenIdentityProvider_SetProviderIDL( TTestResult& aResult 
     __ASSERT_ALWAYS_NO_LEAVE(idProvider->SetProviderID(KText2)); 
     __ASSERT_ALWAYS_NO_LEAVE(idProvider->SetProviderID(KText)); 
     //checking xml
-    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><ProviderID>text</ProviderID></IdentityProvider>");
+//    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><ProviderID>text</ProviderID></IdentityProvider>");
     //TL(ConvertToPtr16LC(*idProvider) == KRef);
 	TPtr16 ptr = ConvertToPtr16LC(*idProvider);
 	TInt posId(-1);
@@ -1357,7 +1357,7 @@ TInt CSenServDesc::MT_CSenIdentityProvider_SetServiceIDL( TTestResult& aResult )
     __ASSERT_ALWAYS_NO_LEAVE(idProvider->SetServiceID(KText2)); 
     __ASSERT_ALWAYS_NO_LEAVE(idProvider->SetServiceID(KText)); 
     //checking xml
-    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><ServiceID>text</ServiceID></IdentityProvider>");
+//    _LIT16(KRef, "<IdentityProvider framework=\"ID-WSF\"><Endpoint>text</Endpoint><Contract>urn:liberty:as:2004-04</Contract><ProviderPolicy/><ServicePolicy/><ServiceID>text</ServiceID></IdentityProvider>");
     //TL(ConvertToPtr16LC(*idProvider) == KRef);
 
 	TPtr16 ptr = ConvertToPtr16LC(*idProvider);
@@ -1791,7 +1791,7 @@ TInt CSenServDesc::MT_CSenServicePattern_AddConsumerIdentityProviderIdLL( TTestR
 
     if(!(pattern->AddConsumerIdentityProviderIdL(KText2) == KErrNone))return KErrArgument;
 
-    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/></ServiceDescription>");
+//    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/></ServiceDescription>");
     //TL(ConvertToPtr16LC(*pattern) == KRef);
 
     //CleanupStack::PopAndDestroy();//Ptr
@@ -2177,7 +2177,7 @@ TInt CSenServDesc::MT_CSenXmlServiceDescription_AddIdentityProviderIdLL( TTestRe
     if(!(xmlService->AddIdentityProviderIdL(ptr) == KErrNone))return KErrArgument;
 
 
-    _LIT16(KRef, "<ServiceDescription><ProviderPolicy><IdentityProviderIDs><IdentityProviderID>text</IdentityProviderID><IdentityProviderID>text2</IdentityProviderID></IdentityProviderIDs></ProviderPolicy><ServicePolicy/></ServiceDescription>");
+    //_LIT16(KRef, "<ServiceDescription><ProviderPolicy><IdentityProviderIDs><IdentityProviderID>text</IdentityProviderID><IdentityProviderID>text2</IdentityProviderID></IdentityProviderIDs></ProviderPolicy><ServicePolicy/></ServiceDescription>");
     //TL(ConvertToPtr16LC(*xmlService) == KRef);
 
     //CleanupStack::PopAndDestroy();//Ptr
@@ -2356,7 +2356,7 @@ TInt CSenServDesc::MT_CSenXmlServiceDescription_ContractL( TTestResult& aResult 
     CSenXmlServiceDescription* xmlService = CSenXmlServiceDescription::NewL();
     xmlService ->SetContractL(KText);
      //checking xml
-    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Contract>text</Contract></ServiceDescription>");
+//    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Contract>text</Contract></ServiceDescription>");
     
     //TL(ConvertToPtr16LC(*xmlService) == KRef);
 	TPtr16 ptr = ConvertToPtr16LC(*xmlService);
@@ -2386,7 +2386,7 @@ TInt CSenServDesc::MT_CSenXmlServiceDescription_ContractL( TTestResult& aResult 
    
     xmlService ->SetContractL(KText2);
      //checking xml
-    _LIT16(KRef2, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Contract>text2</Contract></ServiceDescription>");
+//    _LIT16(KRef2, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Contract>text2</Contract></ServiceDescription>");
     //TL(ConvertToPtr16LC(*xmlService) == KRef2);
 
     TL(xmlService->Contract() == KText2);
@@ -2511,7 +2511,7 @@ TInt CSenServDesc::MT_CSenXmlServiceDescription_SetFacetLL( TTestResult& aResult
     senFacet->SetValueL(KText2);
     if(!(xmlService->SetFacetL(*senFacet) == KErrNone))return KErrArgument;
 
-    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Facet name=\"text\">text2</Facet></ServiceDescription>");
+//    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Facet name=\"text\">text2</Facet></ServiceDescription>");
     //TPtrC16 ptrRef = KRef();
     //TL(ConvertToPtr16LC(*xmlService) == ptrRef);
     
@@ -2621,7 +2621,7 @@ TInt CSenServDesc::MT_CSenXmlServiceDescription_AsXmlLL( TTestResult& aResult )
         RDebug::Print( _L( "WSModTester: xmlBuffer [%S]"),&ptr);
     else
         RDebug::Print( _L( "WSModTester: xmlBuffer empty"));
-    _LIT8(KRef, "<ServiceDescription><Endpoint>text</Endpoint><Contract>text</Contract><ProviderPolicy/><ServicePolicy/></ServiceDescription>");
+//    _LIT8(KRef, "<ServiceDescription><Endpoint>text</Endpoint><Contract>text</Contract><ProviderPolicy/><ServicePolicy/></ServiceDescription>");
     /*EUNIT_ASSERT_EQUALS(ptr, KRef);*/
     //TL(ptr == KRef);
     TInt posId(-1);
@@ -2950,7 +2950,7 @@ TInt CSenServDesc::MT_CSenXmlServiceDescription_EndpointL( TTestResult& aResult 
     
     xmlService ->SetEndPointL(KText);
      //checking xml
-    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Endpoint>text</Endpoint></ServiceDescription>");
+//    _LIT16(KRef, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Endpoint>text</Endpoint></ServiceDescription>");
     //TL(ConvertToPtr16LC(*xmlService) == KRef);
 
     TL(xmlService->Endpoint() == KText);
@@ -2978,7 +2978,7 @@ TInt CSenServDesc::MT_CSenXmlServiceDescription_EndpointL( TTestResult& aResult 
 
     xmlService ->SetEndPointL(KText2);
      //checking xml
-    _LIT16(KRef2, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Endpoint>text2</Endpoint></ServiceDescription>");
+//    _LIT16(KRef2, "<ServiceDescription><ProviderPolicy/><ServicePolicy/><Endpoint>text2</Endpoint></ServiceDescription>");
     //TL(ConvertToPtr16LC(*xmlService) == KRef2);
 
     TL(xmlService->Endpoint() == KText2);

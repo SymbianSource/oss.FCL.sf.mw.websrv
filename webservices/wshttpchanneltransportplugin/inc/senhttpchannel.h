@@ -158,7 +158,9 @@ public: // Constructors and destructor
     virtual void EnableTimeOutL(TInt aTxnId, TInt aTimeOutSec) = 0;
     virtual void DisableTimeOutL(TInt aTxnId) = 0;
     virtual TInt32 UsedIap() = 0;
-    
+    virtual void ResetIapId() = 0;
+    virtual void ResetUsedIapId() = 0;
+    virtual void SetExplicitIapDefined(TBool aExplicitIapDefined) = 0;
     };
 
 #endif // SEN_HTTP_CHANNEL_H

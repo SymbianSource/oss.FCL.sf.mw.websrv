@@ -83,7 +83,8 @@ void CSenSenSecurityMechanismObserver::RunL()
         TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"..calling IdentityManager.ReloadSenSecurityMechanismsL");
         iOwner.ReloadSenSecurityMechanismsL();
         iEcomSession.NotifyOnChange(iStatus);
-        SetActive();
+        if(!IsActive())
+        	SetActive();
         }
     }
 TInt CSenSenSecurityMechanismObserver::RunError(TInt /* aError */)
@@ -100,7 +101,8 @@ void CSenSenSecurityMechanismObserver::DoCancel()
 
 void CSenSenSecurityMechanismObserver::Start()
     {
-    SetActive();
+    if(!IsActive())
+    	SetActive();
     iEcomSession.NotifyOnChange(iStatus);
     }
 

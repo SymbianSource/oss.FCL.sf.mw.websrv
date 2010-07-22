@@ -379,6 +379,12 @@ TInt CWSOviSessionContext::ShareTokenWithL(CWSOviSessionContext* aWSOviSessionCt
         error = aWSOviSessionCtxDst->Update(KTokenCreationTime, *desc);
         if (error) return error;
         }
+    desc = GetDesC8L(KTokenValidUntilTime);
+    if (desc)
+        {
+        error = aWSOviSessionCtxDst->Update(KTokenValidUntilTime, *desc);
+        if (error) return error;
+        }
     desc = GetDesC8L(KTTL);
     if (desc)
         {

@@ -39,7 +39,7 @@
 #include "senservicepolicy.h"
 #include "seninternalcredential.h"
 #include "sensaxutils.h"
-#include <xmlengnodelist.h>
+#include <xml/dom/xmlengnodelist.h>
 #include <SenIdentityProvider.h>
 #include "senlogger.h"
 #include <SenXmlConstants.h>
@@ -91,18 +91,20 @@ EXPORT_C CSenWebServiceSession::CSenWebServiceSession(TDescriptionClassType aTyp
 
 EXPORT_C void CSenWebServiceSession::ConstructL()
     {
-
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::ConstructL()"));
     // Sets the local name to "ServiceDescription"
     // and initiates the inner ipElement
     CSenServiceSession::BaseConstructL();
     // Init member variables
     iClientServerInterval = 0;
     iValidUntil = Time::NullTTime();
+    iMaxTime = Time::NullTTime();;
     iFrameworkId = iFramework.Id().AllocL();
     }
 
 EXPORT_C CSenWebServiceSession::~CSenWebServiceSession()
     {
+    TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::~CSenWebServiceSession()"));
     delete iSecurity;
     delete iContract;
     delete iEndpoint;
@@ -631,6 +633,7 @@ EXPORT_C TInt CSenWebServiceSession::SendErrorToConsumerL( const TInt aErrorCode
                                                            MSenRemoteServiceConsumer& aConsumer,
                                                            MSenProperties* aResponseTransportProperties )
     {
+    CSLOG_FORMAT((aConsumer.ConnectionId() , KMinLogLevel, _L8("CSenWebServiceSession::SendErrorToConsumerL - aErrorCode [%d]"), aErrorCode));
     CleanupStack::PushL(apError);
     TInt retVal(KErrNone);
 
@@ -1551,9 +1554,12 @@ EXPORT_C const TTime& CSenWebServiceSession::ValidUntilL()
         }
     else
         {
-        const TTime& MAX_TIME = Time::MaxTTime();
-        return MAX_TIME; // if no expiration was set, the session is
+        //const TTime& MAX_TIME = Time::MaxTTime();
+        //return MAX_TIME; // if no expiration was set, the session is
                          // valid forever(!)
+         iMaxTime = Time::MaxTTime();
+         return iMaxTime;             
+                         
         }
     }
 
@@ -2120,6 +2126,7 @@ EXPORT_C void CSenWebServiceSession::CredentialChanged(TSenCredentialChange aCha
     
 EXPORT_C  TInt CSenWebServiceSession::AddCredentialObserverL(CSenInternalCredential& aCredential)
 {
+	TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::AddCredentialObserverL()"));
 	TInt error(KErrNone);
 	RSenCredentialPtr credentialPtr = 
 	((MSenServiceManager&)iFramework.Manager()).CredentialL(
@@ -2151,7 +2158,7 @@ EXPORT_C  TInt CSenWebServiceSession::AddCredentialObserverL(CSenInternalCredent
 	}
     CredentialChanged(MSenCredentialObserver::EAdded, NULL);      
 	SetStatusL();
-
+	TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CSenWebServiceSession::AddCredentialObserverL() Completed"));
 	return KErrNone;
 }
 

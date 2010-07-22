@@ -176,7 +176,7 @@ TInt CTestConnection::SubmitL(MSenMessage& aMessage, CSenSoapEnvelope2*& aRespon
 }
 MSenMessage* CTestConnection::Response() 
 {
-	TInt retval(0);
+	//TInt retval(0);
 //	TRAP(retval, iConn->Response());
 	return NULL;
 }
@@ -205,13 +205,12 @@ void CTestConnection::RegisterFilesObserverL(MSenFilesObserver& aFilesObserver)
 
 //MSenFragment
 
-CSenElement& CTestConnection::AsElement() 
+/*CSenElement& CTestConnection::AsElement() 
 {
-	
-}
+}*/
 CSenElement* CTestConnection::ExtractElement() 
 {
-	
+	return NULL;
 }
 void CTestConnection::SetReader(CSenXmlReader& aReader) 
 {
@@ -219,7 +218,7 @@ void CTestConnection::SetReader(CSenXmlReader& aReader)
 }
 CSenXmlReader* CTestConnection::Reader() 
 {
-	
+	return NULL;
 }
 void CTestConnection::ParseL(const TDesC8& aBuf) 
 {
@@ -227,7 +226,7 @@ void CTestConnection::ParseL(const TDesC8& aBuf)
 }
 TInt CTestConnection::BuildFrom(const TDesC8& aBuf) 
 {
-	
+	return NULL;
 }
 void CTestConnection::DelegateParsingL(MSenFragment& aDelegate) 
 {
@@ -277,17 +276,17 @@ void CTestConnection::WriteEndElementL(const TDesC8& aNsUri,
 
 const TDesC8& CTestConnection::LocalName()  const
 {
-	
+	return KNullDesC8();
 }
 
 const TDesC8& CTestConnection::NsUri()  const
 {
-	
+	return KNullDesC8();
 }
 
 const TDesC8& CTestConnection::NsPrefix()  const
 {
-	
+	return KNullDesC8();
 }
 
 void CTestConnection::WriteAsXMLToL(RWriteStream& aWriteStream) 
@@ -297,16 +296,16 @@ void CTestConnection::WriteAsXMLToL(RWriteStream& aWriteStream)
 
 HBufC* CTestConnection::AsXmlUnicodeL() 
 {
-	
+	return NULL;
 }
 HBufC8* CTestConnection::AsXmlL() 
 {
-	
+	return NULL;
 }
 
 TBool CTestConnection::ConsistsOfL(MSenFragment& aCandidate) 
 {
-	
+	return NULL;
 }
 
 //CACTIVE

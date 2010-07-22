@@ -153,7 +153,10 @@ TInt CWSOviHandlerContext::Add(const TDesC8& aKey, TAny* aValue)
     {
     if (aKey == HandlerContextKey::KSIF())
         {
-        iWSOviPlugin = (CWSOviPlugin*)aValue;
+        if(aValue)
+        	{
+        	iWSOviPlugin = (CWSOviPlugin*)aValue;
+        	}
         return KErrNone;
         }
     else if (aKey == HandlerContextKey::KLogger())

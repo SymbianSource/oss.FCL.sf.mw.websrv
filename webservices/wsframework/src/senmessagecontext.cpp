@@ -397,6 +397,7 @@ TInt CSenMessageContext::Add(const TDesC8& aKey, MSenMessage* apMessage, TBool a
     CSenContextItem* pItem = MessageToItem( apMessage, aOwned, leaveCode );
     if( leaveCode != KErrNone ) 
         {
+         delete pItem;	
         return leaveCode;
         }
 
@@ -415,6 +416,7 @@ TInt CSenMessageContext::Update(const TDesC8& aKey, MSenMessage* apMessage, TBoo
     CSenContextItem* pItem = MessageToItem( apMessage, aOwned, leaveCode );
     if( leaveCode != KErrNone ) 
         {
+        	delete pItem;
         return leaveCode;
         }
 

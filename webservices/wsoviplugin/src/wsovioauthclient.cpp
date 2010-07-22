@@ -40,6 +40,7 @@
 #include "wsovitokencreationresponse.h"
 #include "sencryptoutils.h"
 #include "wsoviutils.h"
+#include <SenDateUtils.h>
 
 namespace 
     {
@@ -100,7 +101,7 @@ void CWSOviOAuthClient::BaseConstructL()
 //
 CWSOviOAuthClient::~CWSOviOAuthClient()
     {
-    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviOAuthClient::~CWSOviTrustClient");
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviOAuthClient::~CWSOviOAuthClient");
     delete iAuthSession;
     delete iBody;
     }
@@ -530,7 +531,22 @@ TInt CWSOviOAuthClient::ValidateL( CWSOviServiceSession& aSession,
 	    else
 	        {
 	        iWSOviServiceSession->SetTrustAnchorL(iIdentityProvider->ProviderID());
-	            TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviOAuthClient::ValidateL - set ctx basing on response");
+	        TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CWSOviOAuthClient::ValidateL - set ctx basing on response");
+	        
+		    TPtrC8 validUntil = responseFragment->ValidUntil();
+		    if (validUntil.Length())
+		        {
+		        TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,validUntil);
+		        User::LeaveIfError(iWSOviServiceSession->SessionContext()->Update(WSOviContextKeys::KTokenValidUntilTime,validUntil));
+		        }
+			else
+				{
+				TTime tmpValidUntil = Time::MaxTTime();
+				TBuf8<SenDateUtils::KXmlDateTimeMaxLength> pValidUntil;
+				SenDateUtils::ToXmlDateTimeUtf8L(pValidUntil, tmpValidUntil);
+		        User::LeaveIfError(iWSOviServiceSession->SessionContext()->Update(WSOviContextKeys::KTokenValidUntilTime,pValidUntil));				
+				}	
+	        
 	        retVal = iWSOviServiceSession->SessionContext()->SetTokenKeysL(token);
 	        if (retVal)
 	            {
@@ -719,6 +735,10 @@ TBool CWSOviOAuthClient::HasEqualPrimaryKeysL(MSenServiceDescription& aCandidate
 
 void CWSOviOAuthClient::CreateBodyL(const TDesC8& aXmlNs, const TDesC8& aUsername, const TDesC8& aPassword, const TDesC8& aCreated)
     {
+    if(aPassword == KNullDesC8())
+    	{
+    	TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviOAuthClient::CreateBodyL() - aPassword == KNullDesC8")));
+    	}
     delete iBody;
     iBody = NULL;
     HBufC8* nonce = SenCryptoUtils::GetRandomNonceL();

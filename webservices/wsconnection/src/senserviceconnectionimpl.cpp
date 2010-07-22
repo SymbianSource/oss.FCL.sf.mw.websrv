@@ -45,9 +45,9 @@
 
 #include "senservicemanagerdefines.h"
 #include "SenBaseAttribute.h"
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
-#include <xmlengserializer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengserializer.h>
 #include "senconnagentserver.h"
 #include "senxmldebug.h"
 #include "senatomentry.h"
@@ -192,7 +192,7 @@ CSenServiceConnectionImpl* CSenServiceConnectionImpl::NewLC(MSenServiceConsumer&
 
 void CSenServiceConnectionImpl::ConstructL(MSenServiceDescription& aSD)
     {
-
+	TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::ConstructL(aSD)");
     CSenElement& sdAsElement = ((CSenXmlServiceDescription&)aSD).AsElement();
 
     // Check if this is an internal service connection:
@@ -247,7 +247,8 @@ void CSenServiceConnectionImpl::ConstructL(MSenServiceDescription& aSD)
 #ifndef RD_SEN_SC_PROXY_ENABLED_BY_DEFAULT
     ConnectL(); 
 // #else // ConnectL occurs on  "proxy" / factory  -level
-#endif    
+#endif
+	TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::ConstructL(aSD) Completed");
     }
 
 
@@ -343,12 +344,14 @@ void CSenServiceConnectionImpl::ConnectL()
 
 void CSenServiceConnectionImpl::SetConsumer( MSenServiceConsumer& aConsumer, MSenExtendedConsumerInterface* apExtConsumer )
     {
+    TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::SetConsumer");
     iObserver = &aConsumer;
     ipExtendedConsumerInterface = apExtConsumer;
     }
    
 void CSenServiceConnectionImpl::Consumer( MSenServiceConsumer*& aConsumer, MSenExtendedConsumerInterface*& apExtConsumer )
     {
+    TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::Consumer");
     aConsumer = iObserver;
     apExtConsumer = ipExtendedConsumerInterface;
     }   
@@ -451,6 +454,7 @@ CSenServiceConnectionImpl::~CSenServiceConnectionImpl()
         {
         iChunkMap->Reset();
         delete iChunkMap;
+        iChunkMap = NULL;
         }
 
     delete iInBuf;
@@ -478,6 +482,7 @@ CSenServiceConnectionImpl::~CSenServiceConnectionImpl()
 
 TPtrC CSenServiceConnectionImpl::SessionID()
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::SessionID()")));
     if(ipSessionId)
         {
         return *ipSessionId;
@@ -616,6 +621,7 @@ TInt CSenServiceConnectionImpl::SubmitL(CSenConnectionChunk& aClientOp)
             TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"SubmitL - ESenInternalError");
             retVal = KErrSenInternal;
             }
+            break;
         default:
             {
             TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"SubmitL - default");
@@ -644,6 +650,7 @@ TInt CSenServiceConnectionImpl::SubmitL(CSenConnectionChunk& aClientOp)
 TInt CSenServiceConnectionImpl::ResponseFromChunk(CSenChunk& aClientOp,
                                                   HBufC8*& aResponseTo)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::ResponseFromChunk()")));
     TInt leaveCode(KErrNone); // handle OOM case:
     // Read response message, SOAP fault OR error
     TPtrC8 response;
@@ -659,7 +666,7 @@ TInt CSenServiceConnectionImpl::ResponseFromChunk(CSenChunk& aClientOp,
         // OOM occured
         retVal = leaveCode;
         }
-        
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::ResponseFromChunk() Completed")));
     return retVal;
     }
 
@@ -875,7 +882,7 @@ TInt CSenServiceConnectionImpl::CheckConnection()
         }
     else if (!IsActive())
         {
-        SetActive();
+       	SetActive();
         iStatus = KRequestPending;
         }
 	TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::CheckConnection Completed")));
@@ -916,7 +923,7 @@ TInt CSenServiceConnectionImpl::SendL(CSenConnectionChunk* apClientOp)
 
         TInt appendRetVal(KErrNone);
         appendRetVal = ChunkMapL().Append( pTxnId, apClientOp );
-        TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KNormalLogLevel , _L8("- ChunkMapL().Append(%d, %d) returned: %d"), *pTxnId, apClientOp->Chunk().Handle(), appendRetVal));
+        TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("- ChunkMapL().Append(%d, %d) returned: %d"), *pTxnId, apClientOp->Chunk().Handle(), appendRetVal));
         if( appendRetVal == KErrNone )
             {
             TMessage msg;
@@ -1301,11 +1308,12 @@ void CSenServiceConnectionImpl::InitializeL( /* MSenServiceDescription& aSD */ )
             TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("MSenServiceConsumer::HandleErrorL leaved: %d"), leaveCode ));
             }
         }
-		        
+		TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::InitializeL() Completed")));
     }
 
 TPtrC CSenServiceConnectionImpl::NextChunkName()
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::NextChunkName()")));
     if(ipChunkName)
         {
         iChunkNameNumber++;
@@ -1332,6 +1340,7 @@ TPtrC CSenServiceConnectionImpl::NextChunkName()
         }
     else
         {
+        TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::NextChunkName() returns KNullDesC()")));
         return KNullDesC();
         }  
     }
@@ -1934,6 +1943,7 @@ void CSenServiceConnectionImpl::HandleMessageFromChildAOL(TInt aStatus)
             break ;
             }
         }
+    TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::HandleMessageFromChildAOL Completed");
     }
 
 // Helper function, which delivers response to Service Consumer 
@@ -1976,7 +1986,7 @@ void CSenServiceConnectionImpl::DeliverResponseL(const TInt aErrorCode, CSenChun
     if( statusCode == KErrNone )
         {
         // STANDARD, "OK" RESPONSE
-        TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KNormalLogLevel , _L8("- response, (%d bytes):"), response.Length()));
+        TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("- response, (%d bytes):"), response.Length()));
         TLSLOG_ALL(KSenServiceConnectionLogChannelBase+iConnectionID, KMaxLogLevel ,(response));
         TRAPD( err, iObserver->HandleMessageL( response ); )
         if(err)
@@ -1991,8 +2001,8 @@ void CSenServiceConnectionImpl::DeliverResponseL(const TInt aErrorCode, CSenChun
             TInt error = statusCode;   
                 
             // SOAP FAULT
-            TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KNormalLogLevel , _L8("- SOAP fault (%d bytes):"), response.Length()));
-            TLSLOG_ALL(KSenServiceConnectionLogChannelBase+iConnectionID, KMaxLogLevel ,(response));
+            TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("- SOAP fault (%d bytes):"), response.Length()));
+            TLSLOG_ALL(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,(response));
 
             if ( error == KErrSenSoapFault && !iInitialized ) // China DC
                 {
@@ -2024,6 +2034,7 @@ void CSenServiceConnectionImpl::DeliverResponseL(const TInt aErrorCode, CSenChun
         CleanupStack::PopAndDestroy( pMessage );
         }
     iTransactionIdKnown = EFalse;
+    TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::DeliverResponseL Completed");
     }
 
 void CSenServiceConnectionImpl::DoCancel()
@@ -2290,6 +2301,7 @@ TInt CSenServiceConnectionImpl::ServiceDescriptionL(HBufC8*& aServiceDescription
 
 const TDesC8& CSenServiceConnectionImpl::LocalName() const
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::LocalName()")));
     if(iFragment)
         return iFragment->LocalName();
     else
@@ -2298,6 +2310,7 @@ const TDesC8& CSenServiceConnectionImpl::LocalName() const
 
 const TDesC8& CSenServiceConnectionImpl::NsUri() const
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::NsUri()")));
     if(iFragment)
         return iFragment->NsUri();
     else
@@ -2306,6 +2319,7 @@ const TDesC8& CSenServiceConnectionImpl::NsUri() const
 
 const TDesC8& CSenServiceConnectionImpl::NsPrefix() const
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::NsPrefix()")));
     if(iFragment)
         return iFragment->NsPrefix();
     else
@@ -2314,6 +2328,7 @@ const TDesC8& CSenServiceConnectionImpl::NsPrefix() const
 
 void CSenServiceConnectionImpl::WriteAsXMLToL(RWriteStream& aWriteStream)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::WriteAsXMLToL()")));
     if(iFragment)
         {
         iFragment->WriteAsXMLToL(aWriteStream);
@@ -2322,6 +2337,7 @@ void CSenServiceConnectionImpl::WriteAsXMLToL(RWriteStream& aWriteStream)
 
 HBufC* CSenServiceConnectionImpl::AsXmlUnicodeL()
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::AsXmlUnicodeL()")));
     if(iFragment)
         {
         return iFragment->AsXmlUnicodeL();
@@ -2334,6 +2350,7 @@ HBufC* CSenServiceConnectionImpl::AsXmlUnicodeL()
 
 HBufC8* CSenServiceConnectionImpl::AsXmlL()
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::AsXmlL()")));
     if(iFragment)
         {
         return iFragment->AsXmlL();
@@ -2384,6 +2401,7 @@ TInt CSenServiceConnectionImpl::TransactionCompleted()
 
 TBool CSenServiceConnectionImpl::ConsistsOfL(MSenFragment& aCandidate)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::ConsistsOfL()")));
     if (iFragment)
         {
         return iFragment->ConsistsOfL(aCandidate);
@@ -2424,6 +2442,7 @@ TInt CSenServiceConnectionImpl::CancelAllRequests()
 
 TInt CSenServiceConnectionImpl::TxnId()
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::TxnId()")));
     if( iTransactionIdKnown )
         {
         if( iTxnId>KErrNone )
@@ -2481,6 +2500,7 @@ TInt CSenServiceConnectionImpl::SetTransportPropertiesL(const TDesC8& aPropertie
     
 TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
     {
+    TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::CancelTransaction");
     TInt retVal(0);
     if ( iDispatcherEnabled ) // DISPATCHER IS ENABLED
         {
@@ -2492,16 +2512,19 @@ TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
     		}
     	else
         	{
-    	TMessage message = ipSenServiceDispatcher->GetMessageFromQueue(aTransactionID);
-    	CSenAsyncOperation* pAsyncOp = message.iSenAsyncOperation;
-    	if (pAsyncOp)
-    	    {
-            TInt idx = AsyncOpsArrayL().Find(pAsyncOp);    
-            if (idx >= 0)
-                {
-                AsyncOpsArrayL().Remove(idx);
-                }
-    	    pAsyncOp->iActive = NULL;
+	    	TMessage message = ipSenServiceDispatcher->GetMessageFromQueue(aTransactionID);
+	    	CSenAsyncOperation* pAsyncOp = message.iSenAsyncOperation;
+	    	if (pAsyncOp)
+	    	    {
+	            TInt idx(-1);
+	            TRAP( retVal,
+					idx = AsyncOpsArrayL().Find(pAsyncOp);
+		            if (idx >= 0)
+		                {
+		                AsyncOpsArrayL().Remove(idx);
+		                }
+				  );
+	    	    pAsyncOp->iActive = NULL;
     	    
     	    pAsyncOp->Cancel();
             delete pAsyncOp;
@@ -2511,6 +2534,7 @@ TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
     	TRAP(retVal, DeliverResponseL(KErrSenCancelled,NULL));
     	if( retVal != KErrNone)
     		{
+    		TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceConnectionImpl::CancelTransaction returns [%d]" ), retVal ));
     		return retVal;
     		}
     	}  
@@ -2519,6 +2543,7 @@ TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
         {
         iConnection.CancelRequest(aTransactionID);
         }
+    TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceConnectionImpl::CancelTransaction returns [%d]" ), KErrNone ));
     return KErrNone;
     }
         
@@ -2554,6 +2579,7 @@ TInt CSenServiceConnectionImpl::TransportPropertiesL(HBufC8*& aProperties)
 
 RChunkMap& CSenServiceConnectionImpl::ChunkMapL()
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::ChunkMapL()")));
     if(!iChunkMap)
         {
         iChunkMap = new (ELeave) RChunkMap(ETrue, ETrue);
@@ -2563,6 +2589,7 @@ RChunkMap& CSenServiceConnectionImpl::ChunkMapL()
     
 RPointerArray<CSenAsyncOperation>& CSenServiceConnectionImpl::AsyncOpsArrayL() //codescannerwarnings
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::AsyncOpsArrayL()")));
     if(!iAsyncOpsArray)
         {
         iAsyncOpsArray = new (ELeave) RPointerArray<CSenAsyncOperation>;
@@ -2833,6 +2860,7 @@ TInt CSenServiceConnectionImpl::AssignPropertiesToChunkL(CSenChunk& aChunk,
                                                         CSenSoapEnvelope& aMessage,
                                                         const TDesC8& aProperties)	//codescannerwarnings
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::AssignPropertiesToChunkL()")));
     TInt retVal(KErrNone);
     
     if ( aMessage.SoapAction2().Length() > 0 )
@@ -2869,7 +2897,7 @@ TInt CSenServiceConnectionImpl::AssignPropertiesToChunkL(CSenChunk& aChunk,
             }
         delete pSoapMsg;
         }    
-    
+		TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceConnectionImpl::AssignPropertiesToChunkL returns [%d]" ), retVal ));
     return retVal;
     }
     
@@ -2998,7 +3026,7 @@ TInt CSenServiceConnectionImpl::AssignMessageToChunkL( CSenChunk& aChunk,
     CleanupStack::PopAndDestroy(pSerializer);
     CleanupStack::PopAndDestroy(&buffer);
     CleanupStack::PopAndDestroy(pPropsAsXml);
-    
+    TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceConnectionImpl::AssignMessageToChunkL returns [%d]" ), retVal ));
     return retVal;
     }
     
@@ -3006,6 +3034,7 @@ TInt CSenServiceConnectionImpl::AssignMessageToChunkL( CSenChunk& aChunk,
 // plus multiple BLOBs PER ONE MESSAGE AND multiple simultaneous transfers
 TInt CSenServiceConnectionImpl::MoveBinaryContainersToServer( CSenConnectionChunk& aOperation, RArray<TXmlEngDataContainer>& aList )
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::MoveBinaryContainersToServer()")));
     TInt retVal(KErrNone);
     
     TPtrC8 cid8;
@@ -3100,12 +3129,14 @@ TInt CSenServiceConnectionImpl::MoveBinaryContainersToServer( CSenConnectionChun
                     }
     			}
     		}
-        }
+     }
+    TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceConnectionImpl::MoveBinaryContainersToServer returns [%d]" ), retVal ));
     return retVal;
     }
     
 TInt CSenServiceConnectionImpl::MoveFileChunkHandleToServer(CSenConnectionChunk& aOperation)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::MoveFileChunkHandleToServer()")));
     TInt retVal(KErrNone);
     retVal = iConnection.SendFileHandle(aOperation,iSharedFileHandle);
     return retVal;
@@ -3170,6 +3201,7 @@ TInt CSenServiceConnectionImpl::SendL(RFile& aFile)
     
 TInt CSenServiceConnectionImpl::SendL( MSenMessage& aMessage )
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::MoveFileChunkHandleToServer(aMessage)")));
     if ( aMessage.IsSafeToCast( MSenMessage::ESoapEnvelope2 ) )
         {
         CSenSoapEnvelope2& message = (CSenSoapEnvelope2&)aMessage;
@@ -3269,6 +3301,7 @@ TInt CSenServiceConnectionImpl::SendL( CSenSoapEnvelope2& aMessage )
 TInt CSenServiceConnectionImpl::SubmitL( MSenMessage& aMessage,
                                          CSenSoapEnvelope2*& aResponseTo )
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::SubmitL(aMessage, aResponseTo)")));
     if ( aMessage.IsSafeToCast( MSenMessage::ESoapEnvelope2) )
         {
         CSenSoapEnvelope2& message = (CSenSoapEnvelope2&)aMessage;
@@ -3440,6 +3473,7 @@ TInt CSenServiceConnectionImpl::RegisterMobilityObserverL()
 
 void CSenServiceConnectionImpl::MigrateToPrefferedCarrierL(TBool &aUserChoice)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::MigrateToPrefferedCarrierL()")));
     if (iMobiltyObserver)
         {
         User::LeaveIfError(iConnection.MigrateToPrefferedCarrierL(aUserChoice));    	
@@ -3448,10 +3482,12 @@ void CSenServiceConnectionImpl::MigrateToPrefferedCarrierL(TBool &aUserChoice)
 	    {
         User::Leave(KErrNotFound);
 	    }	 
+	  TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::MigrateToPrefferedCarrierL() Completed")));
     }
 
 void CSenServiceConnectionImpl::NewCarrierAcceptedL(TBool &aUserChoice)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::NewCarrierAcceptedL()")));
     if (iMobiltyObserver)
         {
         User::LeaveIfError(iConnection.NewCarrierAcceptedL(aUserChoice));    	
@@ -3459,7 +3495,8 @@ void CSenServiceConnectionImpl::NewCarrierAcceptedL(TBool &aUserChoice)
 	else
 	    {
         User::Leave(KErrNotFound);
-	    }	 
+	    }
+	  TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::NewCarrierAcceptedL() Completed")));  	 
     }
 #endif
 
@@ -3468,6 +3505,7 @@ TInt CSenServiceConnectionImpl::SendProgressToHostlet(TInt aTxnId,
         TBool aIncoming, const TDesC8& aMessage, const TDesC8& aCid,
         TInt aProgress)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::SendProgressToHostlet()")));
     TBool isSoap = (aMessage != KNullDesC8);
     TPtrC8 ptr;
     if (isSoap)
@@ -3500,6 +3538,7 @@ void CSenServiceConnectionImpl::DeliverStatus(TInt aStatus)
         TLSLOG_FORMAT(( iTlsLogStatusChannel, KSenServiceConnectionStatusLogLevel, _L("Fatal(!) -- CSenServiceConnectionImpl::DeliverStatus(): MSenServiceConsumer::SetStatus - leaves with %d"), leaveCode));
         leaveCode = KErrNone;
         }
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::DeliverStatus() Completed")));
     }
     
     
@@ -3564,7 +3603,8 @@ void CSenServiceConnectionImpl::DeliverStatus(TInt aStatus)
     }
 
 TInt CSenServiceConnectionImpl::SearchIdentityProviderL( CSenIdentityProvider*& apIdentityProvider, const TDesC8& aProviderId )
-		{
+			{
+			TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::SearchIdentityProviderL()")));
 	    TInt retVal(KErrNone);
 	    
 	    CSenChunk* pSenChunk = CSenChunk::NewLC(NextChunkName());
@@ -3603,7 +3643,7 @@ TInt CSenServiceConnectionImpl::SearchIdentityProviderL( CSenIdentityProvider*& 
 	            }
 	        }
 	    CleanupStack::PopAndDestroy(pSenChunk);
-
+			TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceConnectionImpl::SearchIdentityProviderL returns [%d]" ), retVal ));
 	    return retVal; 
 		}
  
@@ -3654,6 +3694,7 @@ TInt CSenServiceConnectionImpl::RegisterCoBrandingObserver()
 
 TBool CSenServiceConnectionImpl::HasConnectionAgentCallbackInitialized()
 	{
+	TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::HasConnectionAgentCallbackInitialized()")));
 #ifdef __ENABLE_ALR__
 	if((ipAuthProvider || iFilesObserver || iMobiltyObserver || ipCoBrandingObserver) && iConnectionAgentCallbackInitialized)
 #else
@@ -3754,6 +3795,7 @@ TInt CSenServiceConnectionImpl::ReauthNeededL(const TDesC8& aProviderId)
 void CSenServiceConnectionImpl::DataTrafficDetails(TSenDataTrafficDetails& aDetails,
 												   TSenDataTrafficOperations& aOperations) 
 	{
+	TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::DataTrafficDetails()")));
 	iConnection.DataTrafficDetails(aDetails, aOperations);
 	}	
 	
@@ -3782,6 +3824,7 @@ TAny* CSenServiceConnectionImpl::InterfaceByUid( TUid aUID )
 
 TInt CSenServiceConnectionImpl::PendingTrasanctionsCount()
 	{
+	TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::PendingTrasanctionsCount()")));
 	return iAsyncOpsArray->Count();
 	}										
 
@@ -3822,7 +3865,8 @@ void CSenAsyncOperation::ConstructL()
                      sizeof(TInt),
                      sizeof(TInt));
                      
-    SetActive();
+    if(!IsActive())
+    	SetActive();
 	iStatus = KRequestPending;
 #ifdef EKA2
     iActive->AsyncOpsArrayL().AppendL(this);	//codescannerwarnings
@@ -3918,7 +3962,8 @@ void CSenConnectionStatusObserver::ConstructL()
     CActiveScheduler::Add(this);
     // Initial subscription
     iConnectionStatusProperty.Subscribe(iStatus);
-    SetActive();
+    if(!IsActive())
+    	SetActive();
 	iStatus = KRequestPending;
     }
 
@@ -3942,7 +3987,8 @@ void CSenConnectionStatusObserver::RunL()
         
     TLSLOG_L( KSenServiceConnectionStatusLogChannelBase+iConnectionID, KSenServiceConnectionStatusLogLevel, "CSenConnectionStatusObserver::RunL" );
     iConnectionStatusProperty.Subscribe(iStatus);
-    SetActive();
+    if(!IsActive())
+    	SetActive();
 	iStatus = KRequestPending;
    
     TInt propertyValue(KErrNotFound);
@@ -4020,7 +4066,8 @@ void CSenFileProgressObserver::ConstructL()
     CActiveScheduler::Add(this);
     // Initial subscription
     iFileProgressProperty.Subscribe(iStatus);
-    SetActive();
+    if(!IsActive())
+    	SetActive();
     iStatus = KRequestPending;
     }
 
@@ -4042,7 +4089,8 @@ void CSenFileProgressObserver::RunL()
     {
     // Resubscribe before processing new value to prevent missing updates(!):
 	iFileProgressProperty.Subscribe(iStatus);
-    SetActive();
+    if(!IsActive())
+    	SetActive();
     iStatus = KRequestPending;
 
     TLSLOG_L( KSenServiceConnectionStatusLogChannelBase+iConnectionID, KSenServiceConnectionStatusLogLevel, "CSenFileProgressObserver::RunL" );

@@ -27,7 +27,7 @@
 
 #include <SenXmlUtils.h>
 #include <SenDomFragmentBase.h>
-#include <xmlengnodelist.h>
+#include <xml/dom/xmlengnodelist.h>
 
 
 #include "SenSoapEnvelope2.h"
@@ -188,7 +188,8 @@ CSenSoapEnvelope2::CSenSoapEnvelope2()
 :   ipBodyFragment(NULL),
     ipHeaderFragment(NULL),
     ipSoapAction(NULL),
-    iFault(EFalse)
+    iFault(EFalse),
+    iTransactionId(KErrNotFound)
     {
     }
 

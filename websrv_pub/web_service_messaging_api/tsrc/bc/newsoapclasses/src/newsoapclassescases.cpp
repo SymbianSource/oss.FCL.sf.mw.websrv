@@ -376,15 +376,15 @@ TInt CNewSoapClassesBCTest::MT_CSenSoapEnvelope2_TxnIdL( TTestResult& aResult )
     HBufC8* pAsXml = pEnvelope->AsXmlL();
     CleanupStack::PushL(pAsXml);
     
-    if(!( *pAsXml == KEnvelopeString )) return KErrArgument;
-    
-    CleanupStack::PopAndDestroy(pAsXml);
-    
+    if(!( *pAsXml == KEnvelopeString ))
+    	{
+    	CleanupStack::PopAndDestroy(pAsXml);
+    	return KErrArgument;
+    	}
+    CleanupStack::PopAndDestroy(pAsXml);    	
     TInt var = pEnvelope->TxnId();
-    TBool Flag;
-    
     if(var >= 0)
-    if(!(Flag)) return KErrArgument;
+     return KErrArgument;
     
     __ASSERT_ALWAYS_NO_LEAVE(delete pEnvelope);
     pEnvelope = NULL;
@@ -397,18 +397,21 @@ TInt CNewSoapClassesBCTest::MT_CSenSoapEnvelope2_TxnIdL( TTestResult& aResult )
 TInt CNewSoapClassesBCTest::MT_CSenSoapEnvelope2_CloneL( TTestResult& aResult )
 	{
 	SetupL();
-	TBool Flag;
+	TBool Flag = 0;
 	CSenSoapEnvelope2* pEnvelope = CSenSoapEnvelope2::NewL();
 	CleanupStack::PushL(pEnvelope);
 	CSenSoapEnvelope2* pClone = NULL;
     pClone = (CSenSoapEnvelope2*)pEnvelope->CloneL(); 
     if(pClone != NULL)
     	Flag = 1;
-    if(!(Flag)) return KErrArgument;
-   
-	delete pClone;
+    if(!(Flag)) 
+    {   	
+	  delete pClone;
     CleanupStack::PopAndDestroy(pEnvelope);
-    
+    return KErrArgument;
+    }
+    delete pClone;
+    CleanupStack::PopAndDestroy(pEnvelope);
     Teardown();
     return KErrNone;    
 	}
@@ -574,9 +577,12 @@ xmlns:S=\"http://schemas.xmlsoap.org/soap/envelope/\">\
 
     HBufC8* pAsXml = pEnvelope->AsXmlL();
     CleanupStack::PushL(pAsXml);
-    if(!( *pAsXml == KEnvelopeString )) KErrArgument;
-    CleanupStack::PopAndDestroy(pAsXml);
-
+    if(!( *pAsXml == KEnvelopeString )) 
+    	{
+    	CleanupStack::PopAndDestroy(pAsXml);
+    	return KErrArgument;
+			}
+		CleanupStack::PopAndDestroy(pAsXml);
     TXmlEngElement bodyElement2 = document.CreateDocumentElementL(KBodyElementName2());
     bodyElement2.AddTextL(KBodyContent2());
     pEnvelope->SetBodyL(bodyElement2);
@@ -2304,7 +2310,7 @@ TInt CNewSoapClassesBCTest::MT_CSenSoapMessage2_TypeL( TTestResult& aResult )
 TInt CNewSoapClassesBCTest::MT_CSenSoapMessage2_CloneL( TTestResult& aResult )
 	{
 	SetupL();
-	TBool Flag;
+	TBool Flag = 0;
 	CSenSoapMessage2* pSoapMessage = CSenSoapMessage2::NewL();
     CleanupStack::PushL(pSoapMessage);
 
@@ -2312,9 +2318,14 @@ TInt CNewSoapClassesBCTest::MT_CSenSoapMessage2_CloneL( TTestResult& aResult )
     pClone = 	(CSenSoapMessage2*)pSoapMessage->CloneL(); 
     if(pClone != NULL)
     	Flag = 1;
-    if(!(Flag)) return KErrArgument;
+    if(!(Flag)) 
+    	{
+    	delete pClone;
+      CleanupStack::PopAndDestroy(pSoapMessage);
+    	return KErrArgument;
+    	}
     delete pClone;
-    CleanupStack::PopAndDestroy(pSoapMessage);
+    CleanupStack::PopAndDestroy(pSoapMessage);    	
     Teardown();
     return KErrNone;    
 	}
@@ -3420,7 +3431,7 @@ TFileName path( _L("c:\\abc.txt"));
 
 	filetext.Write(_L("CleanupStack::PopAndDestroy(1); "));
 
-   /* // 2) Fault code in Soap 1.2
+    // 2) Fault code in Soap 1.2
     //    Note: SOAP 1.2 faults are structured differently to SOAP 1.1.
     //          In particular all fault elements are now namespace _qualified_,
     //          many have been renamed and fault codes are now hierarchical
@@ -3441,13 +3452,9 @@ TFileName path( _L("c:\\abc.txt"));
 
     CleanupStack::PopAndDestroy(pSoapFault2);
     CleanupStack::PopAndDestroy(1); // document2
-    *//*
+
     Teardown();
     filetext.Write(_L("Teardown"));
     return KErrNone;    
 	*/
 	
-	
-	
-	
-	//  End of File

@@ -124,6 +124,11 @@ EXPORT_C CSenIdentityProvider& CSaslMechanism::Account()
 EXPORT_C void CSaslMechanism::SetTransforms(
                         RPointerArray<CSenPasswordTransform> aList)
     {
+	//deallocate the original objects and the array itself which were owned
+	if(iTransforms.Count())
+		{
+		iTransforms.ResetAndDestroy();
+		}
     iTransforms = aList;
     }
 

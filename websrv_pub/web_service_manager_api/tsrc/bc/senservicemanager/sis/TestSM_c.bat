@@ -19,4 +19,4 @@ md e:\BCTest
 md e:\BCTest\Results
 
 ATSINTERFACE.EXE -testmodule SenServiceManagerBCTest
-copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\ASP_WSManager.txt
+copy c:\Logs\TestFramework\TestReport.txt e:\BCTest\results\WebSrv_WSManager.txt

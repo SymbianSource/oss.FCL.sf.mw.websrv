@@ -763,8 +763,8 @@ void CSenAsyncOperation::ConstructL()
     iTxnIdBuffer.Set(reinterpret_cast<TUint8*>(&iTxnId),
                      sizeof(TInt),
                      sizeof(TInt));
-                     
-    SetActive();
+    if(!IsActive())
+    	SetActive();
 #ifdef EKA2
     iActive->AsyncOpsArrayL().AppendL(this);
 #else
@@ -939,7 +939,8 @@ void CSenFileProgressObserver::ConstructL()
     CActiveScheduler::Add(this);
     // Initial subscription
     iFileProgressProperty.Subscribe(iStatus);
-    SetActive();
+    if(!IsActive())
+    	SetActive();
     iStatus = KRequestPending;
     }
 
@@ -961,7 +962,8 @@ void CSenFileProgressObserver::RunL()
     {
     // Resubscribe before processing new value to prevent missing updates(!):
 	iFileProgressProperty.Subscribe( iStatus );
-    SetActive();
+    if(!IsActive())
+    	SetActive();
     iStatus = KRequestPending;
 
     TLSLOG_L( KSenHostletConnectionLogChannelBase + iConnectionID, KSenServiceConnectionStatusLogLevel, "CSenFileProgressObserver::RunL" );

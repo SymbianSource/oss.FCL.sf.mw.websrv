@@ -249,7 +249,8 @@ TInt CSenLocalTransportPlugin::SendL(const TDesC8& aEndpoint,
         if(!pRequest->IsActive())
             {
             TLSLOG_L(KSenLocalTransportLogChannelBase,KNormalLogLevel,"- Activating request / async call to the provider.");
-            pRequest->SetActive();
+            if(!pRequest->IsActive())
+            	pRequest->SetActive();
             }
         pRequest->iStatus = KRequestPending;
         TRequestStatus* status = &pRequest->iStatus;
@@ -426,7 +427,8 @@ void CSenLocalRequest::ExecuteL()
         }
 
     iStatus = KRequestPending;
-    SetActive();
+    if(!IsActive())
+    	SetActive();
     }
 
 const TThreadId CSenLocalRequest::OwnerThreadId() const

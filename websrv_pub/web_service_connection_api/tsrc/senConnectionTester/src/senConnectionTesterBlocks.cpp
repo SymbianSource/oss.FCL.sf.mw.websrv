@@ -47,9 +47,9 @@
 
 #include <senvtcptransportproperties.h>
 
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
-#include <xmlengserializer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengserializer.h>
 
 #include <e32base.h> // for CActive
 #include <aknnotewrappers.h> 

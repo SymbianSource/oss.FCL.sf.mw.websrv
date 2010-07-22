@@ -32,10 +32,9 @@
 #include <e32base.h>
 #include <badesca.h>
 #include <f32file.h>
-#include <imcvcodc.h> // for base64 codec
 #include <flogger.h>
 #include <etelmm.h>
-
+#include <tconvbase64.h>
 #include <SenXmlReader.h>
 
 #include "senservicemanagerdefines.h"
@@ -412,7 +411,7 @@ class CSenCoreServiceManager : public CServer2,
         // New functions
         
         MSIF* Framework(const TDesC8& aFrameworkID);
-        TImCodecB64& Base64Codec();
+        TBase64& Base64Codec();
 
 //        RPointerArray<HBufC8>& ActiveHostletEndpointsL();
 
@@ -436,7 +435,7 @@ class CSenCoreServiceManager : public CServer2,
         TInt                     iConnectionCount;
         CSenGuidGen*             iGuidGenerator;            // owned
         CSenXmlReader*           iReader;                   // owned
-        TImCodecB64 iBase64Codec; 
+        TBase64 iBase64Codec; 
         RStringPool iStringPool;                            // owned
 //        RPointerArray<HBufC8>*   ipActiveHostletEndpoints;  // owned
 

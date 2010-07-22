@@ -50,10 +50,12 @@ EXPORT_C CSenServiceSession::CSenServiceSession(TDescriptionClassType aType,
     iFramework(aFramework),
     ipTransport(NULL)
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel ,"CSenServiceSession::CSenServiceSession()");
     }
 
 EXPORT_C CSenServiceSession::~CSenServiceSession()
     {
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel ,"CSenServiceSession::~CSenServiceSession()");
     // The REMOTE consumers are also sessions which are
     // owned by XMLDAO or ClientSession
     iConsumerList.Reset();
@@ -562,6 +564,7 @@ EXPORT_C TBool CSenServiceSession::Matches(MSenServiceDescription& aOtherService
         {
         if(!(thisFrameworkId.Length()>0 && patternFrameworkId == thisFrameworkId))
             {
+            TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenServiceSession::Matches() - Framework Id not same returning EFalse");
             return EFalse;
             }
         }
