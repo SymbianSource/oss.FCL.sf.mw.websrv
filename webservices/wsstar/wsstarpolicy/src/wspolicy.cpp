@@ -25,7 +25,7 @@
 // INCLUDE FILES
 #include "wspolicy.h"
 #include <f32file.h>
-#include <xmlengdom.h>
+#include <xml/dom/xmlengdom.h>
 #include <SenXmlUtils.h>
 #include "senguidgen.h"
 #include "SenXmlElement.h"

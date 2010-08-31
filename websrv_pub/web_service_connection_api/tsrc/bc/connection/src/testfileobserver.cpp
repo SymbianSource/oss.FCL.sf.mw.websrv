@@ -46,4 +46,6 @@
  	void CTestFileObserver::TransferProgress(TInt aTxnId , TBool aIncoming , const TDesC8& aMessage,
             const TDesC8& aCid , TInt aProgress )
   	{
-  	}
+	}
+
+

@@ -269,9 +269,7 @@ EXPORT_C const TDesC8& CSenBaseElement::AddAttributeL(const TDesC8& aQName,
         CSenBaseAttribute* pAttribute = CSenBaseAttribute::NewL(aQName,
                                                                 aLocalName,
                                                                 aValue);
-        CleanupStack::PushL(pAttribute);
         AddAttributeL(pAttribute);
-        CleanupStack::Pop(pAttribute);
         }
     return aValue;
     }
@@ -489,16 +487,8 @@ EXPORT_C void CSenBaseElement::AddAttrL(const TDesC8& aName,
     CSenBaseAttribute* pAttr = FindAttr(aName);
     if (pAttr == NULL)
         {
-        //Create new baseAttribute object
-        CSenBaseAttribute* newBaseAttribute = CSenBaseAttribute::NewL(aName, aValue);
-        //Push to cleanupstack 
-        CleanupStack::PushL(newBaseAttribute);
-        
-        //Add the new baseAttribute to existing Attribute list
-        User::LeaveIfError(iAttrs.Append(newBaseAttribute));
-        
-        //Pop from CleanupStack
-        CleanupStack::Pop(newBaseAttribute);
+        User::LeaveIfError(iAttrs.Append(CSenBaseAttribute::NewL(aName,
+                                                                 aValue)));
         }
     else
         {
@@ -642,19 +632,7 @@ EXPORT_C CSenElement& CSenBaseElement::AddElementL(CSenElement& aElement)
 EXPORT_C CSenElement& CSenBaseElement::AddElementL(const TDesC8& aNsUri,
                                                    const TDesC8& aLocalName)
     {
-    //Create new baseElement
-    CSenBaseElement *newBaseElement = CSenBaseElement::NewL(aNsUri, aLocalName);
-    //Push it to CleanupStack
-    CleanupStack::PushL(newBaseElement);
-    
-    //Add the baseElement
-    CSenElement& newAddedElement  = AddElementL(*newBaseElement);
-    
-    //Pop baseElement from CleanupStack
-    CleanupStack::Pop(newBaseElement);
-    
-    //Return the newly added element (got from the AddElement() API)
-    return newAddedElement;
+    return AddElementL(*CSenBaseElement::NewL(aNsUri, aLocalName));
     }
 
 EXPORT_C CSenElement& CSenBaseElement::AddElementL(
@@ -663,36 +641,12 @@ EXPORT_C CSenElement& CSenBaseElement::AddElementL(
     const TDesC8& aQName
     )
     {
-    //Create new baseElement
-    CSenBaseElement *newBaseElement = CSenBaseElement::NewL(aNsUri, aLocalName, aQName);
-    //Push it to CleanupStack
-    CleanupStack::PushL(newBaseElement);
-
-    //Add the baseElement
-    CSenElement& newAddedElement  =  AddElementL(*newBaseElement);
-    
-    //Pop baseElement from CleanupStack
-    CleanupStack::Pop(newBaseElement);
-        
-    //Return the newly added element (got from the AddElement() API)
-    return newAddedElement;
+    return AddElementL(*CSenBaseElement::NewL(aNsUri, aLocalName, aQName));
     }
 
 EXPORT_C CSenElement& CSenBaseElement::AddElementL(const TDesC8& aLocalName)
     {
-    //Create new baseElement
-    CSenBaseElement *newBaseElement = CSenBaseElement::NewL(aLocalName);
-    //Push it to CleanupStack
-    CleanupStack::PushL(newBaseElement);
-    
-    //Add the baseElement
-    CSenElement& newAddedElement  =  AddElementL(*newBaseElement);
-    
-    //Pop baseElement from CleanupStack
-    CleanupStack::Pop(newBaseElement);
-       
-    //Return the newly added element (got from the AddElement() API)
-    return newAddedElement;
+    return AddElementL(*CSenBaseElement::NewL(aLocalName));
     }
 
 EXPORT_C CSenElement* CSenBaseElement::RemoveElement(CSenElement& aElement)

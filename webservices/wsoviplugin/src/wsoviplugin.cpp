@@ -336,7 +336,6 @@ TInt CWSOviPlugin::OnEvent( const TInt aEvent, TAny* /*apArgument*/ )
         case KSenEventWsfReady:
             {
             TPtrC8 imsi = iManager.IMSI();
-			//On SIM Change below code resets the KSenAccAutoSignIn flag			
             if (iIMSI.Compare(imsi))
             	{
             	const RPointerArray<CSenIdentityProvider> list = iManager.IdentityProvidersL();
@@ -347,8 +346,6 @@ TInt CWSOviPlugin::OnEvent( const TInt aEvent, TAny* /*apArgument*/ )
     	            if (el)
     	            	{
     	            	delete (el->RemoveElement(KSenAccAutoSignIn));
-						_LIT8(KWSAccAttrAccountValidator,      "Validator");
-    	            	delete (el->RemoveElement(KWSAccAttrAccountValidator));
     	            	((MSenCredentialManager&)iManager).RemoveCredentialsL(list[i]->ProviderID());
     	            	}
     	            //((MSenCredentialManager&)iManager).RemoveCredentialsL(list[i]->ProviderID());

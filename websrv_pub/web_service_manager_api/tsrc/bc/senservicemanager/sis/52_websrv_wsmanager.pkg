@@ -21,7 +21,7 @@
 ; Only one component name as we only support English
 ; UID is the main app's UID
 
-#{"WebServices Utils"},(0x20016BAB),3,0,0,TYPE=SA
+#{"WebServices Manager"},(0x10282CAC),3,0,0,TYPE=SA
 [0x101F7961],0,0,0,{"Series60ProductID"}
 
 ; Non-localised vendor name
@@ -31,6 +31,6 @@
 %{"Nokia Corporation"}
 
 ; Files to install and to where
-"\Epoc32\Release\armv5\urel\SenUtilsBCTest.dll"-"!:\sys\bin\SenUtilsBCTest.dll"
-"\Epoc32\winscw\c\testSU_c.bat"-"!:\testSU.bat"
-"\Epoc32\winscw\c\testframework\testframework_senutils.ini"-"!:\testframework\testframework_senutils.ini"
+"\Epoc32\Release\armv5\urel\SenServiceManagerBCTest.dll"-"!:\sys\bin\SenServiceManagerBCTest.dll"
+"\Epoc32\winscw\c\testSM_c.bat"-"!:\testSM.bat"
+"\Epoc32\winscw\c\testframework\testframework_senservicemanager.ini"-"!:\testframework\testframework_senservicemanager.ini"

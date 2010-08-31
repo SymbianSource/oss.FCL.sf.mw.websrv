@@ -293,6 +293,7 @@ class CSenWebServiceSession : public CSenServiceSession,
 
          // Data, which also subclasses can access
         TTime iValidUntil;
+        TTime iMaxTime;
         
         RSenCredentialPtr  iCredentialPtr;
         HBufC8* iTransportCue; 

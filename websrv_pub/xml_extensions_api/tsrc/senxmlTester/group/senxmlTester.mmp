@@ -61,7 +61,6 @@ SOURCE					testxml.cpp
 //RESOURCE        resource_file
 //RESOURCE        resource_file2
 
-SYSTEMINCLUDE   /epoc32/include 
 SYSTEMINCLUDE   /epoc32/include/libc
 MW_LAYER_SYSTEMINCLUDE //SYSTEMINCLUDE
 LIBRARY         bafl.lib

@@ -1712,16 +1712,16 @@ MSenProvider& CSenXMLDAO::LookupHostletForL(const TDesC8& aHostletEndpoint,
         // when server (main thread) goes down.
         
         pLookupInfo = NULL;
-        if(pHostlet && pHostlet->Threadsafe())
+        if(pHostlet->Threadsafe())
             {
-            TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"- Adding new threadsafe, unsharable provider into cache.");
+            TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel,"- Adding new threadsafe, unsharable provider into cache.");
             pLookupInfo = CSenHostletLookupInfo::NewLC(aReqThreadId, aReqConsumerId);
             }
         else
             {
             // Any non-threadsafe provider should compare whether consumer ID
             // is equal. The thread ID is irrelevant in the matching.
-            TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"- Adding new non-threadsafe, unsharable provider into cache.");
+            TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel,"- Adding new non-threadsafe, unsharable provider into cache.");
             pLookupInfo = CSenHostletLookupInfo::NewLC(KNullDesC, aReqConsumerId);
             }
 
@@ -1729,7 +1729,7 @@ MSenProvider& CSenXMLDAO::LookupHostletForL(const TDesC8& aHostletEndpoint,
         append = iUnsharableProviders.Append(pLookupInfo, pHostlet);
         if(append==KErrNone)
             {
-            TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("- Loaded new unsharable hostlet instance: 0x%X, lookup info: 0x%X, lookup count: %d"), pHostlet, pLookupInfo, pLookupInfo->LookupCount()));
+            TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMaxLogLevel, _L8("- Loaded new unsharable hostlet instance: 0x%X, lookup info: 0x%X, lookup count: %d"), pHostlet, pLookupInfo, pLookupInfo->LookupCount()));
             CleanupStack::Pop(2); // pLookupInfo, pHostlet
             }
         else
@@ -1933,26 +1933,12 @@ CSenHostletLookupInfo::~CSenHostletLookupInfo()
 
 TPtrC CSenHostletLookupInfo::ThreadId() const
     {
-    if(ipFullThreadName)
-    	{
-    	return *ipFullThreadName;
-    	}
-    else
-    	{
-    	return KNullDesC();
-    	}
+    return *ipFullThreadName;
     }
 
 TPtrC8 CSenHostletLookupInfo::ConsumerId() const
     {
-    if(ipUniqueConsumerId)
-    	{
-    	return *ipUniqueConsumerId;
-    	}
-    else
-    	{
-    	return KNullDesC8();
-    	}	
+    return *ipUniqueConsumerId;
     }
 
 
@@ -1974,15 +1960,9 @@ void CSenHostletLookupInfo::DecrementLookupCount()
 
 TBool CSenHostletLookupInfo::operator==(const CSenHostletLookupInfo& aHostletRequestor)
     {
-    if(ipFullThreadName && ipUniqueConsumerId)
-    	{
-    	return((ipFullThreadName->Length()==0 || aHostletRequestor.ThreadId() == *ipFullThreadName)
+    return((ipFullThreadName->Length()==0 || aHostletRequestor.ThreadId() == *ipFullThreadName)
             && aHostletRequestor.ConsumerId() == *ipUniqueConsumerId);
-    	}
-    else
-    	{
-    	return EFalse;
-    	}	
+    
     //    return (aHostletRequestor.ThreadId() == *ipFullThreadName
 //            && aHostletRequestor.ConsumerId() == *ipUniqueConsumerId);
     }

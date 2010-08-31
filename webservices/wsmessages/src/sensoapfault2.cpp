@@ -95,7 +95,7 @@
 #include "SenSoapFault2.h"
 #include "SenSoapEnvelope2.h"
 
-#include <xmlengnodelist.h>
+#include <xml/dom/xmlengnodelist.h>
 
 EXPORT_C CSenSoapFault2* CSenSoapFault2::NewL(
                                         const TDesC8& aNsUri,

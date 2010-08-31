@@ -306,7 +306,7 @@ class CSenBaseIdentityManager : public CSenBaseFragment,
         */
         virtual TInt WriteConfigurationToL( const TDesC& aFile );
         TBool AllowSavePasswordL();
-        /** Improved heuristics from Identity DB removal / cleanups
+        /** Improved heuristics from Identity DB removal / cleanups : Naga
 	    *
 	    * Checks touch attribute value for all IdentityProvider child elements of 
 	    * current Identity element if that exceeds the the tick counts for two weeks 

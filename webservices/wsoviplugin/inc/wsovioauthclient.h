@@ -118,7 +118,7 @@ public: // Constructors and destructor
     void SetHandlerCtx(MSenHandlerContext* aHndCtx);
     
     TBool HasSuperClass( TDescriptionClassType aType );
-    void CreateBodyL(const TDesC8& aXmlNs, const TDesC8& aUsername, const TDesC8& aPassword, const TDesC8& aCreated, const TDesC8& aValidator=KNullDesC8);
+    void CreateBodyL(const TDesC8& aXmlNs, const TDesC8& aUsername, const TDesC8& aPassword, const TDesC8& aCreated);
         
 protected://methods
     

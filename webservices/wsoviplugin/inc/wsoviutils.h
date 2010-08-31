@@ -46,10 +46,10 @@ class CWSOviUtils : public CBase
                 
         // New functions
 		static HBufC8* NormalizeStringLC(const TDesC8& aMethod, const TDesC8& aUrl, const TDesC8& aHeader );
-		static HBufC8* DigestAuthStringL(const TDesC8& aNonce, const TDesC8& aTimestamp, const TDesC8& aUser, const TDesC8& aPassword, const TDesC8& aValidator = KNullDesC8);
+		static HBufC8* DigestAuthStringL(const TDesC8& aNonce, const TDesC8& aTimestamp, const TDesC8& aUser, const TDesC8& aPassword);
         static HBufC8* EncodeCharsLC(const TDesC8& aString);
         static HBufC8* FormEncodeCharsLC(const TDesC8& aString);
-        static HBufC8* GenerateValidatorL(const TDesC8& aUser, const TDesC8& aPassword);
+
     private:
 
 		~CWSOviUtils();       

@@ -45,9 +45,9 @@
 
 #include "senservicemanagerdefines.h"
 #include "SenBaseAttribute.h"
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
-#include <xmlengserializer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengserializer.h>
 #include "senconnagentserver.h"
 #include "senxmldebug.h"
 #include "senatomentry.h"
@@ -621,6 +621,7 @@ TInt CSenServiceConnectionImpl::SubmitL(CSenConnectionChunk& aClientOp)
             TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"SubmitL - ESenInternalError");
             retVal = KErrSenInternal;
             }
+            break;
         default:
             {
             TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"SubmitL - default");
@@ -2511,16 +2512,19 @@ TInt CSenServiceConnectionImpl::CancelTransaction(TInt aTransactionID)
     		}
     	else
         	{
-    	TMessage message = ipSenServiceDispatcher->GetMessageFromQueue(aTransactionID);
-    	CSenAsyncOperation* pAsyncOp = message.iSenAsyncOperation;
-    	if (pAsyncOp)
-    	    {
-            TInt idx = AsyncOpsArrayL().Find(pAsyncOp);    
-            if (idx >= 0)
-                {
-                AsyncOpsArrayL().Remove(idx);
-                }
-    	    pAsyncOp->iActive = NULL;
+	    	TMessage message = ipSenServiceDispatcher->GetMessageFromQueue(aTransactionID);
+	    	CSenAsyncOperation* pAsyncOp = message.iSenAsyncOperation;
+	    	if (pAsyncOp)
+	    	    {
+	            TInt idx(-1);
+	            TRAP( retVal,
+					idx = AsyncOpsArrayL().Find(pAsyncOp);
+		            if (idx >= 0)
+		                {
+		                AsyncOpsArrayL().Remove(idx);
+		                }
+				  );
+	    	    pAsyncOp->iActive = NULL;
     	    
     	    pAsyncOp->Cancel();
             delete pAsyncOp;

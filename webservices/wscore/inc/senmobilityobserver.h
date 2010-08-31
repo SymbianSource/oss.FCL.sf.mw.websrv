@@ -105,6 +105,7 @@ class CALRObserver  : public CActive, public MMobilityProtocolResp
 	TUint32 iSnapId;
 	CSenXmlReader &iReader ;
 	TBool iOCCenabled;
+	private:    // Data	      
 	};
     
 #endif /*M_SEN_MOBILITY_OBSERVER_H    */

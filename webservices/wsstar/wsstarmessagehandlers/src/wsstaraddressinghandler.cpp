@@ -225,7 +225,7 @@ TInt CWSStarAddressingHandler::HandleInboundL(MSenMessageContext& aCtx, CSenSoap
     CSenElement* ppElem = CWSStarMessageUtils::FindElementL(Kpp, header);
     if(ppElem)
         {
-        CSenElement* credPropertiesElem = CWSStarMessageUtils::FindElementL(KCredProperties, *ppElem);
+        CSenElement* credPropertiesElem = CWSStarMessageUtils::FindElementL(KCredProperties, *ppElem);//Naga
         if(credPropertiesElem)
             {
             CWSStarMessageUtils::FindElementL(KCredProperty, *credPropertiesElem, credPropertiesElements);

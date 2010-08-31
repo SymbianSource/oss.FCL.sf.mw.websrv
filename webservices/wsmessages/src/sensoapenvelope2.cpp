@@ -27,7 +27,7 @@
 
 #include <SenXmlUtils.h>
 #include <SenDomFragmentBase.h>
-#include <xmlengnodelist.h>
+#include <xml/dom/xmlengnodelist.h>
 
 
 #include "SenSoapEnvelope2.h"

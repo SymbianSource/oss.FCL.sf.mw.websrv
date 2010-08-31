@@ -48,9 +48,9 @@
 #include "senservicesession.h"
 #include "senlogger.h"
 #include "senclientsession.h"
-#include <xmlengchunkcontainer.h>
-#include <xmlengfilecontainer.h>
-#include <xmlengserializer.h>
+#include <xml/dom/xmlengchunkcontainer.h>
+#include <xml/dom/xmlengfilecontainer.h>
+#include <xml/dom/xmlengserializer.h>
 
 
 
@@ -482,10 +482,7 @@ void CSenHttpChannelTransportPlugin::ResponseErrorL(TInt aRequestId, TInt aError
     	{
     	iHttpChannel->SetExplicitIapDefined(ETrue);
     	}	
-    if(iHttpChannel)
-    	{
     	iHttpChannel->DisableTimeOutL(aRequestId);
-    	}
 #ifdef _SENDEBUG    
     TLSLOG_FORMAT((KSenHttpChannelObserverLogChannelBase,KNormalLogLevel, _L8("- Request's txnID: %d"), aRequestId));
     if ( apErrorBody )

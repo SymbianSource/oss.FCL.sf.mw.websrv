@@ -30,7 +30,7 @@
 #include "sendebug.h"
 #include "senwspattern.h"
 #include "SenXmlUtils.h"
-#include <xmlengnodelist.h> 
+#include <xml/dom/xmlengnodelist.h> 
 #include <SenHttpTransportProperties.h>
 #include <SenIdentityProvider.h>
 #include "wsovicredentialobserver.h"

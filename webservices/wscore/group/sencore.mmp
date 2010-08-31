@@ -57,7 +57,6 @@ TARGETTYPE EPOCEXE
 
 // Currently, WS-stack requires (and consumes MAX) 4 MBs of heap
 EPOCHEAPSIZE 0x060000 0x400000
-EPOCSTACKSIZE 0x3000
 
 SOURCEPATH ../src
 SOURCE senclientsession.cpp

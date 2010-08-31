@@ -27,7 +27,7 @@
 #include <SenXmlReader.h>
 #include <s32mem.h>
 #include <utf.h>
-#include <xmlengbinarycontainer.h>
+#include <xml/dom/xmlengbinarycontainer.h>
 
 #include "SenWsSecurityHeader2.h"
 #include "sensoapmessagedom2.h"
