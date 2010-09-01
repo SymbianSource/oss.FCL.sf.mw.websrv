@@ -26,8 +26,8 @@
 #ifndef R_SEN_DOCUMENT
 #define R_SEN_DOCUMENT
 
-#include <xml/dom/xmlengdocument.h>
-#include <xml/dom/xmlengdomimplementation.h>
+#include <xmlengdocument.h>
+#include <xmlengdomimplementation.h>
 
 typedef struct
     {

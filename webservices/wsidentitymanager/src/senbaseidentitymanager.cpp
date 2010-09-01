@@ -567,8 +567,7 @@ TInt CSenBaseIdentityManager::AuthenticationForL(
             TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("Username: %S"), pUsernameUtf8));
             TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("Password: %S"), pPasswordUtf8 ));
             HBufC8* pEncodedUsername = NULL;
-            illegalUsername = 
-                SenXmlUtils::EncodeHttpCharactersL(*pUsernameUtf8,
+            illegalUsername = SenXmlUtils::EncodeHttpCharactersL(*pUsernameUtf8,
                                                     pEncodedUsername);
             if (illegalUsername) 
                 {
@@ -617,7 +616,7 @@ TInt CSenBaseIdentityManager::AuthenticationForL(
 	                    // if advisory was changed in service (is no longer
 	                    // valid), there would NOT be any way for end-user
 	                    // to change (remove) it(!)
-
+						TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"There was at least AuthzID available");
 	                    CSenElement& element = aProvider.AsElement();
 	                    delete element.RemoveElement(KSenIdpAdvisoryAuthnIdLocalname);
 
@@ -654,14 +653,32 @@ TInt CSenBaseIdentityManager::AuthenticationForL(
             aResponse().iPassword.Zero();
             if (!illegalUsername) 
             {
-	            aResponse().iUsername.Copy(pUsernameUtf8->Des());
-	            aResponse().iPassword.Copy(pPasswordUtf8->Des());
+                   TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("NOT illegalUsername")));
+			if(pUsernameUtf8)
+				{
+				TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8(" pUsernameUtf8 Length is %d"),  pUsernameUtf8->Length()));
+				if(pUsernameUtf8->Length() > 0 && pUsernameUtf8->Length() <= KSenAuthMaxUsernameLength)
+					{
+					TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("Copy username")));
+					aResponse().iUsername.Copy(pUsernameUtf8->Des());
+					}
+				}
+			if(pPasswordUtf8)
+				{
+				TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8(" pPasswordUtf8 Length is %d"),  pPasswordUtf8->Length()));
+				if(pPasswordUtf8->Length() > 0 && pPasswordUtf8->Length() <= KSenAuthMaxPasswordLength)				
+					{
+					TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("Copy password")));
+			            	aResponse().iPassword.Copy(pPasswordUtf8->Des());
+					}
+				}
             }
-
             CleanupStack::PopAndDestroy(2); // pPasswordUtf8, pUsernameUtf8
             }
         else
             {
+		     aResponse().iUsername.Zero();
+            aResponse().iPassword.Zero();            
             TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("User pressed Cancel Button in Password dialog")));
             }
         }
@@ -671,8 +688,7 @@ TInt CSenBaseIdentityManager::AuthenticationForL(
         }
     else
         {
-        TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8(" Notifier plugin for 'Password' dialog returned an error: %d"), 
-                                                        reqStatus.Int()));
+        TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8(" Notifier plugin for 'Password' dialog returned an error: %d"),  reqStatus.Int()));
         }
 
     CleanupStack::PopAndDestroy(2); // request, response;

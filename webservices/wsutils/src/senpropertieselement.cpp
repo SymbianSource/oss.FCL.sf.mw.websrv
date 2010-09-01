@@ -332,10 +332,9 @@ void CSenPropertiesElement::CopyFromL(CSenElement& aSource)
             {
             CSenNamespace* pNamespace = sourceNamespaces[i];
             CSenNamespace* pNewNamespace =
-            CSenNamespace::NewL(pNamespace->Prefix(),pNamespace->URI());
-			CleanupStack::PushL(pNewNamespace);
+                CSenNamespace::NewL(pNamespace->Prefix(),pNamespace->URI());
+
             CSenXmlElement::AddNamespaceL(*pNewNamespace, EFalse);
-            CleanupStack::Pop(); 	
             }
         }
 

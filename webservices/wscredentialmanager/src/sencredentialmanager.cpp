@@ -47,7 +47,7 @@
 #include "senwebservicesession.h"
 
 #include <SenServiceConnection.h> // KErrSenNoPermission ( -30315 )
-#include <xml/dom/xmlengnodelist.h> 
+#include <xmlengnodelist.h> 
 #include <SenCredential.h>
 
 #include <SenXmlUtils.h>

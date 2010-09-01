@@ -384,7 +384,7 @@ TInt CNewSoapClassesBCTest::MT_CSenSoapEnvelope2_TxnIdL( TTestResult& aResult )
     CleanupStack::PopAndDestroy(pAsXml);    	
     TInt var = pEnvelope->TxnId();
     if(var >= 0)
-     return KErrArgument;
+   return KErrArgument;
     
     __ASSERT_ALWAYS_NO_LEAVE(delete pEnvelope);
     pEnvelope = NULL;

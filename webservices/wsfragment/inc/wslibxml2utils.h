@@ -26,7 +26,7 @@
 #define WS_LIBXML2_UTILS_H_INCLUDED
 
 #include <e32base.h>
-#include <xml/dom/xmlengelement.h>
+#include "xmlengelement.h"
 
 class WsXmlUtils
 {

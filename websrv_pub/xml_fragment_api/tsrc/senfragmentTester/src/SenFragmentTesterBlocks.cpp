@@ -26,17 +26,17 @@
 #include <SenFragmentBase.h>
 #include <SenParser.h>
 #include <RSenDocument.h>
-#include <xml/dom/xmlengdomutils.h>
+#include <xmlengdomutils.h>
 
 #if defined( __SERIES60_31__ ) || (!defined( __SERIES60_30__ ) && defined( SYMBIAN_SWI_POST_INSTALL_REVOCATION) )
     #include <xml/matchdata.h>
 #endif    
 
 #include <xml/parserfeature.h>           // for TParserFeature enumeration
-#include <xml/dom/xmlengserializationoptions.h> // needed for TSerializationOptions
-#include <xml/dom/xmlengbinarycontainer.h>
+#include <xmlengserializationoptions.h> // needed for TSerializationOptions
+#include <xmlengbinarycontainer.h>
 #include <s32mem.h>
-#include <xml/dom/xmlengdom.h>
+#include <xmlengdom.h>
 
 //  INTERNAL INCLUDES
 #include "maindomfragment.h"

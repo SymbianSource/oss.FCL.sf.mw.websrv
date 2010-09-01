@@ -42,7 +42,7 @@
     //#include "Attribute.h"
 #endif
 
-#include <xml/dom/xmlengnodelist.h> 
+#include <xmlengnodelist.h> 
 using namespace Xml;
 
 namespace

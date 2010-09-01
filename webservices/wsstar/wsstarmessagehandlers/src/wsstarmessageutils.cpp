@@ -25,7 +25,7 @@
 
 
 #include "wsstarmessageutils.h"
-#include <xml/dom/xmlengnodelist.h> 
+#include <xmlengnodelist.h> 
 
 CSenElement* CWSStarMessageUtils::GetMarkedElementL(CSenElement& aParent, 
                                                     const TDesC8& aValue, TBool aAttribute)

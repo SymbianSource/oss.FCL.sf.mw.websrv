@@ -33,7 +33,7 @@
 #include "sencryptoutils.h"
 #include "senwspattern.h"
 #include "SenXmlUtils.h"
-#include <xml/dom/xmlengnodelist.h> 
+#include <xmlengnodelist.h> 
 
 #include <SenIdentityProvider.h>
 #include "wsstarcredentialobserver.h"

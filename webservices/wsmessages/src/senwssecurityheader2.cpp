@@ -24,7 +24,7 @@
 
 // INCLUDE FILES
 #include <SenIdentityProvider.h>
-#include <xml/dom/xmlengbinarycontainer.h>
+#include <xmlengbinarycontainer.h>
 
 #include "SenWsSecurityHeader2.h"
 #include "sendebug.h"

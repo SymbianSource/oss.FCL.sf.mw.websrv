@@ -46,7 +46,7 @@
 
 
 #include <SenServiceConnection.h> 
-#include <xml/dom/xmlengnodelist.h> 
+#include <xmlengnodelist.h> 
 using namespace WSPolicy;
 using namespace SenWSInternalPolicy;
 namespace

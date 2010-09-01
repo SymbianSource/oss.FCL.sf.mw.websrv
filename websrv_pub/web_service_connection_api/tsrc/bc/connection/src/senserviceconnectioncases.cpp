@@ -46,9 +46,9 @@
 
 //#include <SenVtcpTransportProperties.h>
 #include "testproperty.h"
-#include <xml/dom/xmlengchunkcontainer.h>
-#include <xml/dom/xmlengfilecontainer.h>
-//#include <xml/dom/xmlengserializer.h>
+#include <XmlEngChunkContainer.h>
+#include <XmlEngFileContainer.h>
+//#include <XmlEngSerializer.h>
 
 #include <e32base.h> // for CActive
 #include <aknnotewrappers.h> 
@@ -1830,7 +1830,7 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL( TTest
 	TInt err(KErrNone);
 
 	//iServiceConnection = CSenServiceConnection::NewL(*this, KAddressBookServiceId());
-	iServiceConnection = CSenServiceConnection::NewLC(*this, *iSenXmlServiceDescription);
+	iServiceConnection = CSenServiceConnection::NewL(*this, *iSenXmlServiceDescription);
 
 	StartActiveScheduler(1);
 	User::LeaveIfError(this->iFsSessionHandle.Connect());//anil
@@ -1857,7 +1857,7 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SubmitL_RFileL( TTest
 	if(iFsSessionHandle.Handle())
     	iFsSessionHandle.Close(); 
     
-	CleanupStack::Pop(iServiceConnection);
+	//CleanupStack::Pop(iServiceConnection);
     __ASSERT_ALWAYS_NO_LEAVE(delete iServiceConnection);
     iServiceConnection = NULL;
 		
@@ -1882,7 +1882,7 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SendL_RFileL( TTestRe
 	TInt err(KErrNone);
 
 	//iServiceConnection = CSenServiceConnection::NewL(*this, KAddressBookServiceId());
-	iServiceConnection = CSenServiceConnection::NewLC(*this, *iSenXmlServiceDescription);
+	iServiceConnection = CSenServiceConnection::NewL(*this, *iSenXmlServiceDescription);
 
 	StartActiveScheduler(1);
 	/*
@@ -1909,12 +1909,12 @@ TInt CSenServiceConnectionBCTest::UT_CSenServiceConnection_SendL_RFileL( TTestRe
 	if (transactionIdOrError == KErrNone)
 	    StartActiveScheduler(1);
 //	LOCAL_ASSERT(transactionIdOrError > KErrNone);
-	
+	//CleanupStack::Pop(&iRFileHandle);
 	CleanupStack::PopAndDestroy(&iRFileHandle);
 	if(iFsSessionHandle.Handle())
     	iFsSessionHandle.Close(); 
 
-	CleanupStack::Pop(iServiceConnection);
+	//CleanupStack::Pop(iServiceConnection);
 		__ASSERT_ALWAYS_NO_LEAVE(delete iServiceConnection);
 	iServiceConnection = NULL;
 	 __ASSERT_ALWAYS_NO_LEAVE(delete iSenXmlServiceDescription);

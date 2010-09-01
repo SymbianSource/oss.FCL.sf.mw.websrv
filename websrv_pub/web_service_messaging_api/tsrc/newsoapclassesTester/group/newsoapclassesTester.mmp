@@ -35,6 +35,7 @@ CAPABILITY      ALL -TCB
 //TARGETPATH      ?target_path
 DEFFILE         newsoapclassesTester.def
 
+SYSTEMINCLUDE           /epoc32/include
 SYSTEMINCLUDE           /epoc32/include/xml
 SYSTEMINCLUDE           /epoc32/include/libc
 APP_LAYER_SYSTEMINCLUDE  //SYSTEMINCLUDE

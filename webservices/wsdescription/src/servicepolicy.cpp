@@ -15,13 +15,6 @@
 *
 */
 
-
-
-
-
-
-
-
 // INCLUDE FILES
 #include <e32std.h>
 #include <s32strm.h>
@@ -378,10 +371,10 @@ void CServicePolicy::AddDeviceElementsL(CSenElement* aDeviceElement)
                 }
                 
             } 
-             
         }
 
      }
+	 
 void CServicePolicy::AddUserAgentElementsL(CSenElement* aUserAgentElement)
     {
     CSenElement* pClientPolicyElement = AsElement().Element(KClientServicePolicyLocalName);
@@ -587,7 +580,6 @@ TInt CServicePolicy::AddWspPolicyL(CSenElement* aPolicy)
         }
     else //Just add this policy in the <PolicyArray>
         {
-        
         CSenElement& apol= pPolicyArray->AddElementL(KPolicyLocalName);
         apol.CopyFromL(*aPolicy);                                
         PolicyIdL(&apol);	//codescannerwarnings
@@ -787,6 +779,8 @@ TBool CServicePolicy::ClientPolicy(const TDesC8& aKey)
             return EFalse;
     }                    
 
+    return EFalse;
+    
 }
 HBufC8* CServicePolicy::ClientPolicyValue(const TDesC8& aKey)
     {

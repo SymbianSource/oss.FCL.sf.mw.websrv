@@ -23,7 +23,7 @@
 
 
 // INCLUDE FILES
-#include <xml/dom/xmlengnodelist.h>
+#include <xmlengnodelist.h>
 #include <badesca.h>
 #include <SenXmlReader.h>
 #include <s32mem.h>

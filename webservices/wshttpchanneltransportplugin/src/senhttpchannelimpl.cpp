@@ -200,7 +200,7 @@ void CSenHttpChannelImpl::ConstructL()
     iSess.StringPool().OpenL(HttpFilterCommonStringsExt::GetLanguageTable());
     iSess.StringPool().OpenL(HttpFilterCommonStringsExt::GetTable());
 	TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - Installing  HTTPAcceptProxyFilter for EKA2 build.")));
-    //CHttpFilterAcceptHeaderInterface::InstallFilterL(iSess); //There is issue with installing this filter. so disabling it temporarly
+    CHttpFilterAcceptHeaderInterface::InstallFilterL(iSess);
     TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::ConstructL() - HTTPAcceptProxyFilter installed for EKA2 build.")));
   //#else
   //  LOG_WRITE_L("HTTPProxyFilter is NOT in use with EKA2 debug builds.");
@@ -1274,6 +1274,7 @@ TBool CSenHttpChannelImpl::GetCredentialsL(const TUriC8& aURI,
         iSessionAuthentication = iManager.IdentityProviderL(aURI.UriDes());
         if(!iSessionAuthentication)
             {
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"--- create and register new IDP"); 
             // create and register new IDP
             iSessionAuthentication = CSenIdentityProvider::NewL(aURI.UriDes(),
                                                                 KNullDesC8);
@@ -1287,13 +1288,15 @@ TBool CSenHttpChannelImpl::GetCredentialsL(const TUriC8& aURI,
                 TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"GetCredentialsL() returning EFalse");
                 return EFalse; // decision: we could not save info into database, abort
                 }
-            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"New IDP registeration OK. Proceeding.");
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"--- New IDP registeration OK. Proceeding.");
             }
         // we have credentials
+       TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"--- we have credentials");         
         TRAPD(err, aUsername = 
             aRealm.Pool().OpenStringL(iSessionAuthentication->AuthzID()));
         TRAP(err, aPassword = 
             aRealm.Pool().OpenStringL(iSessionAuthentication->Password()));
+		TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("--- username (%s), password (%d)"), aUsername, aPassword));
         TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"GetCredentialsL() returning ETrue");
         return ETrue;
         }
@@ -1307,7 +1310,7 @@ TBool CSenHttpChannelImpl::GetCredentialsL(const TUriC8& aURI,
         TPckgBuf<TSenAuthentication> authInfo;
         iManager.AuthenticationForL(*iSessionAuthentication, authInfo);
         iPasswordFromUser = ETrue;
-
+        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"--- AuthenticationForL Called");
         TRAPD(err, aUsername = 
                 aRealm.Pool().OpenStringL(authInfo().iUsername));
         TRAP(err, aPassword = 

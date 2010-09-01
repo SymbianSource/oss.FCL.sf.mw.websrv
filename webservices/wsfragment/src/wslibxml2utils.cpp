@@ -24,10 +24,10 @@
 
 #include "wslibxml2utils.h"
 
-#include <stdapis/libxml2/libxml2_globals.h>
-#include <xml/dom/xmlengelement.h>
-#include <xml/dom/xmlengerrors.h>
-#include <xml/utils/xmlengxestd.h>
+#include <libxml2_globals.h>
+#include <xmlengelement.h>
+#include <xmlengerrors.h>
+#include <xmlengxestd.h>
 
 #define INTERNAL_NODEPTR(aNodeObject)   (*reinterpret_cast<xmlNodePtr*>(&(aNodeObject)))
 #define INTERNAL_NSPTR(aNsDefObject)    (*reinterpret_cast<xmlNsPtr*>(&(aNsDefObject)))

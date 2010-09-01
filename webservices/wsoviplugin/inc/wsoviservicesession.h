@@ -32,9 +32,9 @@
 #include "wsoviplugin.h"
 #include "senwebservicesession.h"
 #include "wsovisessionconsumer.h"
-#include <xml/dom/xmlengfilecontainer.h>
-#include <xml/dom/xmlengchunkcontainer.h>
-#include <xml/dom/xmlengelement.h>
+#include <xmlengfilecontainer.h>
+#include <xmlengchunkcontainer.h>
+#include <xmlengelement.h>
 
 class CWSOviCredentialObserver;
 class CSenHttpTransportProperties;

@@ -34,9 +34,9 @@
 
 #include <xml/attribute.h>               // needed for RAttributeArray
 #include <xml/parserfeature.h>           // for TParserFeature enumeration
-#include <xml/dom/xmlengserializationoptions.h> // for TSerializationOptions
-#include <xml/dom/xmlengbinarycontainer.h>
-#include <xml/dom/xmlengnodelist.h>
+#include <xmlengserializationoptions.h> // for TSerializationOptions
+#include <xmlengbinarycontainer.h>
+#include <xmlengnodelist.h>
 
 
 typedef unsigned char xmlChar; // from "libxml/Libxml2_xmlstring.h"

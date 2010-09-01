@@ -32,7 +32,7 @@
 #include <xml/contenthandler.h>
 #include <RSenDocument.h>
 #include <SenParser.h>
-#include <xml/dom/xmlengelement.h>
+#include <xmlengelement.h>
 
 using namespace Xml;
 

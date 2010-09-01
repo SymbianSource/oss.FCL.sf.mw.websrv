@@ -37,7 +37,7 @@
 #include <SenXmlUtils.h>
 #include <SenXmlProperties.h>
 
-#include <xml/dom/xmlengnodelist.h> 
+#include <xmlengnodelist.h> 
 #include <defaultcaps.hrh>
 
 #include "senclientsession.h"
@@ -59,9 +59,9 @@
 
 #include "SenSoapEnvelope2.h"
 #include "sensoapmessagedom2.h"
-#include <xml/dom/xmlengchunkcontainer.h>
-#include <xml/dom/xmlengfilecontainer.h>
-#include <xml/dom/xmlengdeserializer.h>
+#include "xmlengchunkcontainer.h"
+#include "xmlengfilecontainer.h"
+#include "xmlengdeserializer.h"
 #include "SenParser.h"
 #include "seninternalcredential.h"
 #include "senservercontext.h"
