@@ -203,7 +203,7 @@ void CSenCoreServiceManager::ConstructL()
 
 CSenCoreServiceManager::~CSenCoreServiceManager()
     {
-
+		TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenCoreServiceManager::~CSenCoreServiceManager()");
     // Delete member variables
     CSenCoreServiceManager::SetShowPasswordDialog(EFalse);
     delete ipServerContext;
@@ -226,6 +226,7 @@ CSenCoreServiceManager::~CSenCoreServiceManager()
 //        }
 
 #ifdef _SENDEBUG
+		TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenCoreServiceManager::~CSenCoreServiceManager() Completed");
     TLSLOG_CLOSE(KSenFaultsLogChannel);
     TLSLOG_CLOSE(KSenUtilsLogChannel);
     TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"Log file closed.");
@@ -580,14 +581,14 @@ void CSenCoreServiceManager::IncrementConnections()
         TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"- Shutdown timer cancelled, serving emerged new client.");
         }
     iConnectionCount++;
-    TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel, _L8("- Client count increased to: %d"),iConnectionCount));
+    TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("- Client count increased to: %d"),iConnectionCount));
     }
 
 void CSenCoreServiceManager::DecrementConnections()
     {
-    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel,"CSenCoreServiceManager::DecrementConnections");
+    TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"CSenCoreServiceManager::DecrementConnections");
     iConnectionCount--;
-    TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KNormalLogLevel, _L8("- Client count decreased to: %d"),iConnectionCount));
+    TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("- Client count decreased to: %d"),iConnectionCount));
     if (iConnectionCount <= 0)
         {
         if( iShutdownTimer )
@@ -1201,6 +1202,7 @@ CSenTransportBase* CSenCoreServiceManager::CreateL( CSenWSDescription& aInitiali
         TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"- About to instantiate new transport (arg: ctx)");
         // default to HTTP Channel transport plug-in:
         TRAP( leaveCode, pTransport = CSenTransport::NewL(pCtx); )
+        TLSLOG_L(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,"- About to instantiate new transport (arg: ctx) 1");
         if( leaveCode )
             {
             TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel, _L8("- Could not load new transport plugin, leave: %d"),leaveCode));

@@ -74,6 +74,8 @@ namespace
 CSenHttpChannelImpl::CSenHttpChannelImpl(MSenIdentityManager& aManager)
 :
     iIapId(KErrNone),
+    iUsedIapId(KErrNone),
+    iSnapId(KErrNone),
     iManager(aManager),
     iSessionAuthentication(NULL),
     iPasswordFromUser(EFalse),
@@ -744,19 +746,23 @@ TInt CSenHttpChannelImpl::InvokeHttpMethodL(CSenTxnState* aTxnState,
         }
     else if(((aProps.SnapIdL(id)) == KErrNone))
         {
+        TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::InvokeHttpMethodL SetSnapPrefsL - Snap Id [%d]"), id));
         retVal = SetSnapPrefsL(id, prompt, iConnection, iSockServ);
         }
     else//to better control RConnection, we have to call Start by ourselve
         {
+        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::InvokeHttpMethodL - No Snap Id and No Iap Id");
         retVal = SetSnapPrefsL(0, EFalse, iConnection, iSockServ);
         if(retVal == KErrNotFound)
             {
             if(iOCCenabled == EFalse)
 		        {
+		        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::InvokeHttpMethodL - iOCCenabled EFalse calling SetIapPrefsL");
 	    	    retVal = SetIapPrefsL(0, EFalse, iConnection, iSockServ);	
 	        	}
         	else
 	        	{
+	        	TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::InvokeHttpMethodL - iOCCenabled ETrue calling SetSnapPrefsL");
 	        	retVal = SetSnapPrefsL(0, prompt, iConnection, iSockServ);	
 	        	}
             }
@@ -1288,7 +1294,7 @@ TBool CSenHttpChannelImpl::GetCredentialsL(const TUriC8& aURI,
                 TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"GetCredentialsL() returning EFalse");
                 return EFalse; // decision: we could not save info into database, abort
                 }
-            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"--- New IDP registeration OK. Proceeding.");
+            TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"New IDP registeration OK. Proceeding.");
             }
         // we have credentials
        TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"--- we have credentials");         
@@ -1296,7 +1302,7 @@ TBool CSenHttpChannelImpl::GetCredentialsL(const TUriC8& aURI,
             aRealm.Pool().OpenStringL(iSessionAuthentication->AuthzID()));
         TRAP(err, aPassword = 
             aRealm.Pool().OpenStringL(iSessionAuthentication->Password()));
-		TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("--- username (%s), password (%d)"), aUsername, aPassword));
+				TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("--- username (%S), password (%S)"), &aUsername.DesC(), &aPassword.DesC()));
         TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"GetCredentialsL() returning ETrue");
         return ETrue;
         }
@@ -1409,6 +1415,7 @@ void CSenHttpChannelImpl::HandleResponseHeadersL(RHTTPTransaction aTransaction)
               ++fields;
              }
         CleanupStack::Pop(tp);
+        TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::HandleResponseHeadersL() returns")));
         return;
         }
         
@@ -1441,6 +1448,7 @@ void CSenHttpChannelImpl::HandleResponseHeadersL(RHTTPTransaction aTransaction)
                 break;
                 default:
                     {
+                    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::HandleResponseHeadersL() User::Panic")));
                     User::Panic(KUnrecognisedValueTypeOfContentTypePanicText,
                                 EContentTypeUnrecognisedValueType);
                     }
@@ -1485,6 +1493,7 @@ void CSenHttpChannelImpl::HandleResponseHeadersL(RHTTPTransaction aTransaction)
                                     {
                                     iXopResponse = ETrue;
                                     content.Close();
+                                    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::HandleResponseHeadersL() returns")));
                                     return;
                                     }
                                 }
@@ -1496,12 +1505,14 @@ void CSenHttpChannelImpl::HandleResponseHeadersL(RHTTPTransaction aTransaction)
                 {
                 iContentType.Set(fieldValPtr);
                 content.Close();
+                TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::HandleResponseHeadersL() returns")));
                 return;
                 }
             }
         iHasHttpContentType = EFalse;
         content.Close();
         }
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::HandleResponseHeadersL() Completed")));
     }
 
 TInt CSenHttpChannelImpl::ContentTypeParamValueL(const RHTTPHeaders& aResponseHeaders,
@@ -1591,6 +1602,7 @@ void CSenHttpChannelImpl::HandleResponseBodyDataL(RHTTPTransaction aTransaction)
         DeleteTxnState(txnId);
         aTransaction.Close();
         }
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::HandleResponseBodyDataL() Completed")));   
     }
 
 void CSenHttpChannelImpl::HandleResponseL(RHTTPTransaction aTransaction)
@@ -1625,14 +1637,15 @@ void CSenHttpChannelImpl::HandleResponseL(RHTTPTransaction aTransaction)
 
     DeleteTxnState(txnId);
     aTransaction.Close();
+    TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpChannelImpl::HandleResponseL() Completed")));
     }
 
 void CSenHttpChannelImpl::HandleRunErrorL(RHTTPTransaction aTransaction,
                                           TInt aError)
     {
-    TLSLOG_L(KSenHttpChannelLogChannelBase , KMaxLogLevel,"CSenHttpChannelImpl::HandleRunErrorL()");
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::HandleRunErrorL()");
     TInt txnId = aTransaction.Id();
-    TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::HandleRunErrorL( %d ): %d"),txnId, aError));
+    TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpChannelImpl::HandleRunErrorL( )- Txn Id [%d], Error Id [%d]"),txnId, aError));
     CSenTxnState* pTxnState = FindTxnState(txnId);
     __ASSERT_ALWAYS(pTxnState != NULL,
                     User::Panic(KTxnStateNullPanicText,
@@ -1641,7 +1654,7 @@ void CSenHttpChannelImpl::HandleRunErrorL(RHTTPTransaction aTransaction,
     pTxnState->ResponseErrorL(aError);
     DeleteTxnState(txnId);
     aTransaction.Close();
-    TLSLOG_L(KSenHttpChannelLogChannelBase , KMaxLogLevel,"CSenHttpChannelImpl::HandleRunErrorL() Completed");
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::HandleRunErrorL() Completed");
     }
 
 void CSenHttpChannelImpl::HandleRedirectRequiresConfirmationL(
@@ -1657,6 +1670,7 @@ void CSenHttpChannelImpl::HandleRedirectRequiresConfirmationL(
     pTxnState->ResponseErrorL(KErrSenHttpRedirectRequiresConfirmation); // was: -20002
     DeleteTxnState(txnId);
     aTransaction.Close();
+    TLSLOG_L(KSenHttpChannelLogChannelBase , KMinLogLevel,"CSenHttpChannelImpl::HandleRedirectRequiresConfirmationL() Completed");
     }
 /*
 RFileLogger* CSenHttpChannelImpl::Log() const

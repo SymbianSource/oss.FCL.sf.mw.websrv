@@ -199,8 +199,10 @@ TInt RSenServiceManager::RegisterIdentityProvider(TDesC8& aMessage)
     TIpcArgs args;
     args.Set(0, &aMessage);
     args.Set(1, length);
-
-    return SendReceive(ESenServRegisterIdentityProvider, args);
+		TInt retVal(KErrNone);
+		retVal = SendReceive(ESenServRegisterIdentityProvider, args);
+		TLSLOG_FORMAT((iTLSLogChannel, KNormalLogLevel , _L8("RSenServiceManager::RegisterIdentityProvider() returns [%d]"), retVal));
+    return retVal;
     }
 
 TInt RSenServiceManager::UnregisterIdentityProvider(TDesC8& aMessage)

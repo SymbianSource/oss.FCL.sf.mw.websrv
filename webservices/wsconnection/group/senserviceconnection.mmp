@@ -86,6 +86,8 @@ SYSTEMINCLUDE   /epoc32/include/libc
 LIBRARY         euser.lib
 LIBRARY         flogger.lib
 LIBRARY         efsrv.lib
+LIBRARY         bafl.lib
+
 #ifndef RD_SEN_COMPILE_SIS_PACKAGE_FILES
 // SOA for S60 libs:
 LIBRARY         wsconnagent.lib

@@ -5111,6 +5111,7 @@ MSenTransport& CSenClientSession::TransportL()
             pTransport = ipTransport;
             }
         }
+    CSLOG_L(iConnectionID,KMinLogLevel ,"CSenClientSession::TransportL() Completed");
     return *pTransport;
     }
 

@@ -137,6 +137,7 @@ void CSenLocalTransportPlugin::ConstructL()
     MSenCoreServiceManager& core = Context().GetCoreL();
     ipRequester = CSenSyncRequester::NewL(*this, core);
     ipTransportProperties = CSenLayeredTransportProperties::NewL();
+    TLSLOG_L(KSenLocalTransportLogChannelBase,KMinLogLevel,"CSenLocalTransportPlugin::ConstructL Completed");
     }
 
 TInt CSenLocalTransportPlugin::SubmitL(const TDesC8& aEndpoint,

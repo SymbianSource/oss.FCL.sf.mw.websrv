@@ -1313,6 +1313,7 @@ TInt CIdWsfServiceSession::SubmitL( const TDesC8& aMessage,
         {
         iSubmitState = KSubmitStateOK; 
         }
+    CSLOG_FORMAT((aConsumer.ConnectionId(), KNormalLogLevel , _L8("CIdWsfServiceSession::SubmitL [%d]: "), retVal));   
     return retVal;
     }
 

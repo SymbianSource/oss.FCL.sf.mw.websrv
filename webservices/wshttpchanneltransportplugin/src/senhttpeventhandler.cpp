@@ -80,7 +80,7 @@ CSenHttpEventHandler* CSenHttpEventHandler::NewL(CSenHttpChannelImpl* aChannel)/
 void CSenHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction,
                                    const THTTPEvent& aEvent)
     {
-    TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KNormalLogLevel, _L8("CSenHttpEventHandler::MHFRunL( %d )"), aEvent.iStatus));
+    TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpEventHandler::MHFRunL( %d )"), aEvent.iStatus));
     if (aEvent.iStatus < 0)
         {
         if (aEvent.iStatus == KErrDisconnected)
@@ -97,42 +97,57 @@ void CSenHttpEventHandler::MHFRunL(RHTTPTransaction aTransaction,
             iHttpChannel->SetExplicitIapDefined(EFalse);
             iHttpChannel->HandleRunErrorL(aTransaction, aEvent.iStatus);
             }
+        TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() returns")));
         return;
         }
-
+		TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KMinLogLevel, _L8("CSenHttpEventHandler::statuscode( %d )"), aTransaction.Response().StatusCode()));
     switch (aEvent.iStatus)
         {
         case THTTPEvent::EGotResponseHeaders:
-            TLSLOG_FORMAT((KSenHttpChannelLogChannelBase , KNormalLogLevel, _L8("CSenHttpEventHandler::statuscode( %d )"),
-                                     aTransaction.Response().StatusCode()));
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EGotResponseHeaders")));
             iHttpChannel->HandleResponseHeadersL(aTransaction);
+            TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EGotResponseHeaders Completed")));
             break;
         case THTTPEvent::EGotResponseBodyData:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EGotResponseBodyData")));
             iHttpChannel->HandleResponseBodyDataL(aTransaction);
             iTries = 0;
+            TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EGotResponseBodyData Completed")));
             break;
         case THTTPEvent::EResponseComplete:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EResponseComplete")));
             break;
         case THTTPEvent::ESucceeded:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() ESucceeded")));
             iHttpChannel->HandleResponseL(aTransaction);
+            TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() ESucceeded Completed")));
             break;
         case THTTPEvent::EFailed:
         case THTTPEvent::EMoreDataReceivedThanExpected:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EMoreDataReceivedThanExpected | EFailed")));
             iHttpChannel->HandleRunErrorL(aTransaction,
                                     aTransaction.Response().StatusCode());
+            TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EMoreDataReceivedThanExpected | EFailed Completed")));
             break;
         case THTTPEvent::EUnrecoverableError:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EUnrecoverableError")));
             iHttpChannel->HandleRunErrorL(aTransaction, KErrNoMemory);
+            TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() EUnrecoverableError Completed")));
             break;
         case THTTPEvent::ERedirectRequiresConfirmation:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() ERedirectRequiresConfirmation")));
             iHttpChannel->HandleRedirectRequiresConfirmationL(aTransaction);
+            TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() ERedirectRequiresConfirmation Completed")));
             break;
         case THTTPEvent::ERedirectedPermanently:
         case THTTPEvent::ERedirectedTemporarily:
         case THTTPEvent::EGotResponseTrailerHeaders:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() ERedirectedPermanently | ERedirectedTemporarily | EGotResponseTrailerHeaders")));
             break;// We don't process this event
         default:
+        		TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() default:")));
             iHttpChannel->HandleRunErrorL(aTransaction, aEvent.iStatus);
+            TLSLOG(KSenHttpChannelLogChannelBase , KMinLogLevel,(_L("CSenHttpEventHandler::MHFRunL() default: Completed")));
             break;
         }
     if (aTransaction.Response().StatusCode() == 401 && iTries < 4)

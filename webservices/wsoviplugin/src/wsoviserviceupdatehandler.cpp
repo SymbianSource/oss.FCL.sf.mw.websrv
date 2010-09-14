@@ -110,6 +110,7 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
 	                    {
 	                    case MSenProperties::ESenHttpTransportProperties:
 	                        {
+							TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("----- ESenHttpTransportProperties")));
 	                        TInt minutes;
 	                        ((CSenHttpTransportProperties*)tp)->IntPropertyL(WSOviSession::KDateHttpHeader(), minutes);
 	                        pCtx.Update(WSOviContextKeys::KRetryNeeded, minutes);
@@ -117,11 +118,13 @@ TInt CWSOviServiceUpdateHandler::InvokeL(MSenSessionContext& aCtx)
 	                    break;
 	                    case MSenProperties::ESenLayeredHttpTransportProperties:
 	                        {
+							TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("----- ESenLayeredHttpTransportProperties")));
 	                        TInt minutes;
 	                        ((CSenLayeredHttpTransportProperties*)tp)->IntPropertyL(WSOviSession::KDateHttpHeader(), minutes);
 	                        pCtx.Update(WSOviContextKeys::KRetryNeeded, minutes);
 	                        }    
 	                    default:
+							TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("----- Default")));
 	                    break;
 	                    }
 	                }

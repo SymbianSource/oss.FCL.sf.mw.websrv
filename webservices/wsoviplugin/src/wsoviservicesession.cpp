@@ -737,15 +737,22 @@ TInt CWSOviServiceSession::SendErrorToConsumerL( const TInt aErrorCode,
     TLSLOG_FORMAT((KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel , _L8("- ErrorCode: %d"), aErrorCode ));
     ((CWSOviPlugin&)iFramework).ProcessInboundDispatchL(this, aErrorCode, apError, aResponseTransportProperties);
     TInt answer = CanHandleErrorL();
+    TInt retVal(KErrNone);
     if (answer)
         {
-        delete apError;
-        return aConsumer.HandleErrorL(NULL, answer, aTxnId, aResponseTransportProperties);
+        if(apError)
+        	{
+        	delete apError;
+        	apError = NULL;
+        	}
+        retVal = aConsumer.HandleErrorL(NULL, answer, aTxnId, aResponseTransportProperties);
         }
     else
         {
-        return HandleErrorL(aErrorCode, apError, aTxnId, aConsumer, aResponseTransportProperties);
+        retVal = HandleErrorL(aErrorCode, apError, aTxnId, aConsumer, aResponseTransportProperties);
         }
+	TLSLOG_FORMAT((KSenClientSessionLogChannelBase+aConsumer.ConnectionId(), KMinLogLevel , _L8("CWSOviServiceSession::SendErrorToConsumerL() retruns [%d]"), retVal ));
+    return retVal;
     }
     
     

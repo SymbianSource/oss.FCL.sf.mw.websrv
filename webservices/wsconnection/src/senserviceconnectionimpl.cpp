@@ -20,6 +20,7 @@
 #include <s32strm.h>
 #include <f32file.h>
 #include <e32property.h>
+#include <bautils.h>
 
 #include "senserviceconnectionimpl.h"
 
@@ -192,6 +193,21 @@ CSenServiceConnectionImpl* CSenServiceConnectionImpl::NewLC(MSenServiceConsumer&
 
 void CSenServiceConnectionImpl::ConstructL(MSenServiceDescription& aSD)
     {
+		#ifdef _SENDEBUG
+		#ifdef _DEBUG
+	
+		RFs fs;
+		fs.Connect();
+		TBool ret = BaflUtils::FolderExists(fs, _L("c:\\logs\\wslog\\"));
+		if(!ret)
+			{
+			fs.MkDirAll(_L("c:\\logs\\wslog\\"));
+			}
+		fs.Close();
+	
+		#endif // _DEBUG
+		#endif // _SENDEBUG 
+    
 	TLSLOG_L(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel ,"CSenServiceConnectionImpl::ConstructL(aSD)");
     CSenElement& sdAsElement = ((CSenXmlServiceDescription&)aSD).AsElement();
 
@@ -3517,6 +3533,7 @@ TInt CSenServiceConnectionImpl::SendProgressToHostlet(TInt aTxnId,
 
 void CSenServiceConnectionImpl::DeliverStatus(TInt aStatus)
     {
+    TLSLOG(KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel,(_L("CSenServiceConnectionImpl::DeliverStatus()")));
     TLSLOG_FORMAT((KSenServiceConnectionLogChannelBase+iConnectionID, KMinLogLevel , _L8("Invoking SetStatus(%d) callback."), aStatus ));
     TLSLOG_FORMAT(( iTlsLogStatusChannel, KSenServiceConnectionStatusLogLevel, _L8("CSenServiceConnectionImpl::DeliverStatus [legacy status update] - Invoking SetStatus(%d)"), aStatus ));
     

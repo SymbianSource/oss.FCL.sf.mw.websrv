@@ -78,6 +78,8 @@ LANG        SC
 
 LIBRARY     euser.lib
 LIBRARY     flogger.lib
+LIBRARY	    bafl.lib
+LIBRARY     efsrv.lib
 
 #ifndef RD_SEN_COMPILE_SIS_PACKAGE_FILES
 LIBRARY     SenServDesc.lib

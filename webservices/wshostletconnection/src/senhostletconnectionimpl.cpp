@@ -26,6 +26,7 @@
 
 
 #include <s32strm.h>
+#include <bautils.h>
 #include <SenXmlUtils.h>
 
 //#include "SenHostletConnectionLog.h"
@@ -78,6 +79,27 @@ CSenHostletConnectionImpl* CSenHostletConnectionImpl::NewLC(MSenHostlet& aProvid
 
 void CSenHostletConnectionImpl::ConstructL()
     {
+		#ifdef _SENDEBUG
+		#ifdef _DEBUG
+		
+		RFs fs;
+		fs.Connect();
+		TBool ret = BaflUtils::FolderExists(fs, _L("c:\\logs\\wslog\\"));
+		if(!ret)
+			{
+			fs.MkDirAll(_L("c:\\logs\\wslog\\"));
+			}
+		fs.Close();
+		
+		RFileLogger log;
+		log.Connect();
+		log.CreateLog(KSenHostletConnectionLogDir(), KSenHostletConnectionLogFile, EFileLoggingModeOverwrite);
+		log.CloseLog();
+		log.Close();
+	
+		#endif // _DEBUG
+		#endif // _SENDEBUG
+    	
     TInt connErr = iConnection.Connect();
     TInt connAttemp(0); // max 5 attempts are allowed
     while ( (connErr == KErrServerTerminated || connErr == KErrServerBusy)

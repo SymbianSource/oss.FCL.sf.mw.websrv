@@ -23,6 +23,8 @@
 
 
 // INCLUDE FILES
+#include <bautils.h>
+
 #include "senservicemanagerimpl.h"
 
 #include <SenIdentityProvider.h>
@@ -76,6 +78,27 @@ CSenServiceManagerImpl* CSenServiceManagerImpl::NewLC(MSenAuthenticationProvider
 
 void CSenServiceManagerImpl::ConstructL()
     {
+		#ifdef _SENDEBUG
+		#ifdef _DEBUG
+	
+		RFs fs;
+		fs.Connect();
+		TBool ret = BaflUtils::FolderExists(fs, _L("c:\\logs\\wslog\\"));
+		if(!ret)
+			{
+			fs.MkDirAll(_L("c:\\logs\\wslog\\"));
+			}
+		fs.Close();
+		
+		RFileLogger log;
+		log.Connect();
+		log.CreateLog(KSenServiceManagerLogDir(), KSenServiceManagerLogFile, EFileLoggingModeOverwrite);
+		log.CloseLog();
+		log.Close();
+	
+		#endif // _DEBUG
+		#endif // _SENDEBUG
+    	
     TInt connAttemp = 0;
     TInt connErr = KErrGeneral;
 
@@ -390,7 +413,7 @@ TInt CSenServiceManagerImpl::RegisterIdentityProviderL(
     TInt retVal = iConnection.RegisterIdentityProvider(ptr);
     delete provider;
     provider = NULL;
-	TLSLOG_L(KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel,"CSenServiceManagerImpl::RegisterIdentityProviderL(aProvider) Completed");    
+		TLSLOG_FORMAT((KSenServiceManagerLogChannelBase+iConnectionID, KMinLogLevel , _L8("CSenServiceManagerImpl::RegisterIdentityProviderL(aProvider) returns [%d]"), retVal));
     return retVal;
     }
 
