@@ -104,8 +104,11 @@ void CSenServiceManagerImpl::ConstructL()
 
     ipGenerator = CSenGuidGen::NewL();
     ipChunkName = HBufC::NewL(KSenUuidMaxLength+KMaxChunkNumDecimals);
-
+    
+#ifdef _SENDEBUG
     TLSLOG_OPEN(KSenServiceManagerLogChannel, KSenServiceManagerLogLevel, KSenServiceManagerLogDir, KSenServiceManagerLogFile);
+#endif
+    
     connErr = iConnection.Connect();
 
     while ( (connErr == KErrServerBusy || connErr == KErrServerTerminated) 

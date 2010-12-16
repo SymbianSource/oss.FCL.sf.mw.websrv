@@ -50,6 +50,7 @@ _LIT8( KNCIMConsumerKeyId,      "ConsumerKeyId"         );
 _LIT8( KNCIMConsumerSecret,     "ConsumerSecret"        );
 _LIT8( KNCIMConsumerServiceId,  "ConsumerServiceId"     );
 _LIT8( KNCIMEndpoint,				"NCIMEndpoint"     );
+_LIT8( KNokiaOriginalUserAgent,			"X-Nokia-Original-User-Agent"     );
 _LIT8( KSenConnectionRetryDelta,     "RetryDelta" );
 _LIT8( KSenConnectionRetryMaxTTL,    "RetryMaxTTL");
 _LIT8( KSenConnectionRetryMinTTL,    "RetryMinTTL");

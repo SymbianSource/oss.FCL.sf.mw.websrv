@@ -33,8 +33,8 @@
 namespace
     {
     _LIT(KTimeReference,         "19700000:000000");
-    const TInt KToBase64CoefficientNumerator  = 4;
-    const TInt KToBase64CoefficientNominative = 3;
+    //const TInt KToBase64CoefficientNumerator  = 4;
+    //const TInt KToBase64CoefficientNominative = 3;
     const TInt KInt64Length = 20;
 	const TInt KInt32Length = 10;
 	const TInt KHexWidth = 2;

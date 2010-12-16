@@ -66,7 +66,7 @@ TInt CWSOviSecurityHandler::InvokeL(MSenMessageContext& aCtx)
     TInt error(KErrNone);
     TLSLOG(KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,(_L("CWSOviSecurityHandler::InvokeL(MSenMessageContext& aCtx)")));
     CSenTransportProperties* tp = ((CWSOviMessageContext&)aCtx).TP();
-    const TInt* servertime = ((CWSOviMessageContext&)aCtx).GetIntL(WSOviContextKeys::KRetryNeeded);
+    const TInt* serverTimeInMicroSec = ((CWSOviMessageContext&)aCtx).GetIntL(WSOviContextKeys::KRetryNeeded);
     const TDesC8* bodyMessage = ((CWSOviMessageContext&)aCtx).GetDesC8L(WSOviContextKeys::KMessageBody);
     
     
@@ -109,21 +109,26 @@ TInt CWSOviSecurityHandler::InvokeL(MSenMessageContext& aCtx)
 //____2____ generate timestamp
     TTime time;
     time.UniversalTime();
-    if (servertime && *servertime > 0/*&& iDiff==0*/)
+    /*
+    HBufC8* timestamp = NULL;
+    if (serverTimeInMicroSec && *serverTimeInMicroSec > 0)
         {
-        TTimeIntervalMinutes minutes(*servertime);
-        iDiff = time-minutes;
+        TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CWSOviSecurityHandler::  Naga(Server Time %d)"), *serverTimeInMicroSec));
+		    _LIT( KEpochTime, "19700000:000000.000000" );
+		    TTime epochTime( KEpochTime );
+		    
+		    TTimeIntervalMicroSeconds timeFromServer(*serverTimeInMicroSec); // Fetch the time from server to this
+		    TTime currentSrvTime = epochTime + timeFromServer;
+		    timestamp = SenCryptoUtils::GetTimestampL(currentSrvTime);
         ((CWSOviMessageContext&)aCtx).Update(WSOviContextKeys::KRetryNeeded, 0);
         }
-    time -= TTimeIntervalMicroSeconds(iDiff.Int64());
-    HBufC8* timestamp = SenCryptoUtils::GetTimestampL(time);
-    
-        
-    
-    
-    
-    
-    TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L("CWSOviSecurityHandler::   ____2____ generate (timestamp %S)"), timestamp));
+    else
+    		{    
+    		timestamp = SenCryptoUtils::GetTimestampL(time);
+    		}
+   	*/
+   	HBufC8* timestamp = SenCryptoUtils::GetTimestampL(time);
+    TLSLOG_FORMAT((KSenCoreServiceManagerLogChannelBase  , KMinLogLevel,_L8("CWSOviSecurityHandler::   ____2____ generate (timestamp %S)"), timestamp));
 
 //____3____ create request without signature
 

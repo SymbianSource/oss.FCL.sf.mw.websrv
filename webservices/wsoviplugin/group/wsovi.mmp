@@ -95,6 +95,9 @@ LIBRARY sysutil.lib
 LIBRARY imut.lib 
 LIBRARY inetprotutil.lib
 LIBRARY hash.lib
+LIBRARY sysversioninfo.lib
+
+
 
 #ifndef RD_SEN_COMPILE_SIS_PACKAGE_FILES
 // SOA for S60 libraries

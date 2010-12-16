@@ -35,6 +35,8 @@
 #include <xmlengfilecontainer.h>
 #include <xmlengchunkcontainer.h>
 #include <xmlengelement.h>
+#include <sysversioninfo.h> 
+#include <sysutil.h>
 
 class CWSOviCredentialObserver;
 class CSenHttpTransportProperties;

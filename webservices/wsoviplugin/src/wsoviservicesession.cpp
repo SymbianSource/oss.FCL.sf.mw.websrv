@@ -37,7 +37,12 @@
 #include "sencryptoutils.h"
 
 const TInt64 KClockSlipSeconds = 60*15;
-
+//Constants for adding the X-Nokia-Original-User-Agent header in the transport properties
+_LIT8(KDEName, "S60 DE");
+_LIT8(KDEVersion, "92.1.0");
+_LIT8(KForwardSlash, "/");
+_LIT8(KOpenBrace, "(");
+_LIT8(KCloseBrace, ")");
 
 CWSOviServiceSession* CWSOviServiceSession::NewL(MSIF& aFramework)
     {
@@ -461,11 +466,52 @@ CSenHttpTransportProperties* CWSOviServiceSession::ApplyTransportPropertiesLC(co
                     httpTransProp->SetMaxTimeToLiveL(intValue);
                     }
                 }
-
             CleanupStack::PopAndDestroy(conHttpTransProp);    
             }
         }
-    
+        if(httpTransProp)
+        	{
+				//Logic to obtain Device Name
+				SysVersionInfo::TProductVersion productVersion;
+				User::LeaveIfError( SysVersionInfo::GetVersionInfo( productVersion ) );
+				TBuf<KSysUtilVersionTextLength> deviceName = productVersion.iModel;
+				
+				//Logic to get the software version on the device, symbian code.
+				TBuf<KSysUtilVersionTextLength> deviceSwVersion;
+				User::LeaveIfError( SysUtil::GetSWVersion( deviceSwVersion ) );
+				    
+				//Remove escape characters from the Device SW Version
+				for(TInt i=0; i<deviceSwVersion.Length();i++)
+				    {
+				    const TUint16& ch = deviceSwVersion[ i ];
+				    if(ch == '\n')
+				        {
+				        deviceSwVersion.Replace(i,1,_L(" "));
+				        }
+				    }
+				            //Obtaining the DE name and its version; hardcoded right now                                        
+				TBuf8<10> DEName(KDEName);
+				TBuf8<10> DEVersion (KDEVersion);
+				
+				            //Constructing the header value in the format <DE name/version><(Device name/device sw version)>
+				TBuf8<512> deviceValue;
+				deviceValue.Append(DEName);
+				deviceValue.Append(KForwardSlash);
+				deviceValue.Append(DEVersion);
+				deviceValue.Append(KOpenBrace);
+				deviceValue.Append(deviceName);
+				deviceValue.Append(KForwardSlash);
+				deviceValue.Append(deviceSwVersion);
+				deviceValue.Append(KCloseBrace);
+				
+				//Converting the TBuf8 into TPtrC8
+				TPtrC8 ptrC2(deviceValue);
+				//Setting the X-Nokia-Original-User-Agent http transport property
+				if (httpTransProp->PropertyL(KNokiaOriginalUserAgent, ptrC2) == KErrNotFound)
+				    {
+				        httpTransProp->SetPropertyL(KNokiaOriginalUserAgent, ptrC2, KHttpHeaderType);
+				    }
+ 			}
     return httpTransProp;
     }
 
@@ -1475,4 +1521,3 @@ void CWSOviServiceSession::ActiveTicketObserverL()
 
 
 // End of file
-

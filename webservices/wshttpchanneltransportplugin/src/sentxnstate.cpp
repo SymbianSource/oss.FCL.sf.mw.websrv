@@ -275,9 +275,12 @@ MSenProperties& CSenTxnState::HttpChannelPropertiesL()
 
 void CSenTxnState::SetTP(CSenHttpTransportProperties* tp)
     {
-    
-    delete iTP;
-    iTP = tp;
+    if( (iTP != tp) && tp)
+        {
+        delete iTP;
+        iTP = NULL;
+        iTP = tp;        
+        }
     }
 TInt CSenTxnState::CalculateHeadersSizeL(RHTTPHeaders aHeaders) 
     { 

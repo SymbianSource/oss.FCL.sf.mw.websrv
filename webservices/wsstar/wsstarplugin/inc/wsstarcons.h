@@ -84,7 +84,11 @@ namespace WSStarSession
     //in seconds
     const TInt KMaxTimeForRetry    = 5;
     const TInt KCounterMax    = 3;
-    const TInt KMaxHttpTimeOut   = 60;
+#if defined(__WINSCW__) 
+		const TInt KMaxHttpTimeOut   = 60;
+#else
+		const TInt KMaxHttpTimeOut   = 120;
+#endif    
     
     }
 namespace WSStarSessionConsumer

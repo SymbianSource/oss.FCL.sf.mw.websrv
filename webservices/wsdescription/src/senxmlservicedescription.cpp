@@ -343,6 +343,7 @@ EXPORT_C void CSenXmlServiceDescription::SetFrameworkIdL(const TDesC8& aFramewor
     {
     if ( aFrameworkId != KNullDesC8 )
         {
+        delete SenXmlUtils::RemoveAttributeL(AsElement(), KFramework);
         // overwrites the value of "framework" attribute, if such attribute exists
         SenXmlUtils::AddAttributeL(AsElement(), KFramework, aFrameworkId);
         }

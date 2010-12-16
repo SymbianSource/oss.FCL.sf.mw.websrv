@@ -268,8 +268,7 @@ EXPORT_C TInt CSenIdentityProvider::SetUserInfoL(const TDesC8& aAuthzID,
                                                 const TDesC8& aAdvisoryAuthnID,
                                                 const TDesC8& aPassword )
     {
-    // For MS this function sud be commented as WLM already send xml encoded password
-    //HBufC8* encPassword = SenXmlUtils::EncodeHttpCharactersLC(aPassword);
+   
     if(aAuthzID.Length()>0)
         {
         SetContentOfL(KSenIdpAuthzIDLocalname, aAuthzID);
@@ -278,11 +277,19 @@ EXPORT_C TInt CSenIdentityProvider::SetUserInfoL(const TDesC8& aAuthzID,
         {
         SetContentOfL(KSenIdpAdvisoryAuthnIdLocalname, aAdvisoryAuthnID);
         }
-    //if(aPassword.Length()>0) // in order to clean password, when listing accounts
+    
+    HBufC8* encPassword = SenXmlUtils::EncodeHttpCharactersLC(aPassword);
+    if (encPassword)
         {
-        SetContentOfL(KSenIdpPasswordLocalname, aPassword );
+            SetContentOfL(KSenIdpPasswordLocalname, encPassword->Des() );
         }
-    //CleanupStack::PopAndDestroy(encPassword);
+    else
+        {
+            SetContentOfL(KSenIdpPasswordLocalname, KNullDesC8 );
+        }
+    
+    CleanupStack::PopAndDestroy(encPassword);
+   
     return KErrNone;
     }
 
